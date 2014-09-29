@@ -39,7 +39,7 @@ template<std::size_t I, typename Tuple, typename Functor>
 struct for_each_tuple_t_impl {
     static void for_each(Functor&& func){
         std::forward<Functor>(func).template operator()<typename std::tuple_element<I, Tuple>::type>();
-        for_each_tuple_t_impl<I - 1, Tuple, Functor>::for_each(std::forward<Functor>(funct));
+        for_each_tuple_t_impl<I - 1, Tuple, Functor>::for_each(std::forward<Functor>(func));
     }
 };
 
