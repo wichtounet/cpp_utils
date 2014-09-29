@@ -8,6 +8,8 @@
 #ifndef CPP_UTILS_TMP_HPP
 #define CPP_UTILS_TMP_HPP
 
+#include <tuple>
+
 #define HAS_MEM_FUNC(func, name)                                              \
 template<typename T, typename Sign>                                           \
 struct name {                                                                 \
@@ -30,5 +32,29 @@ class name {                                                                    
 public:                                                                                     \
     static constexpr const bool value = decltype(check<T>(0))::value;                       \
 };
+
+namespace cpp {
+
+template<std::size_t I, typename Tuple, typename Functor>
+struct for_each_tuple_t_impl {
+    static void for_each(Functor&& func){
+        std::forward<Functor>(func).template operator()<typename std::tuple_element<I, Tuple>::type>();
+        for_each_tuple_t_impl<I - 1, Tuple, Functor>::for_each(std::forward<Functor>(funct));
+    }
+};
+
+template<typename Tuple, typename Functor>
+struct for_each_tuple_t_impl<0, Tuple, Functor> {
+    static void for_each(Functor&& func){
+        std::forward<Functor>(func).template operator()<typename std::tuple_element<0, Tuple>::type>();
+    }
+};
+
+template<typename Tuple, typename Functor>
+void for_each_tuple_t(Functor&& func){
+    for_each_tuple_t_impl<std::tuple_size<Tuple>::value - 1, Tuple, Functor>::for_each(std::forward<Functor>(func));
+}
+
+} //end of namespace cpp
 
 #endif //CPP_UTILS_TMP_HPP
