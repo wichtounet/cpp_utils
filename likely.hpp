@@ -11,17 +11,17 @@
 #if defined __clang__
 
 #if __has_builtin(__bultin_expect)
-#define likely(x) __builtin_expect(!!(x), 1)
-#define unlikely(x) __builtin_expect(!!(x), 0)
+#define cpp_likely(x) __builtin_expect(!!(x), 1)
+#define cpp_unlikely(x) __builtin_expect(!!(x), 0)
 #else
-#define likely(x) x
-#define unlikely(x) x
+#define cpp_likely(x) x
+#define cpp_unlikely(x) x
 #endif
 
 #elif defined __GNUC__
 
-#define likely(x) __builtin_expect(!!(x), 1)
-#define unlikely(x) __builtin_expect(!!(x), 0)
+#define cpp_likely(x) __builtin_expect(!!(x), 1)
+#define cpp_unlikely(x) __builtin_expect(!!(x), 0)
 
 #endif //__clang__
 

@@ -84,6 +84,6 @@ void assertion_failed_msg(const CharT* expr, const char* msg, const char* functi
 
 } // end of detail namespace
 } // end of assertion namespace
-} // end of detail namespace
+} // end of cpp namespace
 
 #endif //CPP_UTILS_ASSERT_HPP
