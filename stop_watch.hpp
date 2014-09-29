@@ -50,4 +50,4 @@ private:
 
 } //end of cpp namespace
 
-#endif//CPP_STOP_WATCH_HPP
+#endif //CPP_STOP_WATCH_HPP
