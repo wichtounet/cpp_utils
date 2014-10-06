@@ -40,13 +40,13 @@
 
 #ifdef CPP_UTILS_ASSERT_EXCEPTION
 
-#define cpp_assert(condition, message) if(likely(condition)) \
+#define cpp_assert(condition, message) if(cpp_likely(condition)) \
     ((void)0); \
     else throw std::runtime_error("Assertion failed");
 
 #else
 
-#define cpp_assert(condition, message) (likely(condition) \
+#define cpp_assert(condition, message) (cpp_likely(condition) \
     ? ((void)0) \
     : ::cpp::assertion::detail::assertion_failed_msg(#condition, message, \
     __PRETTY_FUNCTION__, __FILE__, __LINE__))
