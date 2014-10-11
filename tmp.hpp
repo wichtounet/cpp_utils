@@ -102,6 +102,12 @@ using enable_if_all_u = typename std::enable_if<and_u<B...>::value, detail::enab
 template<bool... B>
 using disable_if_all_u = typename std::enable_if<not_u<and_u<B...>::value>::value, detail::enabler_t>::type;
 
+template<bool... B>
+using enable_if_one_u = typename std::enable_if<or_u<B...>::value, detail::enabler_t>::type;
+
+template<bool... B>
+using disable_if_one_u = typename std::enable_if<not_u<or_u<B...>::value>::value, detail::enabler_t>::type;
+
 //Other TMP Utilities
 
 template<template<typename...> class TT, typename T>
