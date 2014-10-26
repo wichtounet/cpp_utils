@@ -45,11 +45,12 @@ enum class thread_status {
     WORKING
 };
 
+template<template<typename...> class queue_t = std::deque>
 struct default_thread_pool {
 private:
     std::vector<std::thread> threads;
     std::vector<thread_status> status;
-    std::deque<std::function<void()>> tasks;
+    queue_t<std::function<void()>> tasks;
     std::mutex main_lock;
     std::condition_variable condition;
     volatile bool stop_flag = false;
@@ -58,7 +59,7 @@ public:
     default_thread_pool(std::size_t n) : status(n, thread_status::WAITING) {
         for(std::size_t t = 0; t < n; ++t){
             threads.emplace_back(
-                [t, &status = this->status, &tasks = this->tasks, &main_lock = this->main_lock, &condition = this->condition, &stop_flag = this->stop_flag]
+                [this, t]
                 {
                     while(true){
                         std::function<void()> task;
@@ -68,7 +69,7 @@ public:
 
                             status[t] = thread_status::WAITING;
 
-                            condition.wait(ulock, [&stop_flag, &tasks]{return stop_flag || !tasks.empty(); });
+                            condition.wait(ulock, [this]{return stop_flag || !tasks.empty(); });
 
                             if(stop_flag && tasks.empty()){
                                 return;
