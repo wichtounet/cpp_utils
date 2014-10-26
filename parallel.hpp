@@ -77,7 +77,7 @@ public:
 
                         wait_condition.notify_one();
 
-                        condition.wait(ulock, [this]{return stop_flag || !tasks.empty(); });
+                        condition.wait(ulock, [this]{ return stop_flag || !tasks.empty(); });
 
                         if(stop_flag && tasks.empty()){
                             return;
@@ -111,10 +111,8 @@ public:
         while(true){
             std::unique_lock<std::mutex> ulock(main_lock);
 
-            if(tasks.empty()){
-                if(std::find(status.begin(), status.end(), thread_status::WORKING) == status.end()){
-                    return;
-                }
+            if(tasks.empty() && std::find(status.begin(), status.end(), thread_status::WORKING) == status.end()){
+                return;
             }
 
             //At this point, there are still some threads working, we wait for
@@ -130,12 +128,11 @@ public:
                 throw std::runtime_error("enqueue on stopped ThreadPool");
             }
 
-            tasks.emplace_back([&fun, args...](){ fun(args...); });
+            tasks.emplace_back([&fun, args...]{ fun(args...); });
         });
 
         condition.notify_one();
     }
-
 };
 
 } //end of the cpp namespace
