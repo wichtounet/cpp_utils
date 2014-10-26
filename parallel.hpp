@@ -40,6 +40,12 @@ void parallel_foreach_i(const Container& container, Functor&& fun){
     //No need to wait for the futures, the destructor will do it for us
 }
 
+template<typename Lock, typename Functor>
+void with_lock(Lock& lock, Functor&& fun){
+    std::unique_lock<Lock> l(lock);
+    fun();
+}
+
 enum class thread_status {
     WAITING,
     WORKING
