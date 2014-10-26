@@ -10,6 +10,9 @@
 
 #include<thread>
 #include<future>
+#include<vector>
+#include<deque>
+#include<functional>
 
 namespace cpp {
 
@@ -36,6 +39,88 @@ void parallel_foreach_i(const Container& container, Functor&& fun){
 
     //No need to wait for the futures, the destructor will do it for us
 }
+
+struct default_thread_pool {
+private:
+    std::vector<std::thread> threads;
+    std::deque<std::function<void()>> tasks;
+    std::mutex lock;
+    std::condition_variable condition;
+    volatile bool stop_flag = false;
+
+public:
+    default_thread_pool(std::size_t n){
+        for(std::size_t t = 0; t < n; ++t){
+            threads.emplace_back(
+                [&tasks = this->tasks, &lock = this->lock, &condition = this->condition, &stop_flag = this->stop_flag]
+                {
+                    while(true){
+                        std::function<void()> task;
+
+                        {
+                            std::unique_lock<std::mutex> ulock(lock);
+                            condition.wait(ulock, [&stop_flag, &tasks]{return stop_flag || !tasks.empty(); });
+
+                            if(stop_flag && tasks.empty()){
+                                return;
+                            }
+
+                            task = std::move(tasks.front());
+                            tasks.pop_front();
+                        }
+
+                        task();
+                    }
+                });
+        }
+    }
+
+    default_thread_pool() : default_thread_pool(std::thread::hardware_concurrency()) {}
+
+    ~default_thread_pool(){
+        {
+            std::unique_lock<std::mutex> ulock(lock);
+            stop_flag = true;
+        }
+
+        condition.notify_all();
+
+        for(auto& thread : threads){
+            thread.join();
+        }
+    }
+
+    //TODO DO better than busy waiting
+    void wait(){
+        while(true){
+            std::unique_lock<std::mutex> ulock(lock);
+
+            if(tasks.empty()){
+                return;
+            }
+        }
+    }
+
+    template<class Functor, typename... Args>
+    void do_task(Functor&& fun, Args&&... args){
+        auto task = std::make_shared< std::packaged_task<void()> >(
+            std::bind(std::forward<Functor>(fun), std::forward<Args>(args)...)
+            );
+
+        {
+            std::unique_lock<std::mutex> ulock(lock);
+
+            if(stop_flag){
+                throw std::runtime_error("enqueue on stopped ThreadPool");
+            }
+
+            tasks.emplace_back([task](){ (*task)(); });
+        }
+
+        condition.notify_one();
+    }
+
+};
 
 } //end of the cpp namespace
 
