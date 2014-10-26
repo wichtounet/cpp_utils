@@ -9,14 +9,20 @@
 #define CPP_UTILS_PARALLEL_HPP
 
 #include<thread>
+#include<future>
 
 namespace cpp {
 
 template<typename Iterator, typename Functor>
 void parallel_foreach(Iterator first, Iterator last, Functor&& fun){
+    std::vector<std::future<void>> futures;
+    futures.reserve(std::distance(first, last));
+
     for(; first != last; ++first){
-        std::thread(fun, *first).detach();
+        futures.push_back(std::move(std::async(std::launch::async, fun, *first)));
     }
+
+    //No need to wait for the futures, the destructor will do it for us
 }
 
 } //end of the cpp namespace
