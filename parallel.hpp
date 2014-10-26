@@ -46,13 +46,13 @@ void with_lock(Lock& lock, Functor&& fun){
     fun();
 }
 
-enum class thread_status {
-    WAITING,
-    WORKING
-};
-
 template<template<typename...> class queue_t = std::deque>
 struct default_thread_pool {
+    enum class thread_status {
+        WAITING,
+        WORKING
+    };
+
 private:
     std::vector<std::thread> threads;
     std::vector<thread_status> status;
@@ -96,10 +96,7 @@ public:
     default_thread_pool() : default_thread_pool(std::thread::hardware_concurrency()) {}
 
     ~default_thread_pool(){
-        {
-            std::unique_lock<std::mutex> ulock(main_lock);
-            stop_flag = true;
-        }
+        with_lock(main_lock, [this](){ stop_flag = true; });
 
         condition.notify_all();
 
@@ -131,15 +128,13 @@ public:
 
     template<class Functor, typename... Args>
     void do_task(Functor&& fun, Args&&... args){
-        {
-            std::unique_lock<std::mutex> ulock(main_lock);
-
+        with_lock(main_lock, [fun, &args..., this](){
             if(stop_flag){
                 throw std::runtime_error("enqueue on stopped ThreadPool");
             }
 
             tasks.emplace_back([&fun, args...](){ fun(args...); });
-        }
+        });
 
         condition.notify_one();
     }
