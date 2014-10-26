@@ -125,10 +125,6 @@ public:
 
     template<class Functor, typename... Args>
     void do_task(Functor&& fun, Args&&... args){
-        auto task = std::make_shared< std::packaged_task<void()> >(
-            std::bind(std::forward<Functor>(fun), std::forward<Args>(args)...)
-            );
-
         {
             std::unique_lock<std::mutex> ulock(main_lock);
 
@@ -136,7 +132,7 @@ public:
                 throw std::runtime_error("enqueue on stopped ThreadPool");
             }
 
-            tasks.emplace_back([task](){ (*task)(); });
+            tasks.emplace_back([&fun, args...](){ fun(args...); });
         }
 
         condition.notify_one();
