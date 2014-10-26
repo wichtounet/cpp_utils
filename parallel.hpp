@@ -13,6 +13,7 @@
 #include<vector>
 #include<deque>
 #include<functional>
+#include<algorithm>
 
 namespace cpp {
 
@@ -65,41 +66,39 @@ private:
 public:
     default_thread_pool(std::size_t n) : status(n, thread_status::WAITING) {
         for(std::size_t t = 0; t < n; ++t){
-            threads.emplace_back(
-                [this, t]
-                {
-                    while(true){
-                        std::function<void()> task;
+            threads.emplace_back([this, t]{
+                while(true){
+                    std::function<void()> task;
 
-                        {
-                            std::unique_lock<std::mutex> ulock(main_lock);
+                    {
+                        std::unique_lock<std::mutex> ulock(main_lock);
 
-                            status[t] = thread_status::WAITING;
+                        status[t] = thread_status::WAITING;
 
-                            wait_condition.notify_one();
+                        wait_condition.notify_one();
 
-                            condition.wait(ulock, [this]{return stop_flag || !tasks.empty(); });
+                        condition.wait(ulock, [this]{return stop_flag || !tasks.empty(); });
 
-                            if(stop_flag && tasks.empty()){
-                                return;
-                            }
-
-                            task = std::move(tasks.front());
-                            tasks.pop_front();
-
-                            status[t] = thread_status::WORKING;
+                        if(stop_flag && tasks.empty()){
+                            return;
                         }
 
-                        task();
+                        task = std::move(tasks.front());
+                        tasks.pop_front();
+
+                        status[t] = thread_status::WORKING;
                     }
-                });
+
+                    task();
+                }
+            });
         }
     }
 
     default_thread_pool() : default_thread_pool(std::thread::hardware_concurrency()) {}
 
     ~default_thread_pool(){
-        with_lock(main_lock, [this](){ stop_flag = true; });
+        with_lock(main_lock, [this]{ stop_flag = true; });
 
         condition.notify_all();
 
@@ -112,21 +111,15 @@ public:
         while(true){
             std::unique_lock<std::mutex> ulock(main_lock);
 
-            wait_condition.wait(ulock);
-
             if(tasks.empty()){
-                bool still_working = false;
-                for(auto s : status){
-                    if(s == thread_status::WORKING){
-                        still_working = true;
-                        break;
-                    }
-                }
-
-                if(!still_working){
+                if(std::find(status.begin(), status.end(), thread_status::WORKING) == status.end()){
                     return;
                 }
             }
+
+            //At this point, there are still some threads working, we wait for
+            //one of them to notify a change of status
+            wait_condition.wait(ulock, [this]{ return tasks.empty(); });
         }
     }
 
