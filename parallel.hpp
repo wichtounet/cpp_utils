@@ -59,6 +59,7 @@ private:
     queue_t<std::function<void()>> tasks;
     std::mutex main_lock;
     std::condition_variable condition;
+    std::condition_variable wait_condition;
     volatile bool stop_flag = false;
 
 public:
@@ -74,6 +75,8 @@ public:
                             std::unique_lock<std::mutex> ulock(main_lock);
 
                             status[t] = thread_status::WAITING;
+
+                            wait_condition.notify_one();
 
                             condition.wait(ulock, [this]{return stop_flag || !tasks.empty(); });
 
@@ -105,10 +108,11 @@ public:
         }
     }
 
-    //TODO DO better than busy waiting
     void wait(){
         while(true){
             std::unique_lock<std::mutex> ulock(main_lock);
+
+            wait_condition.wait(ulock);
 
             if(tasks.empty()){
                 bool still_working = false;
