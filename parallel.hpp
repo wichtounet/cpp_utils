@@ -25,6 +25,18 @@ void parallel_foreach(Iterator first, Iterator last, Functor&& fun){
     //No need to wait for the futures, the destructor will do it for us
 }
 
+template<typename Container, typename Functor>
+void parallel_foreach_i(const Container& container, Functor&& fun){
+    std::vector<std::future<void>> futures;
+    futures.reserve(container.size());
+
+    for(std::size_t i = 0; i < container.size(); ++i){
+        futures.push_back(std::move(std::async(std::launch::async, fun, i)));
+    }
+
+    //No need to wait for the futures, the destructor will do it for us
+}
+
 } //end of the cpp namespace
 
 #endif //CPP_UTILS_PARALLEL_HPP
