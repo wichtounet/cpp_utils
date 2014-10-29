@@ -17,6 +17,16 @@
 
 namespace cpp {
 
+//Utilities
+
+template<typename Lock, typename Functor>
+void with_lock(Lock& lock, Functor&& fun){
+    std::unique_lock<Lock> l(lock);
+    fun();
+}
+
+//Normal parallel_foreach versions
+
 template<typename Iterator, typename Functor>
 void parallel_foreach(Iterator first, Iterator last, Functor&& fun){
     std::vector<std::future<void>> futures;
@@ -29,6 +39,32 @@ void parallel_foreach(Iterator first, Iterator last, Functor&& fun){
     //No need to wait for the futures, the destructor will do it for us
 }
 
+template<typename Iterator, typename Functor>
+void parallel_foreach_i(Iterator first, Iterator last, Functor&& fun){
+    std::vector<std::future<void>> futures;
+    futures.reserve(std::distance(first, last));
+
+    for(; first != last; ++first){
+        futures.push_back(std::move(std::async(std::launch::async, fun, *first, futures.size())));
+    }
+
+    //No need to wait for the futures, the destructor will do it for us
+}
+
+template<typename Container, typename Functor>
+void parallel_foreach_i(const Container& container, Functor&& fun){
+    std::vector<std::future<void>> futures;
+    futures.reserve(container.size());
+
+    for(std::size_t i = 0; i < container.size(); ++i){
+        futures.push_back(std::move(std::async(std::launch::async, fun, container[i], i)));
+    }
+
+    //No need to wait for the futures, the destructor will do it for us
+}
+
+//parallel_foreach Thread pool versions
+
 template<typename TP, typename Iterator, typename Functor>
 void parallel_foreach(TP& thread_pool, Iterator first, Iterator last, Functor&& fun){
     for(; first != last; ++first){
@@ -38,31 +74,22 @@ void parallel_foreach(TP& thread_pool, Iterator first, Iterator last, Functor&& 
     thread_pool.wait();
 }
 
-template<typename Container, typename Functor>
-void parallel_foreach_i(const Container& container, Functor&& fun){
-    std::vector<std::future<void>> futures;
-    futures.reserve(container.size());
-
-    for(std::size_t i = 0; i < container.size(); ++i){
-        futures.push_back(std::move(std::async(std::launch::async, fun, i)));
-    }
-
-    //No need to wait for the futures, the destructor will do it for us
-}
-
-template<typename TP, typename Container, typename Functor>
-void parallel_foreach_i(TP& thread_pool, const Container& container, Functor&& fun){
-    for(std::size_t i = 0; i < container.size(); ++i){
-        thread_pool.do_task(fun, i);
+template<typename TP, typename Iterator, typename Functor>
+void parallel_foreach_i(TP& thread_pool, Iterator first, Iterator last, Functor&& fun){
+    for(std::size_t i = 0; first != last; ++first, ++i){
+        thread_pool.do_task(fun, *first, i);
     }
 
     thread_pool.wait();
 }
 
-template<typename Lock, typename Functor>
-void with_lock(Lock& lock, Functor&& fun){
-    std::unique_lock<Lock> l(lock);
-    fun();
+template<typename TP, typename Container, typename Functor>
+void parallel_foreach_i(TP& thread_pool, const Container& container, Functor&& fun){
+    for(std::size_t i = 0; i < container.size(); ++i){
+        thread_pool.do_task(fun, container[i], i);
+    }
+
+    thread_pool.wait();
 }
 
 template<template<typename...> class queue_t = std::deque>
