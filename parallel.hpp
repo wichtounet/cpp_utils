@@ -167,13 +167,13 @@ public:
     }
 
     template<class Functor, typename... Args>
-    void do_task(Functor&& fun, Args&&... args){
+    void do_task(Functor fun, Args&&... args){
         with_lock(main_lock, [fun, &args..., this](){
             if(stop_flag){
                 throw std::runtime_error("enqueue on stopped ThreadPool");
             }
 
-            tasks.emplace_back([&fun, args...]{ fun(args...); });
+            tasks.emplace_back([fun, args...]{ fun(args...); });
         });
 
         condition.notify_one();
