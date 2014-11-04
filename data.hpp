@@ -14,7 +14,7 @@ namespace cpp {
 
 template<typename Iterator>
 double mean(Iterator first, Iterator last){
-    return std::accumulate(first, last) / std::distance(first, last);
+    return std::accumulate(first, last, 0.0) / std::distance(first, last);
 }
 
 template<typename Container>
