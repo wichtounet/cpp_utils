@@ -14,11 +14,7 @@ namespace cpp {
 
 template<typename Iterator>
 double mean(Iterator first, Iterator last){
-    double mean = 0.0;
-    for(; first != last; ++first){
-        mean += *first;
-    }
-    return mean / std::distance(first, last);
+    return std::accumulate(first, last) / std::distance(first, last);
 }
 
 template<typename Container>
@@ -29,8 +25,8 @@ double mean(const Container& container){
 template<typename Iterator>
 double stddev(Iterator first, Iterator last, double mean){
     double std = 0.0;
-    for(; first != last; ++first){
-        std += (*first - mean) * (*first - mean);
+    for(auto it = first; it != last; ++it){
+        std += (*it - mean) * (*it - mean);
     }
     return std::sqrt(std / std::distance(first, last));
 }
@@ -43,14 +39,16 @@ double stddev(const Container& container, double mean){
 template<typename Iterator>
 void normalize_each(Iterator first, Iterator last){
     for(; first != last; ++first){
+        auto& sub = *first;
+
         //zero-mean
-        auto m = mean(*first);
-        for(auto& v : *first){
+        auto m = mean(sub);
+        for(auto& v : sub){
             v -= m;
         }
         //unit variance
-        auto s = stddev(*first, 0.0);
-        for(auto& v : *first){
+        auto s = stddev(sub, 0.0);
+        for(auto& v : sub){
             v /= s;
         }
     }
