@@ -15,6 +15,8 @@
 #include<functional>
 #include<algorithm>
 
+#include "assert.hp"
+
 namespace cpp {
 
 //Utilities
@@ -85,6 +87,8 @@ void parallel_foreach_i(TP& thread_pool, Iterator first, Iterator last, Functor&
 
 template<typename TP, typename Iterator, typename Iterator2, typename Functor>
 void parallel_foreach_pair_i(TP& thread_pool, Iterator f_first, Iterator f_last, Iterator2 s_first, Iterator2 s_last, Functor&& fun){
+    cpp_unused(s_last);
+
     for(std::size_t i = 0; f_first != f_last; ++f_first, ++s_first, ++i){
         thread_pool.do_task(std::forward<Functor>(fun), *f_first, *s_first, i);
     }
