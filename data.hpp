@@ -41,15 +41,19 @@ void normalize_each(Iterator first, Iterator last){
     for(; first != last; ++first){
         auto& sub = *first;
 
-        //zero-mean
+        //normalize to zero-mean
         auto m = mean(sub);
         for(auto& v : sub){
             v -= m;
         }
-        //unit variance
+
+        //normalize to unit variance
         auto s = stddev(sub, 0.0);
-        for(auto& v : sub){
-            v /= s;
+
+        if(s != 0.0){
+            for(auto& v : sub){
+                v /= s;
+            }
         }
     }
 }
