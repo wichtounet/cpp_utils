@@ -56,23 +56,28 @@ void for_each_tuple_t(Functor&& func){
     for_each_tuple_t_impl<std::tuple_size<Tuple>::value - 1, Tuple, Functor>::for_each(std::forward<Functor>(func));
 }
 
-template<bool b1>
-struct not_u : std::true_type {};
+template<bool B>
+struct not_u : std::integral_constant<bool, !B> {};
 
-template<>
-struct not_u<true> : std::false_type {};
+template<bool H, bool... T>
+struct and_u {
+    static constexpr const bool value = H && var_and<T...>::value;
+};
 
-template<bool b1, bool b2, bool b3 = true, bool b4 = true, bool b5 = true, bool b6 = true>
-struct and_u : std::false_type {};
+template<bool H>
+struct and_u<H> {
+    static constexpr const bool value = H;
+};
 
-template<>
-struct and_u<true, true, true, true, true, true> : std::true_type {};
+template<bool H, bool... T>
+struct or_u {
+    static constexpr const bool value = H || or_u<T...>::value;
+};
 
-template<bool b1, bool b2, bool b3 = false, bool b4 = false, bool b5 = false, bool b6 = false, bool b7 = false, bool b8 = false, bool b9 = false>
-struct or_u : std::true_type {};
-
-template<>
-struct or_u<false, false, false, false, false, false, false, false, false> : std::false_type {};
+template<bool H>
+struct or_u<H> {
+    static constexpr const bool value = H;
+};
 
 //enable_if utilities
 
