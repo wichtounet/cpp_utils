@@ -61,7 +61,7 @@ struct not_u : std::integral_constant<bool, !B> {};
 
 template<bool H, bool... T>
 struct and_u {
-    static constexpr const bool value = H && var_and<T...>::value;
+    static constexpr const bool value = H && and_u<T...>::value;
 };
 
 template<bool H>
