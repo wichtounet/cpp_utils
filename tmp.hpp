@@ -113,6 +113,14 @@ using enable_if_one_u = typename std::enable_if<or_u<B...>::value, detail::enabl
 template<bool... B>
 using disable_if_one_u = typename std::enable_if<not_u<or_u<B...>::value>::value, detail::enabler_t>::type;
 
+//Type traits simplifications
+
+template<typename T>
+using add_const_lvalue_t = std::add_lvalue_reference_t<std::add_const_t<T>>;
+
+template<typename T>
+using add_const_rvalue_t = std::add_rvalue_reference_t<std::add_const_t<T>>;
+
 //Other TMP Utilities
 
 template<template<typename...> class TT, typename T>
