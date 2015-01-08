@@ -146,6 +146,17 @@ using add_const_lvalue_t = std::add_lvalue_reference_t<std::add_const_t<T>>;
 template<typename T>
 using add_const_rvalue_t = std::add_rvalue_reference_t<std::add_const_t<T>>;
 
+//Integral constants
+
+template<typename T, typename C>
+using integral_constant_c = std::integral_constant<T, C::value>;
+
+template<bool B>
+using bool_constant = std::integral_constant<bool, B>;
+
+template<typename C>
+using bool_constant_c = std::integral_constant<bool, C::value>;
+
 //Other TMP Utilities
 
 template<template<typename...> class TT, typename T>
@@ -176,11 +187,11 @@ struct last_type {
 template<std::size_t N, typename... T>
 using nth_type_t = typename nth_type<N, T...>::type;
 
-template<std::size_t N, typename... T>
-using first_type_t = typename first_type<N, T...>::type;
+template<typename... T>
+using first_type_t = typename first_type<T...>::type;
 
-template<std::size_t N, typename... T>
-using last_type_t = typename last_type<N, T...>::type;
+template<typename... T>
+using last_type_t = typename last_type<T...>::type;
 
 template<int I, typename T1, typename... T, enable_if_u<(I == 0)> = detail::dummy>
 auto nth_value(T1&& t, T&&... /*args*/) -> decltype(std::forward<T1>(t)) {
@@ -204,24 +215,24 @@ auto first_value(T&&... args){
 }
 
 template<typename V, typename F, typename... S>
-struct all_convertible_to : std::integral_constant<bool, and_c<all_convertible_to<V, F>, all_convertible_to<V, S...>>::value> {};
+struct all_convertible_to : bool_constant_c<and_c<all_convertible_to<V, F>, all_convertible_to<V, S...>>> {};
 
 template<typename V, typename F>
-struct all_convertible_to<V, F> : std::integral_constant<bool, std::is_convertible<F, V>::value> {};
+struct all_convertible_to<V, F> : bool_constant_c<std::is_convertible<F, V>> {};
 
 template<std::size_t I, std::size_t S, typename F, typename... T>
 struct is_homogeneous_helper {
     template<std::size_t I1, std::size_t S1, typename Enable = void>
-    struct helper_int : std::integral_constant<bool, and_c<std::is_same<F, nth_type_t<I1, T...>>, is_homogeneous_helper<I1+1, S1, F, T...>>::value> {};
+    struct helper_int : bool_constant_c<and_c<std::is_same<F, nth_type_t<I1, T...>>, is_homogeneous_helper<I1+1, S1, F, T...>>> {};
 
     template<std::size_t I1, std::size_t S1>
-    struct helper_int<I1, S1, std::enable_if_t<I1 == S1>> : std::integral_constant<bool, std::is_same<F, nth_type_t<I1, T...>>::value> {};
+    struct helper_int<I1, S1, std::enable_if_t<I1 == S1>> : bool_constant_c<std::is_same<F, nth_type_t<I1, T...>>> {};
 
     static constexpr const auto value = helper_int<I, S>::value;
 };
 
 template<typename F, typename... T>
-struct is_homogeneous : std::integral_constant<bool, is_homogeneous_helper<0, sizeof...(T)-1, F, T...>::value> {};
+struct is_homogeneous : bool_constant_c<is_homogeneous_helper<0, sizeof...(T)-1, F, T...>> {};
 
 template<typename... T>
 struct is_sub_homogeneous;
@@ -233,14 +244,14 @@ template<typename T>
 struct is_sub_homogeneous<T> : std::false_type {};
 
 template<typename T1, typename T2>
-struct is_sub_homogeneous<T1, T2> : std::integral_constant<bool, not_c<std::is_same<T1, T2>>::value> {};
+struct is_sub_homogeneous<T1, T2> : bool_constant_c<not_c<std::is_same<T1, T2>>> {};
 
 template<typename T1, typename T2, typename T3, typename... T>
-struct is_sub_homogeneous<T1, T2, T3, T...> : std::integral_constant<bool,
+struct is_sub_homogeneous<T1, T2, T3, T...> : bool_constant_c<
     and_c<
         std::is_same<T1, T2>,
         is_sub_homogeneous<T2, T3, T...>
-    >::value> {};
+    >> {};
 
 template<typename F, std::size_t I1, std::size_t... I, typename... T, enable_if_u<(sizeof...(I) == 0)> = detail::dummy>
 void for_each_in_subset(F&& f, const std::index_sequence<I1, I...>& /*i*/, T&&... args){
