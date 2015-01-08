@@ -59,29 +59,33 @@ void for_each_tuple_t(Functor&& func){
 template<bool B>
 struct not_u : std::integral_constant<bool, !B> {};
 
-template<bool H, bool... T>
-struct and_u {
-    static constexpr const bool value = H && and_u<T...>::value;
-};
-
-template<bool H>
-struct and_u<H> {
-    static constexpr const bool value = H;
-};
+template<typename C>
+struct not_c : std::integral_constant<bool, !C::value> {};
 
 template<bool H, bool... T>
-struct or_u {
-    static constexpr const bool value = H || or_u<T...>::value;
-};
+struct and_u : std::integral_constant<bool, H && and_u<T...>::value> {};
 
 template<bool H>
-struct or_u<H> {
-    static constexpr const bool value = H;
-};
+struct and_u<H> : std::integral_constant<bool, H> {};
+
+template<typename... C>
+using and_c = and_u<C::value...>;
+
+template<bool H, bool... T>
+struct or_u : std::integral_constant<bool, H || or_u<T...>::value> {};
+
+template<bool H>
+struct or_u<H> : std::integral_constant<bool, H> {};
+
+template<typename... C>
+using or_c = or_u<C::value...>;
 
 //enable_if utilities
 
-template<bool B, class T = void>
+template<bool B, typename T = void>
+using disable_if = std::enable_if<!B, T>;
+
+template<bool B, typename T = void>
 using disable_if_t = typename std::enable_if<!B, T>::type;
 
 namespace detail {
@@ -95,23 +99,44 @@ constexpr const enabler_t dummy = enabler_t::DUMMY;
 
 } //end of detail
 
-template<bool B>
-using enable_if_u = typename std::enable_if<B, detail::enabler_t>::type;
+//Note: For error reporting reasons, it is not a good idea to define these next
+//utilities using each other (for instance enable_if_c using enable_if_u)
 
 template<bool B>
-using disable_if_u = typename std::enable_if<not_u<B>::value, detail::enabler_t>::type;
+using enable_if_u = std::enable_if_t<B, detail::enabler_t>;
+
+template<bool B>
+using disable_if_u = std::enable_if_t<not_u<B>::value, detail::enabler_t>;
+
+template<typename C>
+using enable_if_c = std::enable_if_t<C::value, detail::enabler_t>;
+
+template<typename C>
+using disable_if_c = std::enable_if_t<not_c<C>::value, detail::enabler_t>;
 
 template<bool... B>
-using enable_if_all_u = typename std::enable_if<and_u<B...>::value, detail::enabler_t>::type;
+using enable_if_all_u = std::enable_if_t<and_u<B...>::value, detail::enabler_t>;
 
 template<bool... B>
-using disable_if_all_u = typename std::enable_if<not_u<and_u<B...>::value>::value, detail::enabler_t>::type;
+using disable_if_all_u = std::enable_if_t<not_c<and_u<B...>>::value, detail::enabler_t>;
+
+template<typename... C>
+using enable_if_all_c = std::enable_if_t<and_c<C...>::value, detail::enabler_t>;
+
+template<typename... C>
+using disable_if_all_c = std::enable_if_t<not_c<and_c<C...>>::value, detail::enabler_t>;
 
 template<bool... B>
-using enable_if_one_u = typename std::enable_if<or_u<B...>::value, detail::enabler_t>::type;
+using enable_if_one_u = std::enable_if_t<or_u<B...>::value, detail::enabler_t>;
 
 template<bool... B>
-using disable_if_one_u = typename std::enable_if<not_u<or_u<B...>::value>::value, detail::enabler_t>::type;
+using disable_if_one_u = std::enable_if_t<not_c<or_u<B...>>::value, detail::enabler_t>;
+
+template<typename... C>
+using enable_if_one_c = std::enable_if_t<or_c<C...>::value, detail::enabler_t>;
+
+template<typename... C>
+using disable_if_one_c = std::enable_if_t<not_c<or_c<C...>>::value, detail::enabler_t>;
 
 //Type traits simplifications
 
