@@ -8,7 +8,8 @@
 #ifndef CPP_UTILS_DATA_HPP
 #define CPP_UTILS_DATA_HPP
 
-#include <numeric> //for std::accumulate
+#include <numeric>  //for std::accumulate
+#include <math>     //for std::sqrt
 
 #include "assert.hpp"
 
