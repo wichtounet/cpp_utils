@@ -8,6 +8,8 @@
 #ifndef CPP_UTILS_DATA_HPP
 #define CPP_UTILS_DATA_HPP
 
+#include <numeric> //for std::accumulate
+
 #include "assert.hpp"
 
 namespace cpp {
