@@ -1,5 +1,5 @@
 //=======================================================================
-// Copyright (c) 2013-2014 Baptiste Wicht.
+// Copyright (c) 2013-2014-2015 Baptiste Wicht.
 // Distributed under the terms of the MIT License.
 // (See accompanying file LICENSE or copy at
 //  http://opensource.org/licenses/MIT)
@@ -156,6 +156,97 @@ using bool_constant = std::integral_constant<bool, B>;
 
 template<typename C>
 using bool_constant_c = std::integral_constant<bool, C::value>;
+
+template<typename V>
+struct auto_constant : std::integral_constant<decltype(V::value), V::value> {};
+
+template<bool C, typename V1, typename V2>
+struct conditional_constant;
+
+template<typename V1, typename V2>
+struct conditional_constant<true, V1, V2> : auto_constant<V1> {};
+
+template<typename V1, typename V2>
+struct conditional_constant<false, V1, V2> : auto_constant<V2> {};
+
+template<typename T>
+struct type_constant {
+    using type = T;
+};
+
+template<typename T>
+struct type_constant_c {
+    using type = typename T::value;
+};
+
+template<bool C, typename V1, typename V2>
+struct conditional_type_constant;
+
+template<typename V1, typename V2>
+struct conditional_type_constant<true, V1, V2> {
+    using type = V1;
+};
+
+template<typename V1, typename V2>
+struct conditional_type_constant<false, V1, V2> {
+    using type = V2;
+};
+
+template<bool C, typename V1, typename V2>
+struct conditional_type_constant_c;
+
+template<typename V1, typename V2>
+struct conditional_type_constant_c<true, V1, V2> {
+    using type = typename V1::value;
+};
+
+template<typename V1, typename V2>
+struct conditional_type_constant_c<false, V1, V2> {
+    using type = typename V2::value;
+};
+
+template<typename TT>
+struct template_type_constant {
+    template<typename T>
+    using type = TT;
+};
+
+template<typename TT>
+struct template_type_constant_c {
+    template<typename T>
+    using type = typename T::template value<T>;
+};
+
+template<bool, template<typename> class V1, template<typename> class V2>
+struct conditional_template_type_constant;
+
+template<template<typename> class V1, template<typename> class V2>
+struct conditional_template_type_constant<true, V1, V2> {
+    template<typename T>
+    using type = V1<T>;
+};
+
+template<template<typename> class V1, template<typename> class V2>
+struct conditional_template_type_constant<false, V1, V2> {
+    template<typename T>
+    using type = V2<T>;
+};
+
+template<bool C, typename V1, typename V2>
+struct conditional_template_type_constant_c;
+
+template<typename V1, typename V2>
+struct conditional_template_type_constant_c<true, V1, V2> {
+    template<typename T>
+    using type = typename V1::template value<T>;
+};
+
+template<typename V1, typename V2>
+struct conditional_template_type_constant_c<false, V1, V2> {
+    template<typename T>
+    using type = typename V2::template value<T>;
+};
+
 
 //Other TMP Utilities
 
