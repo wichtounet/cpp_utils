@@ -39,25 +39,28 @@ double stddev(const Container& container, double mean){
     return stddev(std::begin(container), std::end(container), mean);
 }
 
+template<typename Container>
+void normalize(Container& container){
+    //normalize to zero-mean
+    auto m = mean(container);
+    for(auto& v : container){
+        v -= m;
+    }
+
+    //normalize to unit variance
+    auto s = stddev(container, 0.0);
+
+    if(s != 0.0){
+        for(auto& v : container){
+            v /= s;
+        }
+    }
+}
+
 template<typename Iterator>
 void normalize_each(Iterator first, Iterator last){
     for(; first != last; ++first){
-        auto& sub = *first;
-
-        //normalize to zero-mean
-        auto m = mean(sub);
-        for(auto& v : sub){
-            v -= m;
-        }
-
-        //normalize to unit variance
-        auto s = stddev(sub, 0.0);
-
-        if(s != 0.0){
-            for(auto& v : sub){
-                v /= s;
-            }
-        }
+        normalize(*first);
     }
 }
 
