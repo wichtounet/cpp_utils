@@ -13,7 +13,7 @@
 
 namespace cpp {
 
-typedef std::chrono::high_resolution_clock clock_type;
+using clock_type = std::chrono::high_resolution_clock;
 
 template<typename precision = std::chrono::milliseconds>
 class stop_watch {

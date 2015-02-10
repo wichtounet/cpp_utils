@@ -42,10 +42,10 @@ void parallel_shuffle(IT1 first_1, IT1 last_1, IT2 first_2, IT2 last_2, RNG&& g)
     cpp_assert(std::distance(first_1, last_1) == std::distance(first_2, last_2), "The two sequences should be of the same size");
     cpp_unused(last_2); //Ensure no warning is issued for last_2 (used only in debug mode)
 
-    typedef typename std::iterator_traits<IT1>::difference_type diff_t;
-    typedef typename std::make_unsigned<diff_t>::type udiff_t;
-    typedef typename std::uniform_int_distribution<udiff_t> distr_t;
-    typedef typename distr_t::param_type param_t;
+    using diff_t = typename std::iterator_traits<IT1>::difference_type;
+    using udiff_t = typename std::make_unsigned<diff_t>::type;
+    using distr_t = typename std::uniform_int_distribution<udiff_t>;
+    using param_t = typename distr_t::param_type;
 
     distr_t D;
     diff_t n = last_1 - first_1;
