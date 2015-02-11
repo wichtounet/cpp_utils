@@ -13,7 +13,7 @@
 namespace cpp {
 
 template<typename Iterator, typename Functor>
-void pairwise_foreach(Iterator first, Iterator last, Functor&& fun) noexcept(noexcept(fun(*first, *next))) {
+void pairwise_foreach(Iterator first, Iterator last, Functor&& fun) noexcept(noexcept(fun(*first, *std::next(first)))) {
     for(; first != last; ++first){
         for(auto next = std::next(first); next != last; ++next){
             fun(*first, *next);
@@ -22,7 +22,7 @@ void pairwise_foreach(Iterator first, Iterator last, Functor&& fun) noexcept(noe
 }
 
 template<typename Iterator, typename Functor>
-void pairwise_foreach_it(Iterator first, Iterator last, Functor&& fun) noexcept(noexcept(fun(first, next))) {
+void pairwise_foreach_it(Iterator first, Iterator last, Functor&& fun) noexcept(noexcept(fun(first, std::next(first)))) {
     for(; first != last; ++first){
         for(auto next = std::next(first); next != last; ++next){
             fun(first, next);
