@@ -138,6 +138,12 @@ using enable_if_one_c = std::enable_if_t<or_c<C...>::value, detail::enabler_t>;
 template<typename... C>
 using disable_if_one_c = std::enable_if_t<not_c<or_c<C...>>::value, detail::enabler_t>;
 
+//For the same reasons, the macros are defined using std::enable_if_t and not the
+//simpler versions
+
+#define cpp_enable_if(...) std::enable_if_t<cpp::and_u<__VA_ARGS__>::value, cpp::detail::enabler_t> = cpp::detail::dummy
+#define cpp_disable_if(...) std::enable_if_t<cpp::not_c<cpp::and_u<__VA_ARGS__>>::value, cpp::detail::enabler_t> = cpp::detail::dummy
+
 //Type traits simplifications
 
 template<typename T>
