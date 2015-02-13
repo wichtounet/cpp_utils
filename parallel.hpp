@@ -8,6 +8,10 @@
 #ifndef CPP_UTILS_PARALLEL_HPP
 #define CPP_UTILS_PARALLEL_HPP
 
+#ifdef CPP_UTILS_NO_EXCEPT
+#include <iostream>
+#endif
+
 #include<thread>
 #include<future>
 #include<vector>
@@ -183,7 +187,12 @@ public:
     void do_task(Functor fun, Args&&... args){
         with_lock(main_lock, [fun, &args..., this](){
             if(stop_flag){
-                throw std::runtime_error("enqueue on stopped ThreadPool");
+#ifndef CPP_UTILS_NO_EXCEPT
+                throw std::runtime_error("cpp_utils: enqueue on stopped ThreadPool");
+#else
+                std::cerr << "cpp_utils: enqueue on stopped ThreadPool (exceptions disabled)" << std::endl;
+                std::abort();
+#endif
             }
 
             tasks.emplace_back([fun, args...]{ fun(args...); });
