@@ -20,9 +20,6 @@ struct name {                                                                 \
     template <typename _1> static yes &chk(type_check<Sign, &_1::func> *);    \
     template <typename   > static no  &chk(...);                              \
     static constexpr const bool value = sizeof(chk<T>(0)) == sizeof(yes);     \
-    static constexpr bool operator(){                                         \
-        return value;                                                         \
-    }                                                                         \
 }
 
 #define HAS_STATIC_FIELD(field, name)                                                       \
@@ -35,9 +32,6 @@ class name {                                                                    
     static std::false_type check(...);                                                      \
 public:                                                                                     \
     static constexpr const bool value = decltype(check<T>(0))::value;                       \
-    static constexpr bool operator(){                                                       \
-        return value;                                                                       \
-    }                                                                                       \
 };
 
 namespace cpp {
