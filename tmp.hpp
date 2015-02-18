@@ -369,6 +369,15 @@ void for_each_in(F&& f, T&&... args){
     for_each_in_subset(f, std::make_index_sequence<sizeof...(T)>(), std::forward<T>(args)...);
 }
 
+template<typename T1, typename... T>
+struct variadic_contains;
+
+template<typename T1, typename T2, typename... T>
+struct variadic_contains<T1, T2, T...> : bool_constant_c<or_c<std::is_same<T1, T2>, variadic_contains<T1, T...>>> {};
+
+template<typename T1>
+struct variadic_contains<T1> : std::false_type {};
+
 //A simple compile-time variadic type list
 template<typename... T>
 struct type_list {
@@ -377,15 +386,6 @@ struct type_list {
         return variadic_contains<V, T...>::value;
     }
 };
-
-template<typename T1, typename... T>
-struct variadic_contains;
-
-template<typename T1, typename T2, typename... T>
-struct variadic_contains<T1, T2, Args...> : bool_constant_c<or_c<std::is_same<T1, T2>, variadic_contains<T1, T...>>> {};
-
-template<typename T1>
-struct variadic_contains<T1> : std::false_type {};
 
 } //end of namespace cpp
 
