@@ -42,6 +42,10 @@ public:                                                                         
 
 namespace cpp {
 
+//A simple compile-time variadic type list
+template<typename... T>
+struct type_list {};
+
 template<std::size_t I, typename Tuple, typename Functor>
 struct for_each_tuple_t_impl {
     static void for_each(Functor&& func){
