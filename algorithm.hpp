@@ -18,7 +18,7 @@ template<typename Container, typename Functor>
 void foreach(Container& container, Functor&& fun) noexcept(noexcept(fun(*container.begin()))) {
     using std::begin;
     using std::end;
-    cpp::foreach(begin(end), end(container), std::forward<Functor>(fun));
+    cpp::foreach(begin(container), end(container), std::forward<Functor>(fun));
 }
 
 template<typename Iterator, typename Functor>
