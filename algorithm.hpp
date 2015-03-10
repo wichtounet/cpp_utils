@@ -97,13 +97,6 @@ void foreach_pair_it(Container& container, Functor&& fun) noexcept(noexcept(fun(
 
 //Foreach loops operating on two ranges giving elements
 
-template<typename C1, typename C2, typename Functor>
-void foreach_dual(C1& c1, C2& c2, Functor&& fun) noexcept(noexcept(fun(*c1.begin(), *c2.begin()))) {
-    using std::begin;
-    using std::end;
-    cpp::foreach_dual(begin(c1), end(c1), begin(c2), std::forward<Functor>(fun));
-}
-
 template<typename IT1, typename IT2, typename Functor>
 void foreach_dual(IT1 first, IT1 last, IT2 second, Functor fun) noexcept(noexcept(fun(*first, *second))) {
     for(; first != last; ++first, ++second){
@@ -111,14 +104,14 @@ void foreach_dual(IT1 first, IT1 last, IT2 second, Functor fun) noexcept(noexcep
     }
 }
 
-//Foreach loops operating on two ranges giving iterators
-
 template<typename C1, typename C2, typename Functor>
-void foreach_dual_it(C1& c1, C2& c2, Functor&& fun) noexcept(noexcept(fun(c1.begin(), c2.begin()))) {
+void foreach_dual(C1& c1, C2& c2, Functor&& fun) noexcept(noexcept(fun(*c1.begin(), *c2.begin()))) {
     using std::begin;
     using std::end;
-    cpp::foreach_dual_it(begin(c1), end(c1), begin(c2), std::forward<Functor>(fun));
+    cpp::foreach_dual(begin(c1), end(c1), begin(c2), std::forward<Functor>(fun));
 }
+
+//Foreach loops operating on two ranges giving iterators
 
 template<typename IT1, typename IT2, typename Functor>
 void foreach_dual_it(IT1 first, IT1 last, IT2 second, Functor fun) noexcept(noexcept(fun(first, second))) {
@@ -127,14 +120,14 @@ void foreach_dual_it(IT1 first, IT1 last, IT2 second, Functor fun) noexcept(noex
     }
 }
 
-//Foreach loops operating on two ranges giving elements and position
-
 template<typename C1, typename C2, typename Functor>
-void foreach_dual_i(C1& c1, C2& c2, Functor&& fun) noexcept(noexcept(fun(*c1.begin(), *c2.begin(), 0))) {
+void foreach_dual_it(C1& c1, C2& c2, Functor&& fun) noexcept(noexcept(fun(c1.begin(), c2.begin()))) {
     using std::begin;
     using std::end;
-    cpp::foreach_dual_i(begin(c1), end(c1), begin(c2), std::forward<Functor>(fun));
+    cpp::foreach_dual_it(begin(c1), end(c1), begin(c2), std::forward<Functor>(fun));
 }
+
+//Foreach loops operating on two ranges giving elements and position
 
 template<typename IT1, typename IT2, typename Functor>
 void foreach_dual_i(IT1 first, IT1 last, IT2 second, Functor fun) noexcept(noexcept(fun(*first, *second, 0))) {
@@ -142,6 +135,13 @@ void foreach_dual_i(IT1 first, IT1 last, IT2 second, Functor fun) noexcept(noexc
     for(; first != last; ++first, ++second, ++i){
         fun(*first, *second, i);
     }
+}
+
+template<typename C1, typename C2, typename Functor>
+void foreach_dual_i(C1& c1, C2& c2, Functor&& fun) noexcept(noexcept(fun(*c1.begin(), *c2.begin(), 0))) {
+    using std::begin;
+    using std::end;
+    cpp::foreach_dual_i(begin(c1), end(c1), begin(c2), std::forward<Functor>(fun));
 }
 
 template<typename Iterator, typename Functor>
