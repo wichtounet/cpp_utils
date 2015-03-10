@@ -14,6 +14,11 @@ namespace cpp {
 
 //Foreach loops giving the elements to the functor
 
+template<typename Iterator, typename Functor>
+void foreach(Iterator first, Iterator last, Functor&& fun) noexcept(noexcept(fun(*first))) {
+    std::for_each(first, last, std::forward<Functor>(fun));
+}
+
 template<typename Container, typename Functor>
 void foreach(Container& container, Functor&& fun) noexcept(noexcept(fun(*container.begin()))) {
     using std::begin;
@@ -21,19 +26,7 @@ void foreach(Container& container, Functor&& fun) noexcept(noexcept(fun(*contain
     cpp::foreach(begin(container), end(container), std::forward<Functor>(fun));
 }
 
-template<typename Iterator, typename Functor>
-void foreach(Iterator first, Iterator last, Functor&& fun) noexcept(noexcept(fun(*first))) {
-    std::for_each(first, last, std::forward<Functor>(fun));
-}
-
 //Foreach loops giving the iterator to the functor
-
-template<typename Container, typename Functor>
-void foreach_it(Container& container, Functor&& fun) noexcept(noexcept(fun(container.begin()))) {
-    using std::begin;
-    using std::end;
-    cpp::foreach_it(begin(container), end(container), std::forward<Functor>(fun));
-}
 
 template<typename Iterator, typename Functor>
 void foreach_it(Iterator first, Iterator last, Functor fun) noexcept(noexcept(fun(first))) {
@@ -42,14 +35,14 @@ void foreach_it(Iterator first, Iterator last, Functor fun) noexcept(noexcept(fu
     }
 }
 
-//Foreach loops giving the element and its position to the functor
-
 template<typename Container, typename Functor>
-void foreach_i(Container& container, Functor&& fun) noexcept(noexcept(fun(*container.begin(),0))) {
+void foreach_it(Container& container, Functor&& fun) noexcept(noexcept(fun(container.begin()))) {
     using std::begin;
     using std::end;
-    cpp::foreach_i(begin(container), end(container), std::forward<Functor>(fun));
+    cpp::foreach_it(begin(container), end(container), std::forward<Functor>(fun));
 }
+
+//Foreach loops giving the element and its position to the functor
 
 template<typename Iterator, typename Functor>
 void foreach_i(Iterator first, Iterator last, Functor fun) noexcept(noexcept(fun(*first,0))) {
@@ -59,14 +52,14 @@ void foreach_i(Iterator first, Iterator last, Functor fun) noexcept(noexcept(fun
     }
 }
 
-//Foreach loop giving all pair of the sequence as elements
-
 template<typename Container, typename Functor>
-void foreach_pair(Container& container, Functor&& fun) noexcept(noexcept(fun(*container.begin(), *std::next(container.begin())))) {
+void foreach_i(Container& container, Functor&& fun) noexcept(noexcept(fun(*container.begin(),0))) {
     using std::begin;
     using std::end;
-    cpp::foreach_pair(begin(container), end(container), std::forward<Functor>(fun));
+    cpp::foreach_i(begin(container), end(container), std::forward<Functor>(fun));
 }
+
+//Foreach loop giving all pair of the sequence as elements
 
 template<typename Iterator, typename Functor>
 void foreach_pair(Iterator first, Iterator last, Functor fun) noexcept(noexcept(fun(*first, *std::next(first)))) {
@@ -77,14 +70,14 @@ void foreach_pair(Iterator first, Iterator last, Functor fun) noexcept(noexcept(
     }
 }
 
-//Foreach loop giving all pair of the sequence as iterators
-
 template<typename Container, typename Functor>
-void foreach_pair_it(Container& container, Functor&& fun) noexcept(noexcept(fun(container.begin(), std::next(container.begin())))) {
+void foreach_pair(Container& container, Functor&& fun) noexcept(noexcept(fun(*container.begin(), *std::next(container.begin())))) {
     using std::begin;
     using std::end;
-    cpp::foreach_pair_it(begin(container), end(container), std::forward<Functor>(fun));
+    cpp::foreach_pair(begin(container), end(container), std::forward<Functor>(fun));
 }
+
+//Foreach loop giving all pair of the sequence as iterators
 
 template<typename Iterator, typename Functor>
 void foreach_pair_it(Iterator first, Iterator last, Functor fun) noexcept(noexcept(fun(first, std::next(first)))) {
@@ -93,6 +86,13 @@ void foreach_pair_it(Iterator first, Iterator last, Functor fun) noexcept(noexce
             fun(first, next);
         }
     }
+}
+
+template<typename Container, typename Functor>
+void foreach_pair_it(Container& container, Functor&& fun) noexcept(noexcept(fun(container.begin(), std::next(container.begin())))) {
+    using std::begin;
+    using std::end;
+    cpp::foreach_pair_it(begin(container), end(container), std::forward<Functor>(fun));
 }
 
 template<typename Iterator, typename Functor>
