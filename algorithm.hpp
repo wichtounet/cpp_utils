@@ -98,7 +98,7 @@ void foreach_pair_it(Container& container, Functor&& fun) noexcept(noexcept(fun(
 //Foreach loops operating on two ranges giving elements
 
 template<typename C1, typename C2, typename Functor>
-void foreach_dual(C1& c1, C2& c2, Functor&& fun) noexcept(noexcept(fun(*c1.begin(), *c2.begin))) {
+void foreach_dual(C1& c1, C2& c2, Functor&& fun) noexcept(noexcept(fun(*c1.begin(), *c2.begin()))) {
     using std::begin;
     using std::end;
     cpp::foreach_dual(begin(c1), end(c1), begin(c2), std::forward<Functor>(fun));
