@@ -101,51 +101,55 @@ constexpr const enabler_t dummy = enabler_t::DUMMY;
 
 //Note: For error reporting reasons, it is not a good idea to define these next
 //utilities using each other (for instance enable_if_c using enable_if_u)
+//CLang tries to report errors of disabling for SFINAE but does a very poor job
+//handling enable_if_t, therefore std::enable_if is used directly
+//Even with this, the error reporting using these alias declarations is pretty
+//bad, this is the reason, the macros have been written :(
 
 template<bool B>
-using enable_if_u = std::enable_if_t<B, detail::enabler_t>;
+using enable_if_u = typename std::enable_if<B, detail::enabler_t>::type;
 
 template<bool B>
-using disable_if_u = std::enable_if_t<not_u<B>::value, detail::enabler_t>;
+using disable_if_u = typename std::enable_if<not_u<B>::value, detail::enabler_t>::type;
 
 template<typename C>
-using enable_if_c = std::enable_if_t<C::value, detail::enabler_t>;
+using enable_if_c = typename std::enable_if<C::value, detail::enabler_t>::type;
 
 template<typename C>
-using disable_if_c = std::enable_if_t<not_c<C>::value, detail::enabler_t>;
+using disable_if_c = typename std::enable_if<not_c<C>::value, detail::enabler_t>::type;
 
 template<bool... B>
-using enable_if_all_u = std::enable_if_t<and_u<B...>::value, detail::enabler_t>;
+using enable_if_all_u = typename std::enable_if<and_u<B...>::value, detail::enabler_t>::type;
 
 template<bool... B>
-using disable_if_all_u = std::enable_if_t<not_c<and_u<B...>>::value, detail::enabler_t>;
+using disable_if_all_u = typename std::enable_if<not_c<and_u<B...>>::value, detail::enabler_t>::type;
 
 template<typename... C>
-using enable_if_all_c = std::enable_if_t<and_c<C...>::value, detail::enabler_t>;
+using enable_if_all_c = typename std::enable_if<and_c<C...>::value, detail::enabler_t>::type;
 
 template<typename... C>
-using disable_if_all_c = std::enable_if_t<not_c<and_c<C...>>::value, detail::enabler_t>;
+using disable_if_all_c = typename std::enable_if<not_c<and_c<C...>>::value, detail::enabler_t>::type;
 
 template<bool... B>
-using enable_if_one_u = std::enable_if_t<or_u<B...>::value, detail::enabler_t>;
+using enable_if_one_u = typename std::enable_if<or_u<B...>::value, detail::enabler_t>::type;
 
 template<bool... B>
-using disable_if_one_u = std::enable_if_t<not_c<or_u<B...>>::value, detail::enabler_t>;
+using disable_if_one_u = typename std::enable_if<not_c<or_u<B...>>::value, detail::enabler_t>::type;
 
 template<typename... C>
-using enable_if_one_c = std::enable_if_t<or_c<C...>::value, detail::enabler_t>;
+using enable_if_one_c = typename std::enable_if<or_c<C...>::value, detail::enabler_t>::type;
 
 template<typename... C>
-using disable_if_one_c = std::enable_if_t<not_c<or_c<C...>>::value, detail::enabler_t>;
+using disable_if_one_c = typename std::enable_if<not_c<or_c<C...>>::value, detail::enabler_t>::type;
 
-//For the same reasons, the macros are defined using std::enable_if_t and not the
+//For the same reasons, the macros are defined using std::enable_if and not the
 //simpler versions
 
-#define cpp_enable_if(...) std::enable_if_t<cpp::and_u<__VA_ARGS__>::value, cpp::detail::enabler_t> = cpp::detail::dummy
-#define cpp_disable_if(...) std::enable_if_t<cpp::not_c<cpp::and_u<__VA_ARGS__>>::value, cpp::detail::enabler_t> = cpp::detail::dummy
+#define cpp_enable_if(...) typename std::enable_if<cpp::and_u<__VA_ARGS__>::value, cpp::detail::enabler_t>::type = cpp::detail::dummy
+#define cpp_disable_if(...) typename std::enable_if<cpp::not_c<cpp::and_u<__VA_ARGS__>>::value, cpp::detail::enabler_t>::type= cpp::detail::dummy
 
-#define cpp_enable_if_cst(...) bool CPP_CSTB = (__VA_ARGS__), std::enable_if_t<cpp::and_u<CPP_CSTB>::value, cpp::detail::enabler_t> = cpp::detail::dummy
-#define cpp_disable_if_cst(...) bool CPP_CSTB = (__VA_ARGS__), std::enable_if_t<cpp::not_c<cpp::and_u<CPP_CSTB>>::value, cpp::detail::enabler_t> = cpp::detail::dummy
+#define cpp_enable_if_cst(...) bool CPP_CSTB = (__VA_ARGS__), typename std::enable_if<cpp::and_u<CPP_CSTB>::value, cpp::detail::enabler_t>::type = cpp::detail::dummy
+#define cpp_disable_if_cst(...) bool CPP_CSTB = (__VA_ARGS__), typename std::enable_if<cpp::not_c<cpp::and_u<CPP_CSTB>>::value, cpp::detail::enabler_t>::type = cpp::detail::dummy
 
 //Type traits simplifications
 
