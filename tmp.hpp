@@ -148,8 +148,8 @@ using disable_if_one_c = typename std::enable_if<not_c<or_c<C...>>::value, detai
 #define cpp_enable_if(...) typename std::enable_if<cpp::and_u<__VA_ARGS__>::value, cpp::detail::enabler_t>::type = cpp::detail::dummy
 #define cpp_disable_if(...) typename std::enable_if<cpp::not_c<cpp::and_u<__VA_ARGS__>>::value, cpp::detail::enabler_t>::type= cpp::detail::dummy
 
-#define cpp_enable_if_cst(...) bool CPP_CSTB = (__VA_ARGS__), typename std::enable_if<cpp::and_u<CPP_CSTB>::value, cpp::detail::enabler_t>::type = cpp::detail::dummy
-#define cpp_disable_if_cst(...) bool CPP_CSTB = (__VA_ARGS__), typename std::enable_if<cpp::not_c<cpp::and_u<CPP_CSTB>>::value, cpp::detail::enabler_t>::type = cpp::detail::dummy
+#define cpp_enable_if_cst(...) bool CPP_CST_ENABLE = true, typename std::enable_if<(__VA_ARGS__) && CPP_CST_ENABLE, cpp::detail::enabler_t>::type = cpp::detail::dummy
+#define cpp_disable_if_cst(...) bool CPP_CST_ENABLE = true, typename std::enable_if<!((__VA_ARGS__) && CPP_CST_ENABLE), cpp::detail::enabler_t>::type = cpp::detail::dummy
 
 //Type traits simplifications
 
