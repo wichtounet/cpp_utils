@@ -338,6 +338,9 @@ struct is_homogeneous_helper {
 template<typename F, typename... T>
 struct is_homogeneous : bool_constant_c<is_homogeneous_helper<0, sizeof...(T)-1, F, T...>> {};
 
+template<typename F>
+struct is_homogeneous <F> : std::false_type {};
+
 template<typename... T>
 struct is_sub_homogeneous;
 
