@@ -59,6 +59,23 @@ void foreach_i(Container& container, Functor&& fun) noexcept(noexcept(fun(*conta
     cpp::foreach_i(begin(container), end(container), std::forward<Functor>(fun));
 }
 
+//Foreach loops giving the position to the functor
+
+template<typename Iterator, typename Functor>
+void foreach_i_only(Iterator first, Iterator last, Functor fun) noexcept(noexcept(fun(0))) {
+    std::size_t i = 0;
+    for(; first != last; ++first, ++i){
+        fun(i);
+    }
+}
+
+template<typename Container, typename Functor>
+void foreach_i_only(Container& container, Functor&& fun) noexcept(noexcept(fun(0))) {
+    using std::begin;
+    using std::end;
+    cpp::foreach_i_only(begin(container), end(container), std::forward<Functor>(fun));
+}
+
 //Foreach loop giving all pair of the sequence as elements
 
 template<typename Iterator, typename Functor>
