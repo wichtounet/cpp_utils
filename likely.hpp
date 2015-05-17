@@ -5,6 +5,11 @@
 //  http://opensource.org/licenses/MIT)
 //=======================================================================
 
+/*!
+ * \file likely.hpp
+ * \brief Contains preprocessor macros to help the compiler with branch prediction.
+ */
+
 #ifndef CPP_UTILS_LIKELY_HPP
 #define CPP_UTILS_LIKELY_HPP
 
