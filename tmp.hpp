@@ -36,7 +36,7 @@ public:                                                                         
 
 namespace cpp {
 
-template<std::size_t I, typename Tuple, typename Functor>
+template<int I, typename Tuple, typename Functor>
 struct for_each_tuple_t_impl {
     static void for_each(Functor&& func){
         std::forward<Functor>(func).template operator()<typename std::tuple_element<I, Tuple>::type>();
@@ -52,8 +52,15 @@ struct for_each_tuple_t_impl<0, Tuple, Functor> {
 };
 
 template<typename Tuple, typename Functor>
+struct for_each_tuple_t_impl<-1, Tuple, Functor> {
+    static void for_each(Functor&& /*func*/){
+        //Nothing to be done
+    }
+};
+
+template<typename Tuple, typename Functor>
 void for_each_tuple_t(Functor&& func){
-    for_each_tuple_t_impl<std::tuple_size<Tuple>::value - 1, Tuple, Functor>::for_each(std::forward<Functor>(func));
+    for_each_tuple_t_impl<static_cast<int>(std::tuple_size<Tuple>::value) - 1, Tuple, Functor>::for_each(std::forward<Functor>(func));
 }
 
 template<bool B>
