@@ -401,6 +401,15 @@ struct type_list {
     }
 };
 
+template<bool B, typename Functor, std::enable_if_t<B, int> = 42>
+void static_if(Functor f){
+    int s = 42;
+    f(s);
+}
+
+template<bool B, typename Functor, std::enable_if_t<!B, int> = 42>
+void static_if(Functor /*f*/){}
+
 } //end of namespace cpp
 
 #endif //CPP_UTILS_TMP_HPP
