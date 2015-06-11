@@ -12,7 +12,7 @@
 
 namespace cpp {
 
-//Foreach loops giving the elements to the functor
+// Foreach loops giving the elements to the functor
 
 template<typename Iterator, typename Functor>
 void foreach(Iterator first, Iterator last, Functor&& fun) noexcept(noexcept(fun(*first))) {
@@ -26,7 +26,7 @@ void foreach(Container& container, Functor&& fun) noexcept(noexcept(fun(*contain
     cpp::foreach(begin(container), end(container), std::forward<Functor>(fun));
 }
 
-//Foreach loops giving the iterator to the functor
+// Foreach loops giving the iterator to the functor
 
 template<typename Iterator, typename Functor>
 void foreach_it(Iterator first, Iterator last, Functor fun) noexcept(noexcept(fun(first))) {
@@ -42,7 +42,7 @@ void foreach_it(Container& container, Functor&& fun) noexcept(noexcept(fun(conta
     cpp::foreach_it(begin(container), end(container), std::forward<Functor>(fun));
 }
 
-//Foreach loops giving the element and its position to the functor
+// Foreach loops giving the element and its position to the functor
 
 template<typename Iterator, typename Functor>
 void foreach_i(Iterator first, Iterator last, Functor fun) noexcept(noexcept(fun(*first,0))) {
@@ -59,7 +59,7 @@ void foreach_i(Container& container, Functor&& fun) noexcept(noexcept(fun(*conta
     cpp::foreach_i(begin(container), end(container), std::forward<Functor>(fun));
 }
 
-//Foreach loops giving the position to the functor
+// Foreach loops giving the position to the functor
 
 template<typename Iterator, typename Functor>
 void foreach_i_only(Iterator first, Iterator last, Functor fun) noexcept(noexcept(fun(0))) {
@@ -76,7 +76,7 @@ void foreach_i_only(Container& container, Functor&& fun) noexcept(noexcept(fun(0
     cpp::foreach_i_only(begin(container), end(container), std::forward<Functor>(fun));
 }
 
-//Foreach loop giving all pair of the sequence as elements
+// Foreach loop giving all pair of the sequence as elements
 
 template<typename Iterator, typename Functor>
 void foreach_pair(Iterator first, Iterator last, Functor fun) noexcept(noexcept(fun(*first, *std::next(first)))) {
@@ -94,7 +94,7 @@ void foreach_pair(Container& container, Functor&& fun) noexcept(noexcept(fun(*co
     cpp::foreach_pair(begin(container), end(container), std::forward<Functor>(fun));
 }
 
-//Foreach loop giving all pair of the sequence as iterators
+// Foreach loop giving all pair of the sequence as iterators
 
 template<typename Iterator, typename Functor>
 void foreach_pair_it(Iterator first, Iterator last, Functor fun) noexcept(noexcept(fun(first, std::next(first)))) {
@@ -112,7 +112,7 @@ void foreach_pair_it(Container& container, Functor&& fun) noexcept(noexcept(fun(
     cpp::foreach_pair_it(begin(container), end(container), std::forward<Functor>(fun));
 }
 
-//Foreach loops operating on two ranges giving elements
+// Foreach loops operating on two ranges giving elements
 
 template<typename IT1, typename IT2, typename Functor>
 void foreach_dual(IT1 first, IT1 last, IT2 second, Functor fun) noexcept(noexcept(fun(*first, *second))) {
@@ -128,7 +128,7 @@ void foreach_dual(C1& c1, C2& c2, Functor&& fun) noexcept(noexcept(fun(*c1.begin
     cpp::foreach_dual(begin(c1), end(c1), begin(c2), std::forward<Functor>(fun));
 }
 
-//Foreach loops operating on two ranges giving iterators
+// Foreach loops operating on two ranges giving iterators
 
 template<typename IT1, typename IT2, typename Functor>
 void foreach_dual_it(IT1 first, IT1 last, IT2 second, Functor fun) noexcept(noexcept(fun(first, second))) {
@@ -144,7 +144,7 @@ void foreach_dual_it(C1& c1, C2& c2, Functor&& fun) noexcept(noexcept(fun(c1.beg
     cpp::foreach_dual_it(begin(c1), end(c1), begin(c2), std::forward<Functor>(fun));
 }
 
-//Foreach loops operating on two ranges giving elements and position
+// Foreach loops operating on two ranges giving elements and position
 
 template<typename IT1, typename IT2, typename Functor>
 void foreach_dual_i(IT1 first, IT1 last, IT2 second, Functor fun) noexcept(noexcept(fun(*first, *second, 0))) {
@@ -161,12 +161,16 @@ void foreach_dual_i(C1& c1, C2& c2, Functor&& fun) noexcept(noexcept(fun(*c1.beg
     cpp::foreach_dual_i(begin(c1), end(c1), begin(c2), std::forward<Functor>(fun));
 }
 
+// Create a new vector with the transformation of a sequence
+
 template<typename Iterator, typename Functor>
 auto vector_transform(Iterator first, Iterator last, Functor&& fun){
     std::vector<decltype(fun(*first))> transformed;
     std::transform(first, last, std::back_inserter(transformed), std::forward<Functor>(fun));
     return transformed;
 }
+
+// Shuffle two sequences together
 
 template<typename IT1, typename IT2, typename RNG>
 void parallel_shuffle(IT1 first_1, IT1 last_1, IT2 first_2, IT2 last_2, RNG&& g){
