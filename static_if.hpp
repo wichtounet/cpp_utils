@@ -5,8 +5,8 @@
 //  http://opensource.org/licenses/MIT)
 //=======================================================================
 
-#ifndef CPP_UTILS_TMP_HPP
-#define CPP_UTILS_TMP_HPP
+#ifndef CPP_STATIC_IF_HPP
+#define CPP_STATIC_IF_HPP
 
 namespace cpp {
 
@@ -52,4 +52,4 @@ static_if_detail::statement<Cond> static_if(F const& f){
 
 } //end of namespace cpp
 
-#endif //CPP_UTILS_TMP_HPP
+#endif //CPP_STATIC_IF_HPP
