@@ -31,7 +31,9 @@ void with_lock(Lock& lock, Functor&& fun){
     fun();
 }
 
-//Normal parallel_foreach versions
+//1. Normal versions (no thread pool)
+
+//Parallel for_each giving the elements to the functor
 
 template<typename Iterator, typename Functor>
 void parallel_foreach(Iterator first, Iterator last, Functor&& fun){
@@ -40,42 +42,6 @@ void parallel_foreach(Iterator first, Iterator last, Functor&& fun){
 
     for(; first != last; ++first){
         futures.push_back(std::move(std::async(std::launch::async, fun, *first)));
-    }
-
-    //No need to wait for the futures, the destructor will do it for us
-}
-
-template<typename Iterator, typename Functor>
-void parallel_foreach_i(Iterator first, Iterator last, Functor&& fun){
-    std::vector<std::future<void>> futures;
-    futures.reserve(std::distance(first, last));
-
-    for(; first != last; ++first){
-        futures.push_back(std::move(std::async(std::launch::async, fun, *first, futures.size())));
-    }
-
-    //No need to wait for the futures, the destructor will do it for us
-}
-
-template<typename Iterator, typename Functor>
-void parallel_foreach_it(Iterator first, Iterator last, Functor&& fun){
-    std::vector<std::future<void>> futures;
-    futures.reserve(std::distance(first, last));
-
-    for(; first != last; ++first){
-        futures.push_back(std::move(std::async(std::launch::async, fun, first)));
-    }
-
-    //No need to wait for the futures, the destructor will do it for us
-}
-
-template<typename Iterator, typename Functor>
-void parallel_foreach_i_only(Iterator first, Iterator last, Functor&& fun){
-    std::vector<std::future<void>> futures;
-    futures.reserve(std::distance(first, last));
-
-    for(; first != last; ++first){
-        futures.push_back(std::move(std::async(std::launch::async, fun, futures.size())));
     }
 
     //No need to wait for the futures, the destructor will do it for us
@@ -93,6 +59,20 @@ void parallel_foreach(const Container& container, Functor&& fun){
     //No need to wait for the futures, the destructor will do it for us
 }
 
+//Parallel for_each giving the elements and their indices to the functor
+
+template<typename Iterator, typename Functor>
+void parallel_foreach_i(Iterator first, Iterator last, Functor&& fun){
+    std::vector<std::future<void>> futures;
+    futures.reserve(std::distance(first, last));
+
+    for(; first != last; ++first){
+        futures.push_back(std::move(std::async(std::launch::async, fun, *first, futures.size())));
+    }
+
+    //No need to wait for the futures, the destructor will do it for us
+}
+
 template<typename Container, typename Functor>
 void parallel_foreach_i(const Container& container, Functor&& fun){
     std::vector<std::future<void>> futures;
@@ -105,12 +85,40 @@ void parallel_foreach_i(const Container& container, Functor&& fun){
     //No need to wait for the futures, the destructor will do it for us
 }
 
+//Parallel for_each giving the iterators to the functor
+
+template<typename Iterator, typename Functor>
+void parallel_foreach_it(Iterator first, Iterator last, Functor&& fun){
+    std::vector<std::future<void>> futures;
+    futures.reserve(std::distance(first, last));
+
+    for(; first != last; ++first){
+        futures.push_back(std::move(std::async(std::launch::async, fun, first)));
+    }
+
+    //No need to wait for the futures, the destructor will do it for us
+}
+
 template<typename Container, typename Functor>
 void parallel_foreach_it(const Container& container, Functor&& fun){
     using std::begin;
     using std::end;
 
     parallel_foreach_it(begin(container), end(container), std::forward<Functor>(fun));
+}
+
+// Parallel for_each giving only the index to the functor
+
+template<typename Iterator, typename Functor>
+void parallel_foreach_i_only(Iterator first, Iterator last, Functor&& fun){
+    std::vector<std::future<void>> futures;
+    futures.reserve(std::distance(first, last));
+
+    for(; first != last; ++first){
+        futures.push_back(std::move(std::async(std::launch::async, fun, futures.size())));
+    }
+
+    //No need to wait for the futures, the destructor will do it for us
 }
 
 template<typename Container, typename Functor>
@@ -125,50 +133,14 @@ void parallel_foreach_i_only(const Container& container, Functor&& fun){
     //No need to wait for the futures, the destructor will do it for us
 }
 
-//parallel_foreach Thread pool versions
+//2. Thread pool versions
+
+// Parallel for_each giving the element to the functor
 
 template<typename TP, typename Iterator, typename Functor>
 void parallel_foreach(TP& thread_pool, Iterator first, Iterator last, Functor&& fun){
     for(; first != last; ++first){
         thread_pool.do_task(std::forward<Functor>(fun), *first);
-    }
-
-    thread_pool.wait();
-}
-
-template<typename TP, typename Iterator, typename Functor>
-void parallel_foreach_i(TP& thread_pool, Iterator first, Iterator last, Functor&& fun){
-    for(std::size_t i = 0; first != last; ++first, ++i){
-        thread_pool.do_task(std::forward<Functor>(fun), *first, i);
-    }
-
-    thread_pool.wait();
-}
-
-template<typename TP, typename Iterator, typename Functor>
-void parallel_foreach_it(TP& thread_pool, Iterator first, Iterator last, Functor&& fun){
-    for(; first != last; ++first){
-        thread_pool.do_task(std::forward<Functor>(fun), first);
-    }
-
-    thread_pool.wait();
-}
-
-template<typename TP, typename Iterator, typename Functor>
-void parallel_foreach_i_only(TP& thread_pool, Iterator first, Iterator last, Functor&& fun){
-    for(std::size_t i = 0; first != last; ++first, ++i){
-        thread_pool.do_task(std::forward<Functor>(fun), i);
-    }
-
-    thread_pool.wait();
-}
-
-template<typename TP, typename Iterator, typename Iterator2, typename Functor>
-void parallel_foreach_pair_i(TP& thread_pool, Iterator f_first, Iterator f_last, Iterator2 s_first, Iterator2 s_last, Functor&& fun){
-    cpp_unused(s_last);
-
-    for(std::size_t i = 0; f_first != f_last; ++f_first, ++s_first, ++i){
-        thread_pool.do_task(std::forward<Functor>(fun), *f_first, *s_first, i);
     }
 
     thread_pool.wait();
@@ -183,10 +155,32 @@ void parallel_foreach(TP& thread_pool, const Container& container, Functor&& fun
     thread_pool.wait();
 }
 
+// Parallel for_each giving the element and the index to the functor
+
+template<typename TP, typename Iterator, typename Functor>
+void parallel_foreach_i(TP& thread_pool, Iterator first, Iterator last, Functor&& fun){
+    for(std::size_t i = 0; first != last; ++first, ++i){
+        thread_pool.do_task(std::forward<Functor>(fun), *first, i);
+    }
+
+    thread_pool.wait();
+}
+
 template<typename TP, typename Container, typename Functor>
 void parallel_foreach_i(TP& thread_pool, const Container& container, Functor&& fun){
     for(std::size_t i = 0; i < container.size(); ++i){
         thread_pool.do_task(std::forward<Functor>(fun), container[i], i);
+    }
+
+    thread_pool.wait();
+}
+
+// Parallel for_each giving the iterator to the functor
+
+template<typename TP, typename Iterator, typename Functor>
+void parallel_foreach_it(TP& thread_pool, Iterator first, Iterator last, Functor&& fun){
+    for(; first != last; ++first){
+        thread_pool.do_task(std::forward<Functor>(fun), first);
     }
 
     thread_pool.wait();
@@ -200,10 +194,34 @@ void parallel_foreach_it(TP& thread_pool, const Container& container, Functor&& 
     parallel_foreach_it(thread_pool, begin(container), end(container), std::forward<Functor>(fun));
 }
 
+// Parallel for_each giving the index to the functor
+
+template<typename TP, typename Iterator, typename Functor>
+void parallel_foreach_i_only(TP& thread_pool, Iterator first, Iterator last, Functor&& fun){
+    for(std::size_t i = 0; first != last; ++first, ++i){
+        thread_pool.do_task(std::forward<Functor>(fun), i);
+    }
+
+    thread_pool.wait();
+}
+
 template<typename TP, typename Container, typename Functor>
 void parallel_foreach_i_only(TP& thread_pool, const Container& container, Functor&& fun){
     for(std::size_t i = 0; i < container.size(); ++i){
         thread_pool.do_task(std::forward<Functor>(fun), i);
+    }
+
+    thread_pool.wait();
+}
+
+//Special version with pair
+
+template<typename TP, typename Iterator, typename Iterator2, typename Functor>
+void parallel_foreach_pair_i(TP& thread_pool, Iterator f_first, Iterator f_last, Iterator2 s_first, Iterator2 s_last, Functor&& fun){
+    cpp_unused(s_last);
+
+    for(std::size_t i = 0; f_first != f_last; ++f_first, ++s_first, ++i){
+        thread_pool.do_task(std::forward<Functor>(fun), *f_first, *s_first, i);
     }
 
     thread_pool.wait();
