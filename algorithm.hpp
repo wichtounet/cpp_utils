@@ -187,8 +187,9 @@ void parallel_shuffle(IT1 first_1, IT1 last_1, IT2 first_2, IT2 last_2, RNG&& g)
     for (diff_t i = n-1; i > 0; --i) {
         auto new_i = D(g, param_t(0, i));
 
-        std::swap(first_1[i], first_1[new_i]);
-        std::swap(first_2[i], first_2[new_i]);
+        using std::swap;
+        swap(first_1[i], first_1[new_i]);
+        swap(first_2[i], first_2[new_i]);
     }
 }
 
