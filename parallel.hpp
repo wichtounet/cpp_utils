@@ -140,7 +140,7 @@ void parallel_foreach_n(std::size_t first, std::size_t last, Functor&& fun){
     std::vector<std::future<void>> futures;
     futures.reserve(last - first);
 
-    for(std::size_t i = first; first != last; ++i){
+    for(std::size_t i = first; i != last; ++i){
         futures.push_back(std::move(std::async(std::launch::async, fun, i)));
     }
 
@@ -232,7 +232,7 @@ void parallel_foreach_i_only(TP& thread_pool, const Container& container, Functo
 
 template<typename TP, typename Functor>
 void parallel_foreach_n(TP& thread_pool, std::size_t first, std::size_t last, Functor&& fun){
-    for(std::size_t i = first; first != last; ++i){
+    for(std::size_t i = first; i != last; ++i){
         thread_pool.do_task(std::forward<Functor>(fun), i);
     }
 
