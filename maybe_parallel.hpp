@@ -8,6 +8,7 @@
 #ifndef CPP_UTILS_MAYBE_PARALLEL_HPP
 #define CPP_UTILS_MAYBE_PARALLEL_HPP
 
+#include "algorithm.hpp"
 #include "parallel.hpp"
 
 namespace cpp {
