@@ -23,8 +23,13 @@
 
 namespace cpp {
 
-//Utilities
-
+/*!
+ * \brief Call the given functor after having taken the given lock.
+ *
+ * The lock will remain locked for the duration of the functor.
+ * \param lock The lock to lock
+ * \param fun The functor to call.
+ */
 template<typename Lock, typename Functor>
 void with_lock(Lock& lock, Functor&& fun){
     std::unique_lock<Lock> l(lock);
