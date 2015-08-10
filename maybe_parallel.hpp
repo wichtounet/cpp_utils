@@ -25,6 +25,16 @@ struct thread_pool<true> : default_thread_pool<> {
 //parallel versions
 
 template<typename Container, typename Functor>
+void maybe_parallel_foreach(thread_pool<true>& thread_pool, const Container& container, Functor&& fun){
+    parallel_foreach(thread_pool, container, std::forward<Functor>(fun));
+}
+
+template<typename Iterator, typename Functor>
+void maybe_parallel_foreach(thread_pool<true>& thread_pool, Iterator first, Iterator last, Functor&& fun){
+    parallel_foreach(thread_pool, first, last, std::forward<Functor>(fun));
+}
+
+template<typename Container, typename Functor>
 void maybe_parallel_foreach_i(thread_pool<true>& thread_pool, const Container& container, Functor&& fun){
     parallel_foreach_i(thread_pool, container, std::forward<Functor>(fun));
 }
@@ -45,6 +55,16 @@ void maybe_parallel_foreach_n(thread_pool<true>& thread_pool, std::size_t first,
 }
 
 //non-parallel versions
+
+template<typename Container, typename Functor>
+void maybe_parallel_foreach(thread_pool<false>& /*thread_pool*/, const Container& container, Functor&& fun){
+    foreach(container, fun);
+}
+
+template<typename Iterator, typename Functor>
+void maybe_parallel_foreach(thread_pool<false>& /*thread_pool*/, Iterator first, Iterator last, Functor&& fun){
+    foreach(first, last, fun);
+}
 
 template<typename Container, typename Functor>
 void maybe_parallel_foreach_i(thread_pool<false>& /*thread_pool*/, const Container& container, Functor&& fun){
