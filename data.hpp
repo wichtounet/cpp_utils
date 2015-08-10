@@ -7,7 +7,7 @@
 
 /*!
  * \file data.hpp
- * \brief Contains basic data manipulation functions. 
+ * \brief Contains basic data manipulation functions.
  */
 
 #ifndef CPP_UTILS_DATA_HPP
@@ -36,9 +36,9 @@ double mean(Iterator first, Iterator last){
 }
 
 /*!
- * \brief Compute the mean of values in the given container. 
- * \param container The container to compute the mean from. 
- * \return the mean of the values in the given container. 
+ * \brief Compute the mean of values in the given container.
+ * \param container The container to compute the mean from.
+ * \return the mean of the values in the given container.
  */
 template<typename Container>
 double mean(const Container& container){
@@ -62,10 +62,10 @@ double stddev(Iterator first, Iterator last, double mean){
 }
 
 /*!
- * \brief Compute the standard deviation of values in the given container. 
- * \param container The container to compute the mean from. 
+ * \brief Compute the standard deviation of values in the given container.
+ * \param container The container to compute the mean from.
  * \param mean The mean of the range
- * \return the standard deviation of the values in the given container. 
+ * \return the standard deviation of the values in the given container.
  */
 template<typename Container>
 double stddev(const Container& container, double mean){
@@ -76,7 +76,7 @@ double stddev(const Container& container, double mean){
  * \brief Normalize all the values of the container
  * \param container The container to normalize
  *
- * The values are normalized so the range has zero-mean and unit-variance. 
+ * The values are normalized so the range has zero-mean and unit-variance.
  */
 template<typename Container>
 void normalize(Container& container){
@@ -97,11 +97,11 @@ void normalize(Container& container){
 }
 
 /*!
- * \brief Normalize each value contained in the given range. 
+ * \brief Normalize each value contained in the given range.
  * \param first Start of the range
  * \param last End of the range
  *
- * The values are normalized so the range has zero-mean and unit-variance. 
+ * The values are normalized so the range has zero-mean and unit-variance.
  */
 template<typename Iterator>
 void normalize_each(Iterator first, Iterator last){
@@ -111,14 +111,14 @@ void normalize_each(Iterator first, Iterator last){
 }
 
 /*!
- * \brief Normalize each value contained in the given range. 
- * \param container The container holding the ranges to normalize. 
+ * \brief Normalize each value contained in the given range.
+ * \param container The container holding the ranges to normalize.
  *
- * The values are normalized so the range has zero-mean and unit-variance. 
+ * The values are normalized so the range has zero-mean and unit-variance.
  */
 template<typename Container>
-void normalize_each(Container& values){
-    normalize_each(std::begin(values), std::end(values));
+void normalize_each(Container& container){
+    normalize_each(std::begin(container), std::end(container));
 }
 
 } //end of the cpp namespace
