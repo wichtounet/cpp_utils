@@ -73,7 +73,7 @@ void maybe_parallel_foreach_i(thread_pool<false>& /*thread_pool*/, const Contain
 
 template<typename Iterator, typename Functor>
 void maybe_parallel_foreach_i(thread_pool<false>& /*thread_pool*/, Iterator it, Iterator end, Functor&& fun){
-    foreach_i(it, end);
+    foreach_i(it, end, fun);
 }
 
 template<typename Iterator, typename Iterator2, typename Functor>
