@@ -5,8 +5,8 @@
 //  http://opensource.org/licenses/MIT)
 //=======================================================================
 
-#ifndef CPP_UTILS_PARALLEL_HPP
-#define CPP_UTILS_PARALLEL_HPP
+#ifndef CPP_UTILS_MAYBE_PARALLEL_HPP
+#define CPP_UTILS_MAYBE_PARALLEL_HPP
 
 #include "parallel.hpp"
 
