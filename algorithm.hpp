@@ -197,6 +197,19 @@ void foreach_dual_i(C1& c1, C2& c2, Functor&& fun) noexcept(noexcept(fun(*c1.beg
     cpp::foreach_dual_i(begin(c1), end(c1), begin(c2), std::forward<Functor>(fun));
 }
 
+/*!
+ * \brief Applies the given functor to each value in in range [first, last), in order
+ * \param first The first value in the range
+ * \param last The last value in the range (not included)
+ * \param fun The functor to apply
+ */
+template<typename Functor>
+void foreach_n(std::size_t first, std::size_t last, Functor&& fun){
+    for(std::size_t i = first; i != last; ++i){
+        fun(i);
+    }
+}
+
 // Create a new vector with the transformation of a sequence
 
 template<typename Iterator, typename Functor>
