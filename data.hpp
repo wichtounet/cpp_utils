@@ -118,7 +118,9 @@ void normalize_each(Iterator first, Iterator last){
  */
 template<typename Container>
 void normalize_each(Container& container){
-    normalize_each(std::begin(container), std::end(container));
+    using std::begin;
+    using std::end;
+    normalize_each(begin(container), end(container));
 }
 
 } //end of the cpp namespace
