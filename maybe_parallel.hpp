@@ -5,6 +5,12 @@
 //  http://opensource.org/licenses/MIT)
 //=======================================================================
 
+/*!
+ * \file maybe_parallel.hpp
+ * \brief Contains algorithms that can either be executed
+ * concurrently or linearly based on a compile-time switch.
+ */
+
 #ifndef CPP_UTILS_MAYBE_PARALLEL_HPP
 #define CPP_UTILS_MAYBE_PARALLEL_HPP
 

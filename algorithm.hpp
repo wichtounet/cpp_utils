@@ -5,6 +5,11 @@
 //  http://opensource.org/licenses/MIT)
 //=======================================================================
 
+/*!
+ * \file algorithm.hpp
+ * \brief Contains various STL-Like algorithms.
+ */
+
 #ifndef CPP_UTILS_ALGORITHM_HPP
 #define CPP_UTILS_ALGORITHM_HPP
 

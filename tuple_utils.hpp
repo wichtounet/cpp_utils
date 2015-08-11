@@ -5,6 +5,11 @@
 //  http://opensource.org/licenses/MIT)
 //=======================================================================
 
+/*!
+ * \file tuple_utils.hpp
+ * \brief Contains utilities to work with std::tuple
+ */
+
 #ifndef CPP_UTILS_TUPLE_HPP
 #define CPP_UTILS_TUPLE_HPP
 

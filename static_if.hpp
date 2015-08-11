@@ -5,6 +5,11 @@
 //  http://opensource.org/licenses/MIT)
 //=======================================================================
 
+/*!
+ * \file static_if.hpp
+ * \brief Contains a C++14 implementation of a poor static if.
+ */
+
 #ifndef CPP_STATIC_IF_HPP
 #define CPP_STATIC_IF_HPP
 

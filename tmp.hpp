@@ -5,6 +5,11 @@
 //  http://opensource.org/licenses/MIT)
 //=======================================================================
 
+/*!
+ * \file tmp.hpp
+ * \brief Contains Template Metaprogramming (TMP) utilities
+ */
+
 #ifndef CPP_UTILS_TMP_HPP
 #define CPP_UTILS_TMP_HPP
 

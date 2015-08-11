@@ -5,6 +5,11 @@
 //  http://opensource.org/licenses/MIT)
 //=======================================================================
 
+/*!
+ * \file static_if.hpp
+ * \brief Contains C++ assert utilities.
+ */
+
 #ifndef CPP_UTILS_ASSERT_HPP
 #define CPP_UTILS_ASSERT_HPP
 

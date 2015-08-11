@@ -5,6 +5,11 @@
 //  http://opensource.org/licenses/MIT)
 //=======================================================================
 
+/*!
+ * \file parallel.hpp
+ * \brief Contains parallel algorithms and thread pool implementations.
+ */
+
 #ifndef CPP_UTILS_PARALLEL_HPP
 #define CPP_UTILS_PARALLEL_HPP
 
