@@ -26,7 +26,7 @@ using clock_type = std::chrono::high_resolution_clock;
 /*!
  * \class stop_watch
  * \brief A stop watch
- * \tparam P The std::chrono precision used by the watch. 
+ * \tparam P The std::chrono precision used by the watch.
  *
  * The watch automatically starts when the constructor is called
  */
@@ -34,7 +34,7 @@ template<typename P = std::chrono::milliseconds>
 class stop_watch {
 public:
     /*!
-     * \brief The std::chrono precision used by the watch. 
+     * \brief The std::chrono precision used by the watch.
      */
     using precision = P;
 
@@ -62,28 +62,28 @@ private:
 /*!
  * \class auto_stop_watch
  * \brief An automatic stop watch
- * \tparam P The std::chrono precision used by the watch. 
+ * \tparam P The std::chrono precision used by the watch.
  *
- * The watch automatically starts when the constructor is called and display the duration when destructed. 
+ * The watch automatically starts when the constructor is called and display the duration when destructed.
  */
 template<typename P = std::chrono::milliseconds>
 class auto_stop_watch {
 public:
     /*!
-     * \brief The std::chrono precision used by the watch. 
+     * \brief The std::chrono precision used by the watch.
      */
     using precision = P;
 
     /*!
      * \brief Constructs a new auto_stop_watch and starts it.
-     * \param title The title that will be displayed when the watch is over. 
+     * \param title The title that will be displayed when the watch is over.
      */
-    auto_stop_watch(std::string title) : title(std::move(title)) {
+    explicit auto_stop_watch(std::string title) : title(std::move(title)) {
         //Empty
     }
 
     /*!
-     * \brief Destroys the auto_stop_watch and display the elapsed time. 
+     * \brief Destroys the auto_stop_watch and display the elapsed time.
      */
     ~auto_stop_watch(){
         std::cout << title << " took " << watch.elapsed() << std::endl;
