@@ -228,7 +228,7 @@ void parallel_foreach_i_only(Container& container, Functor fun){
 template<typename TP, typename Iterator, typename Functor,
     cpp_enable_if(std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value)>
 void parallel_foreach(TP& thread_pool, Iterator first, Iterator last, Functor fun){
-    auto n = std::distance(first, last);;
+    auto n = std::distance(first, last);
     auto part = n / thread_pool.size();
 
     if(part < 2){
@@ -283,7 +283,7 @@ void parallel_foreach(TP& thread_pool, Container& container, Functor fun){
 template<typename TP, typename Iterator, typename Functor,
     cpp_enable_if(std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value)>
 void parallel_foreach_i(TP& thread_pool, Iterator first, Iterator last, Functor fun){
-    auto n = std::distance(first, last);;
+    auto n = std::distance(first, last);
     auto part = n / thread_pool.size();
 
     if(part < 2){
@@ -343,7 +343,7 @@ void parallel_foreach_i(TP& thread_pool, Container& container, Functor fun){
 template<typename TP, typename Iterator, typename Functor,
     cpp_enable_if(std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value)>
 void parallel_foreach_it(TP& thread_pool, Iterator first, Iterator last, Functor fun){
-    auto n = std::distance(first, last);;
+    auto n = std::distance(first, last);
     auto part = n / thread_pool.size();
 
     if(part < 2){
