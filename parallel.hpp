@@ -165,6 +165,27 @@ void parallel_foreach_it(Container& container, Functor fun){
 }
 
 /*!
+ * \brief Applies the given functor, concurrently, to each value in the range [first, last).
+ *
+ * The number of threads used is chosen by the STL. The processing order is undefined.
+ *
+ * \param first The beginning of the range
+ * \param last The end of the range
+ * \param fun The functor to apply.
+ */
+template<typename Functor>
+void parallel_foreach_n(std::size_t first, std::size_t last, Functor fun){
+    std::vector<std::future<void>> futures;
+    futures.reserve(last - first);
+
+    for(std::size_t i = first; i != last; ++i){
+        futures.push_back(std::move(std::async(std::launch::async, fun, i)));
+    }
+
+    //No need to wait for the futures, the destructor will do it for us
+}
+
+/*!
  * \brief Applies the given functor, concurrently, to each index in the given range [first, last).
  *
  * The number of threads used is chosen by the STL. The processing order is undefined.
@@ -196,27 +217,6 @@ void parallel_foreach_i_only(Iterator first, Iterator last, Functor fun){
 template<typename Container, typename Functor>
 void parallel_foreach_i_only(Container& container, Functor fun){
     parallel_foreach_n(0, container.size(), fun);
-}
-
-/*!
- * \brief Applies the given functor, concurrently, to each value in the range [first, last).
- *
- * The number of threads used is chosen by the STL. The processing order is undefined.
- *
- * \param first The beginning of the range
- * \param last The end of the range
- * \param fun The functor to apply.
- */
-template<typename Functor>
-void parallel_foreach_n(std::size_t first, std::size_t last, Functor fun){
-    std::vector<std::future<void>> futures;
-    futures.reserve(last - first);
-
-    for(std::size_t i = first; i != last; ++i){
-        futures.push_back(std::move(std::async(std::launch::async, fun, i)));
-    }
-
-    //No need to wait for the futures, the destructor will do it for us
 }
 
 ///////////////////////////
