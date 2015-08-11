@@ -217,20 +217,20 @@ void parallel_foreach_it(TP& thread_pool, const Container& container, Functor&& 
 
 template<typename TP, typename Iterator, typename Functor>
 void parallel_foreach_i_only(TP& thread_pool, Iterator first, Iterator last, Functor&& fun){
-    for(std::size_t i = 0; first != last; ++first, ++i){
-        thread_pool.do_task(std::forward<Functor>(fun), i);
-    }
+    if(std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value){
+        parallel_foreach_n(thread_pool, 0, std::distance(first, last), std::forward<Functor>(fun));
+    } else {
+        for(std::size_t i = 0; first != last; ++first, ++i){
+            thread_pool.do_task(std::forward<Functor>(fun), i);
+        }
 
-    thread_pool.wait();
+        thread_pool.wait();
+    }
 }
 
 template<typename TP, typename Container, typename Functor>
 void parallel_foreach_i_only(TP& thread_pool, const Container& container, Functor&& fun){
-    for(std::size_t i = 0; i < container.size(); ++i){
-        thread_pool.do_task(std::forward<Functor>(fun), i);
-    }
-
-    thread_pool.wait();
+    parallel_foreach_n(thread_pool, 0, container.size(), std::forward<Functor>(fun));
 }
 
 // Parallel for_each on a range
