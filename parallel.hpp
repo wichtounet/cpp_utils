@@ -494,7 +494,9 @@ public:
 
                         wait_condition.notify_one();
 
-                        condition.wait(ulock, [this]{ return stop_flag || !tasks.empty(); });
+                        condition.wait(ulock, [this]{
+                            return stop_flag || !tasks.empty();
+                        });
 
                         if(stop_flag && tasks.empty()){
                             return;
@@ -538,7 +540,9 @@ public:
 
             //At this point, there are still some threads working, we wait for
             //one of them to notify a change of status
-            wait_condition.wait(ulock, [this]{ return tasks.empty(); });
+            wait_condition.wait(ulock, [this]{
+                return tasks.empty();
+            });
         }
     }
 
@@ -554,7 +558,10 @@ public:
 #endif
             }
 
-            tasks.emplace_back([fun, args...]{ fun(args...); });
+            //Execute the task
+            tasks.emplace_back([fun, args...]{
+                fun(args...);
+            });
         });
 
         condition.notify_one();
