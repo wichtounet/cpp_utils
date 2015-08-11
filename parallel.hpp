@@ -86,8 +86,15 @@ void parallel_foreach(Container& container, Functor fun){
     //No need to wait for the futures, the destructor will do it for us
 }
 
-//Parallel for_each giving the elements and their indices to the functor
-
+/*!
+ * \brief Applies the given functor, concurrently, to the result of dereferencing every iterator in the range [first, last) and its position in the range. .
+ *
+ * The number of threads used is chosen by the STL. The processing order is undefined.
+ *
+ * \param first The beginning of the range
+ * \param last The end of the range
+ * \param fun The functor to apply.
+ */
 template<typename Iterator, typename Functor>
 void parallel_foreach_i(Iterator first, Iterator last, Functor fun){
     std::vector<std::future<void>> futures;
@@ -100,6 +107,14 @@ void parallel_foreach_i(Iterator first, Iterator last, Functor fun){
     //No need to wait for the futures, the destructor will do it for us
 }
 
+/*!
+ * \brief Applies the given functor, concurrently, to every element in the given container and its position in the container. .
+ *
+ * The number of threads used is chosen by the STL. The processing order is undefined.
+ *
+ * \param container The container to iterate.
+ * \param fun The functor to apply.
+ */
 template<typename Container, typename Functor>
 void parallel_foreach_i(Container& container, Functor fun){
     std::vector<std::future<void>> futures;
@@ -112,8 +127,15 @@ void parallel_foreach_i(Container& container, Functor fun){
     //No need to wait for the futures, the destructor will do it for us
 }
 
-//Parallel for_each giving the iterators to the functor
-
+/*!
+ * \brief Applies the given functor, concurrently, to each iterator in the range [first, last).
+ *
+ * The number of threads used is chosen by the STL. The processing order is undefined.
+ *
+ * \param first The beginning of the range
+ * \param last The end of the range
+ * \param fun The functor to apply.
+ */
 template<typename Iterator, typename Functor>
 void parallel_foreach_it(Iterator first, Iterator last, Functor fun){
     std::vector<std::future<void>> futures;
@@ -126,6 +148,14 @@ void parallel_foreach_it(Iterator first, Iterator last, Functor fun){
     //No need to wait for the futures, the destructor will do it for us
 }
 
+/*!
+ * \brief Applies the given functor, concurrently, to each iterator in the given container.
+ *
+ * The number of threads used is chosen by the STL. The processing order is undefined.
+ *
+ * \param container The container to iterate.
+ * \param fun The functor to apply.
+ */
 template<typename Container, typename Functor>
 void parallel_foreach_it(Container& container, Functor fun){
     using std::begin;
@@ -134,8 +164,15 @@ void parallel_foreach_it(Container& container, Functor fun){
     parallel_foreach_it(begin(container), end(container), fun);
 }
 
-// Parallel for_each giving only the index to the functor
-
+/*!
+ * \brief Applies the given functor, concurrently, to each index in the given range [first, last).
+ *
+ * The number of threads used is chosen by the STL. The processing order is undefined.
+ *
+ * \param first The beginning of the range
+ * \param last The end of the range
+ * \param fun The functor to apply.
+ */
 template<typename Iterator, typename Functor>
 void parallel_foreach_i_only(Iterator first, Iterator last, Functor fun){
     std::vector<std::future<void>> futures;
@@ -148,20 +185,28 @@ void parallel_foreach_i_only(Iterator first, Iterator last, Functor fun){
     //No need to wait for the futures, the destructor will do it for us
 }
 
+/*!
+ * \brief Applies the given functor, concurrently, to each index in the given container.
+ *
+ * The number of threads used is chosen by the STL. The processing order is undefined.
+ *
+ * \param container The container to iterate.
+ * \param fun The functor to apply.
+ */
 template<typename Container, typename Functor>
 void parallel_foreach_i_only(Container& container, Functor fun){
-    std::vector<std::future<void>> futures;
-    futures.reserve(container.size());
-
-    for(std::size_t i = 0; i < container.size(); ++i){
-        futures.push_back(std::move(std::async(std::launch::async, fun, i)));
-    }
-
-    //No need to wait for the futures, the destructor will do it for us
+    parallel_foreach_n(0, container.size(), fun);
 }
 
-// Parallel for_each on a range
-
+/*!
+ * \brief Applies the given functor, concurrently, to each value in the range [first, last).
+ *
+ * The number of threads used is chosen by the STL. The processing order is undefined.
+ *
+ * \param first The beginning of the range
+ * \param last The end of the range
+ * \param fun The functor to apply.
+ */
 template<typename Functor>
 void parallel_foreach_n(std::size_t first, std::size_t last, Functor fun){
     std::vector<std::future<void>> futures;
