@@ -237,8 +237,34 @@ void parallel_foreach_i_only(TP& thread_pool, const Container& container, Functo
 
 template<typename TP, typename Functor>
 void parallel_foreach_n(TP& thread_pool, std::size_t first, std::size_t last, Functor&& fun){
-    for(std::size_t i = first; i != last; ++i){
-        thread_pool.do_task(std::forward<Functor>(fun), i);
+    auto n = last - first;
+    auto part = n / thread_pool.size();
+
+    if(part < 2){
+        for(std::size_t i = last - (n % thread_pool.size()); i < last; ++i){
+            thread_pool.do_task(std::forward<Functor>(fun), i);
+        }
+    } else {
+        auto batch_functor = [fun](std::size_t first, std::size_t last){
+            for(std::size_t i = first; i < last; ++i){
+                fun(i);
+            }
+        };
+
+        //Distribute evenly the batches
+
+        for(std::size_t i = first; i + part < last; i += part){
+            thread_pool.do_task(batch_functor, i, i + part);
+        }
+
+        //Distribute the remainders
+
+        auto rem = n % thread_pool.size();
+        if(rem > 0){
+            for(std::size_t i = last - rem; i < last; ++i){
+                thread_pool.do_task(std::forward<Functor>(fun), i);
+            }
+        }
     }
 
     thread_pool.wait();
@@ -315,6 +341,10 @@ public:
         for(auto& thread : threads){
             thread.join();
         }
+    }
+
+    std::size_t size() const {
+        return threads.size();
     }
 
     void wait(){
