@@ -39,8 +39,15 @@ void with_lock(Lock& lock, Functor fun){
 
 //1. Normal versions (no thread pool)
 
-//Parallel for_each giving the elements to the functor
-
+/*!
+ * \brief Applies the given functor, concurrently, to the result of dereferencing every iterator in the range [first, last).
+ *
+ * The number of threads used is chosen by the STL. The processing order is undefined.
+ *
+ * \param first The beginning of the range
+ * \param last The end of the range
+ * \param fun The functor to apply.
+ */
 template<typename Iterator, typename Functor>
 void parallel_foreach(Iterator first, Iterator last, Functor fun){
     std::vector<std::future<void>> futures;
@@ -53,6 +60,15 @@ void parallel_foreach(Iterator first, Iterator last, Functor fun){
     //No need to wait for the futures, the destructor will do it for us
 }
 
+
+/*!
+ * \brief Applies the given functor, concurrently, to each value in the given container.
+ *
+ * The number of threads used is chosen by the STL. The processing order is undefined.
+ *
+ * \param container The container to iterate.
+ * \param fun The functor to apply.
+ */
 template<typename Container, typename Functor>
 void parallel_foreach(Container& container, Functor fun){
     std::vector<std::future<void>> futures;
