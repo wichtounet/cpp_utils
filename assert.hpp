@@ -6,7 +6,7 @@
 //=======================================================================
 
 /*!
- * \file static_if.hpp
+ * \file assert.hpp
  * \brief Contains C++ assert utilities.
  */
 
