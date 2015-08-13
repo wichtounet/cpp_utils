@@ -25,7 +25,9 @@ namespace cpp {
  */
 template<typename Iterator, typename Functor>
 void foreach(Iterator first, Iterator last, Functor&& fun) noexcept(noexcept(fun(*first))) {
-    std::for_each(first, last, std::forward<Functor>(fun));
+    while(first != last){
+        fun(*first++);
+    }
 }
 
 /*!
