@@ -13,6 +13,9 @@
 #ifndef CPP_UTILS_ALGORITHM_HPP
 #define CPP_UTILS_ALGORITHM_HPP
 
+#include <vector>       //for vector_transform (std::vector)
+#include <algorithm>    //for vector_transform (std::transform)
+
 #include "assert.hpp"
 
 namespace cpp {
