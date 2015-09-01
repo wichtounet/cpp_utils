@@ -244,8 +244,8 @@ void parallel_foreach(TP& thread_pool, Iterator first, Iterator last, Functor fu
 
         //Distribute evenly the batches
 
-        for(Iterator it = first; it + part < last; it += part){
-            thread_pool.do_task(batch_functor, it, it + part);
+        for(std::size_t t = 0; t < thread_pool.size(); ++t){
+            thread_pool.do_task(batch_functor, first + t * part, first + (t+1) * part);
         }
 
         //Distribute the remainders
@@ -300,16 +300,15 @@ void parallel_foreach_i(TP& thread_pool, Iterator first, Iterator last, Functor 
 
         //Distribute evenly the batches
 
-        std::size_t i = 0;
-        for(Iterator it = first; it + part < last; it += part, i += part){
-            thread_pool.do_task(batch_functor, it, it + part, i);
+        for(std::size_t t = 0; t < thread_pool.size(); ++t){
+            thread_pool.do_task(batch_functor, first + t * part, first + (t+1) * part, t * part);
         }
 
         //Distribute the remainders
 
         auto rem = n % thread_pool.size();
         if(rem > 0){
-            i = n - rem;
+            std::size_t i = n - rem;
             for(Iterator it = last - rem; it < last; ++it, ++i){
                 thread_pool.do_task(fun, *it, i);
             }
@@ -359,8 +358,8 @@ void parallel_foreach_it(TP& thread_pool, Iterator first, Iterator last, Functor
 
         //Distribute evenly the batches
 
-        for(Iterator it = first; it + part < last; it += part){
-            thread_pool.do_task(batch_functor, it, it + part);
+        for(std::size_t t = 0; t < thread_pool.size(); ++t){
+            thread_pool.do_task(batch_functor, first + t * part, first + (t+1) * part);
         }
 
         //Distribute the remainders
@@ -434,8 +433,8 @@ void parallel_foreach_n(TP& thread_pool, std::size_t first, std::size_t last, Fu
 
         //Distribute evenly the batches
 
-        for(std::size_t i = first; i + part < last; i += part){
-            thread_pool.do_task(batch_functor, i, i + part);
+        for(std::size_t t = 0; t < thread_pool.size(); ++t){
+            thread_pool.do_task(batch_functor, t * part, (t+1) * part);
         }
 
         //Distribute the remainders
