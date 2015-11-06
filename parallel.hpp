@@ -473,7 +473,7 @@ struct default_thread_pool {
 private:
     std::vector<std::thread> threads;
     std::vector<thread_status> status;
-    queue_t<std::function<void()>> tasks;
+    queue_t<std::function<void()>, std::allocator<std::function<void()>>> tasks;
     std::mutex main_lock;
     std::condition_variable condition;
     std::condition_variable wait_condition;
