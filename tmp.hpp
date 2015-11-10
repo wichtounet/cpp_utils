@@ -156,9 +156,19 @@ using disable_if_one_c = typename std::enable_if<not_c<or_c<C...>>::value, detai
 
 //For the same reasons, the macros are defined using std::enable_if and not the
 //simpler versions
+//Note: We don't surround args by parenths, since this would result in being evaluated as the comma operator
 
 #define cpp_enable_if(...) typename std::enable_if<cpp::and_u<__VA_ARGS__>::value, cpp::detail::enabler_t>::type = cpp::detail::dummy
 #define cpp_disable_if(...) typename std::enable_if<cpp::not_c<cpp::and_u<__VA_ARGS__>>::value, cpp::detail::enabler_t>::type= cpp::detail::dummy
+
+#define cpp_enable_if_fwd(...) typename std::enable_if<cpp::and_u<__VA_ARGS__>::value, cpp::detail::enabler_t>::type
+#define cpp_disable_if_fwd(...) typename std::enable_if<cpp::not_c<cpp::and_u<__VA_ARGS__>>::value, cpp::detail::enabler_t>::type
+
+#define cpp_enable_if_or(...) typename std::enable_if<cpp::or_u<__VA_ARGS__>::value, cpp::detail::enabler_t>::type = cpp::detail::dummy
+#define cpp_disable_if_or(...) typename std::enable_if<cpp::not_c<cpp::or_u<__VA_ARGS__>>::value, cpp::detail::enabler_t>::type= cpp::detail::dummy
+
+#define cpp_enable_if_or_fwd(...) typename std::enable_if<cpp::or_u<__VA_ARGS__>::value, cpp::detail::enabler_t>::type
+#define cpp_disable_if_or_fwd(...) typename std::enable_if<cpp::not_c<cpp::or_u<__VA_ARGS__>>::value, cpp::detail::enabler_t>::type
 
 #define cpp_enable_if_cst(...) bool CPP_CST_ENABLE = true, typename std::enable_if<(__VA_ARGS__) && CPP_CST_ENABLE, cpp::detail::enabler_t>::type = cpp::detail::dummy
 #define cpp_disable_if_cst(...) bool CPP_CST_ENABLE = true, typename std::enable_if<!((__VA_ARGS__) && CPP_CST_ENABLE), cpp::detail::enabler_t>::type = cpp::detail::dummy
