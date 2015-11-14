@@ -119,18 +119,38 @@ struct dual_for_each_impl<0, Tuple1, Tuple2, F> {
     }
 };
 
-//Normal versions
-
+/*!
+ * \brief Call the given functor with each element of the tuple
+ * \param t The tuple to iterate over
+ * \param f The functor to use
+ *
+ * If the tuple is heterogeneous, the functor must be generic (i.e. generic lambda)
+ */
 template<typename Tuple, typename F>
 void for_each(Tuple& t, F&& f) {
     for_each_impl<std::tuple_size<Tuple>::value - 1, Tuple, F>::for_each(t, std::forward<F>(f));
 }
 
+
+/*!
+ * \brief Call the given functor with each element of the tuple and its position (zero-indexing)
+ * \param t The tuple to iterate over
+ * \param f The functor to use
+ *
+ * If the tuple is heterogeneous, the functor must be generic (i.e. generic lambda)
+ */
 template<typename Tuple, typename F>
 void for_each_i(Tuple& t, F&& f) {
     for_each_impl<std::tuple_size<Tuple>::value - 1, Tuple, F>::for_each_i(t, std::forward<F>(f));
 }
 
+/*!
+ * \brief Call the given functor with each contiguous pair of element of the tuple.
+ * \param t The tuple to iterate over
+ * \param f The functor to use
+ *
+ * If the tuple is heterogeneous, the functor must be generic (i.e. generic lambda)
+ */
 template<typename Tuple, typename F>
 void for_each_pair(Tuple& t, F&& f) {
     if(std::tuple_size<Tuple>::value > 1){
@@ -138,6 +158,13 @@ void for_each_pair(Tuple& t, F&& f) {
     }
 }
 
+/*!
+ * \brief Call the given functor with each contiguous pair of element of the tuple and the position of the first element.
+ * \param t The tuple to iterate over
+ * \param f The functor to use
+ *
+ * If the tuple is heterogeneous, the functor must be generic (i.e. generic lambda)
+ */
 template<typename Tuple, typename F>
 void for_each_pair_i(Tuple& t, F&& f) {
     if(std::tuple_size<Tuple>::value > 1){
