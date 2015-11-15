@@ -122,8 +122,12 @@ void foreach_i_only(Container& container, Functor&& fun) noexcept(noexcept(fun(0
     cpp::foreach_i_only(begin(container), end(container), std::forward<Functor>(fun));
 }
 
-// Foreach loop giving all pair of the sequence as elements
-
+/*!
+ * \brief Call the given functor with each contiguous pair of element in the given range, in order.
+ * \param first The beginning of the range.
+ * \param last The end of the range.
+ * \param fun The functor to apply.
+ */
 template<typename Iterator, typename Functor>
 void foreach_pair(Iterator first, Iterator last, Functor fun) noexcept(noexcept(fun(*first, *std::next(first)))) {
     for(; first != last; ++first){
@@ -133,6 +137,11 @@ void foreach_pair(Iterator first, Iterator last, Functor fun) noexcept(noexcept(
     }
 }
 
+/*!
+ * \brief Call the given functor with each contiguous pair of element in the given container, in order.
+ * \param ontainer The container to iterate.
+ * \param fun The functor to apply.
+ */
 template<typename Container, typename Functor>
 void foreach_pair(Container& container, Functor&& fun) noexcept(noexcept(fun(*container.begin(), *std::next(container.begin())))) {
     using std::begin;
@@ -140,8 +149,12 @@ void foreach_pair(Container& container, Functor&& fun) noexcept(noexcept(fun(*co
     cpp::foreach_pair(begin(container), end(container), std::forward<Functor>(fun));
 }
 
-// Foreach loop giving all pair of the sequence as iterators
-
+/*!
+ * \brief Call the given functor with the iterators pointing to each contiguous pair of element in the given range, in order.
+ * \param first The beginning of the range.
+ * \param last The end of the range.
+ * \param fun The functor to apply.
+ */
 template<typename Iterator, typename Functor>
 void foreach_pair_it(Iterator first, Iterator last, Functor fun) noexcept(noexcept(fun(first, std::next(first)))) {
     for(; first != last; ++first){
@@ -151,6 +164,11 @@ void foreach_pair_it(Iterator first, Iterator last, Functor fun) noexcept(noexce
     }
 }
 
+/*!
+ * \brief Call the given functor with the iterators pointing to each contiguous pair of element in the given container, in order.
+ * \param ontainer The container to iterate.
+ * \param fun The functor to apply.
+ */
 template<typename Container, typename Functor>
 void foreach_pair_it(Container& container, Functor&& fun) noexcept(noexcept(fun(container.begin(), std::next(container.begin())))) {
     using std::begin;
