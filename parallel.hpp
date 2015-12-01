@@ -576,6 +576,15 @@ void parallel_foreach_pair_i(TP& thread_pool, Iterator f_first, Iterator f_last,
     thread_pool.wait();
 }
 
+/*!
+ * \brief The default thread pool of hte library.
+ *
+ * The pool is created with a certain number of threads and this number of
+ * threads cannot change. The jobs are put into a queue and threads are
+ * notified. Threads are constantly waiting (passively) for jobs to be enqueue.
+ *
+ * \tparam queue_t The type of queue to use (std::deque by default)
+ */
 template<template<typename...> class queue_t = std::deque>
 struct default_thread_pool {
     enum class thread_status {
