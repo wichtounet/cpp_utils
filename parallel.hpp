@@ -223,8 +223,16 @@ void parallel_foreach_i_only(Container& container, Functor fun){
 //2. Thread pool versions//
 ///////////////////////////
 
-// Parallel for_each giving the element to the functor
-
+/*!
+ * \brief Applies the given functor, concurrently, to the result of dereferencing every iterator in the range [first, last).
+ *
+ * All the jobs are submitted to the given thread pool.
+ *
+ * \param thread_pool The thread pool responsible for scheduling the jobs.
+ * \param first The beginning of the range
+ * \param last The end of the range
+ * \param fun The functor to apply.
+ */
 template<typename TP, typename Iterator, typename Functor,
     cpp_enable_if(std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value)>
 void parallel_foreach(TP& thread_pool, Iterator first, Iterator last, Functor fun){
@@ -261,6 +269,16 @@ void parallel_foreach(TP& thread_pool, Iterator first, Iterator last, Functor fu
     thread_pool.wait();
 }
 
+/*!
+ * \brief Applies the given functor, concurrently, to the result of dereferencing every iterator in the range [first, last).
+ *
+ * All the jobs are submitted to the given thread pool.
+ *
+ * \param thread_pool The thread pool responsible for scheduling the jobs.
+ * \param first The beginning of the range
+ * \param last The end of the range
+ * \param fun The functor to apply.
+ */
 template<typename TP, typename Iterator, typename Functor,
     cpp_disable_if(std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value)>
 void parallel_foreach(TP& thread_pool, Iterator first, Iterator last, Functor fun){
@@ -271,6 +289,15 @@ void parallel_foreach(TP& thread_pool, Iterator first, Iterator last, Functor fu
     thread_pool.wait();
 }
 
+/*!
+ * \brief Applies the given functor, concurrently, to each value in the given container.
+ *
+ * All the jobs are submitted to the given thread pool.
+ *
+ * \param thread_pool The thread pool responsible for scheduling the jobs.
+ * \param container The container to iterate through.
+ * \param fun The functor to apply.
+ */
 template<typename TP, typename Container, typename Functor>
 void parallel_foreach(TP& thread_pool, Container& container, Functor fun){
     using std::begin;
@@ -278,8 +305,16 @@ void parallel_foreach(TP& thread_pool, Container& container, Functor fun){
     parallel_foreach(thread_pool, begin(container), end(container), fun);
 }
 
-// Parallel for_each giving the element and the index to the functor
-
+/*!
+ * \brief Applies the given functor, concurrently, to the result of dereferencing every iterator in the range [first, last) and index.
+ *
+ * All the jobs are submitted to the given thread pool.
+ *
+ * \param thread_pool The thread pool responsible for scheduling the jobs.
+ * \param first The beginning of the range
+ * \param last The end of the range
+ * \param fun The functor to apply.
+ */
 template<typename TP, typename Iterator, typename Functor,
     cpp_enable_if(std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value)>
 void parallel_foreach_i(TP& thread_pool, Iterator first, Iterator last, Functor fun){
@@ -316,10 +351,18 @@ void parallel_foreach_i(TP& thread_pool, Iterator first, Iterator last, Functor 
     }
 
     thread_pool.wait();
-
-    thread_pool.wait();
 }
 
+/*!
+ * \brief Applies the given functor, concurrently, to the result of dereferencing every iterator in the range [first, last) and index.
+ *
+ * All the jobs are submitted to the given thread pool.
+ *
+ * \param thread_pool The thread pool responsible for scheduling the jobs.
+ * \param first The beginning of the range
+ * \param last The end of the range
+ * \param fun The functor to apply.
+ */
 template<typename TP, typename Iterator, typename Functor,
     cpp_disable_if(std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value)>
 void parallel_foreach_i(TP& thread_pool, Iterator first, Iterator last, Functor fun){
@@ -330,6 +373,15 @@ void parallel_foreach_i(TP& thread_pool, Iterator first, Iterator last, Functor 
     thread_pool.wait();
 }
 
+/*!
+ * \brief Applies the given functor, concurrently, to each value in the container and its index.
+ *
+ * All the jobs are submitted to the given thread pool.
+ *
+ * \param thread_pool The thread pool responsible for scheduling the jobs.
+ * \param container the container to iterate through
+ * \param fun The functor to apply.
+ */
 template<typename TP, typename Container, typename Functor>
 void parallel_foreach_i(TP& thread_pool, Container& container, Functor fun){
     using std::begin;
@@ -337,8 +389,16 @@ void parallel_foreach_i(TP& thread_pool, Container& container, Functor fun){
     parallel_foreach_i(thread_pool, begin(container), end(container), fun);
 }
 
-// Parallel for_each giving the iterator to the functor
-
+/*!
+ * \brief Applies the given functor, concurrently, to each iterator in the range [first, last).
+ *
+ * All the jobs are submitted to the given thread pool.
+ *
+ * \param thread_pool The thread pool responsible for scheduling the jobs.
+ * \param first The beginning of the range
+ * \param last The end of the range
+ * \param fun The functor to apply.
+ */
 template<typename TP, typename Iterator, typename Functor,
     cpp_enable_if(std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value)>
 void parallel_foreach_it(TP& thread_pool, Iterator first, Iterator last, Functor fun){
@@ -375,6 +435,16 @@ void parallel_foreach_it(TP& thread_pool, Iterator first, Iterator last, Functor
     thread_pool.wait();
 }
 
+/*!
+ * \brief Applies the given functor, concurrently, to each iterator in the range [first, last).
+ *
+ * All the jobs are submitted to the given thread pool.
+ *
+ * \param thread_pool The thread pool responsible for scheduling the jobs.
+ * \param first The beginning of the range
+ * \param last The end of the range
+ * \param fun The functor to apply.
+ */
 template<typename TP, typename Iterator, typename Functor,
     cpp_disable_if(std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value)>
 void parallel_foreach_it(TP& thread_pool, Iterator first, Iterator last, Functor fun){
@@ -385,6 +455,15 @@ void parallel_foreach_it(TP& thread_pool, Iterator first, Iterator last, Functor
     thread_pool.wait();
 }
 
+/*!
+ * \brief Applies the given functor, concurrently, to each iterator in the given container.
+ *
+ * All the jobs are submitted to the given thread pool.
+ *
+ * \param thread_pool The thread pool responsible for scheduling the jobs.
+ * \param container The container to iterate through.
+ * \param fun The functor to apply.
+ */
 template<typename TP, typename Container, typename Functor>
 void parallel_foreach_it(TP& thread_pool, Container& container, Functor fun){
     using std::begin;
@@ -393,8 +472,16 @@ void parallel_foreach_it(TP& thread_pool, Container& container, Functor fun){
     parallel_foreach_it(thread_pool, begin(container), end(container), fun);
 }
 
-// Parallel for_each giving the index to the functor
-
+/*!
+ * \brief Applies the given functor, concurrently, to each index in the range [first, last).
+ *
+ * All the jobs are submitted to the given thread pool.
+ *
+ * \param thread_pool The thread pool responsible for scheduling the jobs.
+ * \param first The beginning of the range
+ * \param last The end of the range
+ * \param fun The functor to apply.
+ */
 template<typename TP, typename Iterator, typename Functor>
 void parallel_foreach_i_only(TP& thread_pool, Iterator first, Iterator last, Functor fun){
     if(std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value){
@@ -408,13 +495,30 @@ void parallel_foreach_i_only(TP& thread_pool, Iterator first, Iterator last, Fun
     }
 }
 
+/*!
+ * \brief Applies the given functor, concurrently, to each index in the container.
+ *
+ * All the jobs are submitted to the given thread pool.
+ *
+ * \param thread_pool The thread pool responsible for scheduling the jobs.
+ * \param container The container to iterate through.
+ * \param fun The functor to apply.
+ */
 template<typename TP, typename Container, typename Functor>
 void parallel_foreach_i_only(TP& thread_pool, Container& container, Functor fun){
     parallel_foreach_n(thread_pool, 0, container.size(), fun);
 }
 
-// Parallel for_each on a range
-
+/*!
+ * \brief Applies the given functor, concurrently, to each index in the range [first, last).
+ *
+ * All the jobs are submitted to the given thread pool.
+ *
+ * \param thread_pool The thread pool responsible for scheduling the jobs.
+ * \param first The beginning of the range
+ * \param last The end of the range
+ * \param fun The functor to apply.
+ */
 template<typename TP, typename Functor>
 void parallel_foreach_n(TP& thread_pool, std::size_t first, std::size_t last, Functor fun){
     auto n = last - first;
@@ -450,8 +554,17 @@ void parallel_foreach_n(TP& thread_pool, std::size_t first, std::size_t last, Fu
     thread_pool.wait();
 }
 
-//Special version with pair
-
+/*!
+ * \brief Applies the given functor, concurrently, to each value in the range [f_first, f_last) and the range [s_first, s_last).
+ *
+ * All the jobs are submitted to the given thread pool.
+ * Both range are iterated at the same speed, one by one.
+ *
+ * \param thread_pool The thread pool responsible for scheduling the jobs.
+ * \param first The beginning of the range
+ * \param last The end of the range
+ * \param fun The functor to apply.
+ */
 template<typename TP, typename Iterator, typename Iterator2, typename Functor>
 void parallel_foreach_pair_i(TP& thread_pool, Iterator f_first, Iterator f_last, Iterator2 s_first, Iterator2 s_last, Functor fun){
     cpp_unused(s_last);
