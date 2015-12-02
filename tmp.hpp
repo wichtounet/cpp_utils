@@ -225,11 +225,17 @@ using disable_if_one_c = typename std::enable_if<not_c<or_c<C...>>::value, detai
 #define cpp_enable_if_cst(...) bool CPP_CST_ENABLE = true, typename std::enable_if<(__VA_ARGS__) && CPP_CST_ENABLE, cpp::detail::enabler_t>::type = cpp::detail::dummy
 #define cpp_disable_if_cst(...) bool CPP_CST_ENABLE = true, typename std::enable_if<!((__VA_ARGS__) && CPP_CST_ENABLE), cpp::detail::enabler_t>::type = cpp::detail::dummy
 
-//Type traits simplifications
-
+/*!
+ * \brief Traits to add const and lvalue reference to T.
+ * \tparam T the type to add const and lvalue reference to.
+ */
 template<typename T>
 using add_const_lvalue_t = std::add_lvalue_reference_t<std::add_const_t<T>>;
 
+/*!
+ * \brief Traits to add const and rvalue reference to T.
+ * \tparam T the type to add const and rvalue reference to.
+ */
 template<typename T>
 using add_const_rvalue_t = std::add_rvalue_reference_t<std::add_const_t<T>>;
 
@@ -238,12 +244,27 @@ using add_const_rvalue_t = std::add_rvalue_reference_t<std::add_const_t<T>>;
 template<typename T, typename C>
 using integral_constant_c = std::integral_constant<T, C::value>;
 
+/*!
+ * \brief Base class for an integral boolean constant.
+ * \tparam B The boolean constant value.
+ */
 template<bool B>
 using bool_constant = std::integral_constant<bool, B>;
 
+/*!
+ * \brief Base class for an integral boolean constant.
+ * \tparam C The TMP class to extract the boolean value from.
+ */
 template<typename C>
 using bool_constant_c = std::integral_constant<bool, C::value>;
 
+/*!
+ * \brief Base class for an integral constant of auto type.
+ *
+ * The type of the integral constant is automatically deduced from the the value member of the given TMP class.
+ *
+ * \tparam V The TMP class to extract the value from.
+ */
 template<typename V>
 struct auto_constant : std::integral_constant<decltype(V::value), V::value> {};
 
@@ -256,11 +277,19 @@ struct conditional_constant<true, V1, V2> : auto_constant<V1> {};
 template<typename V1, typename V2>
 struct conditional_constant<false, V1, V2> : auto_constant<V2> {};
 
+/*!
+ * \brief Base class to define a type constant
+ * \tparam T The type constant.
+ */
 template<typename T>
 struct type_constant {
     using type = T;
 };
 
+/*!
+ * \brief Base class to define a type constant
+ * \tparam T The type to extract the type constant from.
+ */
 template<typename T>
 struct type_constant_c {
     using type = typename T::value;
@@ -292,16 +321,24 @@ struct conditional_type_constant_c<false, V1, V2> {
     using type = typename V2::value;
 };
 
+/*!
+ * \brief Base class to define a template type constant
+ * \tparam TT The template type constant.
+ */
 template<typename TT>
 struct template_type_constant {
     template<typename T>
     using type = TT;
 };
 
+/*!
+ * \brief Base class to define a template type constant
+ * \tparam TT The type to extract the template type constant from.
+ */
 template<typename TT>
 struct template_type_constant_c {
     template<typename T>
-    using type = typename T::template value<T>;
+    using type = typename TT::template value<T>;
 };
 
 template<bool, template<typename> class V1, template<typename> class V2>
