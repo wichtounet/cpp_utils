@@ -68,9 +68,23 @@ void for_each_tuple_t(Functor&& func){
     for_each_tuple_t_impl<static_cast<int>(std::tuple_size<Tuple>::value) - 1, Tuple, Functor>::for_each(std::forward<Functor>(func));
 }
 
+/*!
+ * \brief TMP helper implementing the NOT boolean operator taking a boolean constant value.
+ *
+ * Represents an integral constant with the negated value of the given boolean constant.
+ *
+ * \tparam B The boolean value to negate
+ */
 template<bool B>
 struct not_u : std::integral_constant<bool, !B> {};
 
+/*!
+ * \brief TMP helper implementing the NOT boolean operator taking a TMP class.
+ *
+ * Represents an integral constant with the negated value of the given TMP class.
+ *
+ * \tparam B The TMP class whose value to negate.
+ */
 template<typename C>
 struct not_c : std::integral_constant<bool, !C::value> {};
 
@@ -80,6 +94,13 @@ struct and_u : std::integral_constant<bool, H && and_u<T...>::value> {};
 template<bool H>
 struct and_u<H> : std::integral_constant<bool, H> {};
 
+/*!
+ * \brief TMP helper implementing the AND boolean operator taking a sequence TMP class.
+ *
+ * Represents an integral constant with the ANDed value of the given TMP classes.
+ *
+ * \tparam C The sequence of TMP classes whose value to AND.
+ */
 template<typename... C>
 using and_c = and_u<C::value...>;
 
