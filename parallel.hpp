@@ -561,8 +561,10 @@ void parallel_foreach_n(TP& thread_pool, std::size_t first, std::size_t last, Fu
  * Both range are iterated at the same speed, one by one.
  *
  * \param thread_pool The thread pool responsible for scheduling the jobs.
- * \param first The beginning of the range
- * \param last The end of the range
+ * \param f_first The beginning of the first range
+ * \param f_last The end of the first range
+ * \param s_first The beginning of the second range
+ * \param s_last The end of the second range
  * \param fun The functor to apply.
  */
 template<typename TP, typename Iterator, typename Iterator2, typename Functor>

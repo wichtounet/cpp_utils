@@ -83,7 +83,7 @@ struct not_u : std::integral_constant<bool, !B> {};
  *
  * Represents an integral constant with the negated value of the given TMP class.
  *
- * \tparam B The TMP class whose value to negate.
+ * \tparam C The TMP class whose value to negate.
  */
 template<typename C>
 struct not_c : std::integral_constant<bool, !C::value> {};

@@ -139,7 +139,7 @@ void foreach_pair(Iterator first, Iterator last, Functor fun) noexcept(noexcept(
 
 /*!
  * \brief Call the given functor with each contiguous pair of element in the given container, in order.
- * \param ontainer The container to iterate.
+ * \param container The container to iterate.
  * \param fun The functor to apply.
  */
 template<typename Container, typename Functor>
@@ -166,7 +166,7 @@ void foreach_pair_it(Iterator first, Iterator last, Functor fun) noexcept(noexce
 
 /*!
  * \brief Call the given functor with the iterators pointing to each contiguous pair of element in the given container, in order.
- * \param ontainer The container to iterate.
+ * \param container The container to iterate.
  * \param fun The functor to apply.
  */
 template<typename Container, typename Functor>
