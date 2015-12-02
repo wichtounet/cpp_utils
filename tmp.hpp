@@ -41,6 +41,22 @@ public:                                                                         
 
 namespace cpp {
 
+namespace tmp_detail {
+
+template<bool H, bool... T>
+struct and_helper : std::integral_constant<bool, H && and_helper<T...>::value> {};
+
+template<bool H>
+struct and_helper<H> : std::integral_constant<bool, H> {};
+
+template<bool H, bool... T>
+struct or_helper : std::integral_constant<bool, H || or_helper<T...>::value> {};
+
+template<bool H>
+struct or_helper<H> : std::integral_constant<bool, H> {};
+
+} //end of namespace tmp_detail
+
 template<int I, typename Tuple, typename Functor>
 struct for_each_tuple_t_impl {
     static void for_each(Functor&& func){
@@ -88,11 +104,15 @@ struct not_u : std::integral_constant<bool, !B> {};
 template<typename C>
 struct not_c : std::integral_constant<bool, !C::value> {};
 
-template<bool H, bool... T>
-struct and_u : std::integral_constant<bool, H && and_u<T...>::value> {};
-
-template<bool H>
-struct and_u<H> : std::integral_constant<bool, H> {};
+/*!
+ * \brief TMP helper implementing the AND boolean operator of given boolean values.
+ *
+ * Represents an integral constant with the ANDed value of the given boolean values.
+ *
+ * \tparam C The sequence of boolean values to AND.
+ */
+template<bool... C>
+using and_u = tmp_detail::and_helper<C...>;
 
 /*!
  * \brief TMP helper implementing the AND boolean operator taking a sequence TMP class.
@@ -102,16 +122,27 @@ struct and_u<H> : std::integral_constant<bool, H> {};
  * \tparam C The sequence of TMP classes whose value to AND.
  */
 template<typename... C>
-using and_c = and_u<C::value...>;
+using and_c = tmp_detail::and_helper<C::value...>;
 
-template<bool H, bool... T>
-struct or_u : std::integral_constant<bool, H || or_u<T...>::value> {};
+/*!
+ * \brief TMP helper implementing the OR boolean operator of given boolean values.
+ *
+ * Represents an integral constant with the ANDed value of the given boolean values.
+ *
+ * \tparam C The sequence of boolean values to OR.
+ */
+template<bool... C>
+using or_u = tmp_detail::or_helper<C...>;
 
-template<bool H>
-struct or_u<H> : std::integral_constant<bool, H> {};
-
+/*!
+ * \brief TMP helper implementing the OR boolean operator taking a sequence TMP class.
+ *
+ * Represents an integral constant with the ANDed value of the given TMP classes.
+ *
+ * \tparam C The sequence of TMP classes whose value to OR.
+ */
 template<typename... C>
-using or_c = or_u<C::value...>;
+using or_c = tmp_detail::or_helper<C::value...>;
 
 //enable_if utilities
 
