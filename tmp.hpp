@@ -496,9 +496,16 @@ struct variadic_contains<T1, T2, T...> : bool_constant_c<or_c<std::is_same<T1, T
 template<typename T1>
 struct variadic_contains<T1> : std::false_type {};
 
-//A simple compile-time variadic type list
+/*!
+ * \brief A compile-time type list.
+ */
 template<typename... T>
 struct type_list {
+    /*!
+     * \brief Indicates if the list contains the given type
+     * \tparam V The type to search in the list
+     * \return true if the type is in the list, false otherwise.
+     */
     template<typename V>
     static constexpr bool contains(){
         return variadic_contains<V, T...>::value;
