@@ -413,9 +413,15 @@ struct last_type {
 template<std::size_t N, typename... T>
 using nth_type_t = typename nth_type<N, T...>::type;
 
+/*!
+ * \brief Helper traits to get the last type from a variadic type list
+ */
 template<typename... T>
 using first_type_t = typename first_type<T...>::type;
 
+/*!
+ * \brief Helper traits to get the last type from a variadic type list
+ */
 template<typename... T>
 using last_type_t = typename last_type<T...>::type;
 
@@ -430,11 +436,21 @@ auto nth_value(T1&& /*t*/, T&&... args)
     return std::forward<nth_type_t<I, T1, T...>>(nth_value<I - 1>((std::forward<T>(args))...));
 }
 
+/*!
+ * \brief Returns the last value from the variadic pack
+ * \param args The variadic pack of arguments
+ * \return The last value from the variadic pack
+ */
 template<typename... T>
 auto last_value(T&&... args){
     return std::forward<last_type_t<T...>>(nth_value<sizeof...(T) - 1>(args...));
 }
 
+/*!
+ * \brief Returns the first value from the variadic pack
+ * \param args The variadic pack of arguments
+ * \return The first value from the variadic pack
+ */
 template<typename... T>
 auto first_value(T&&... args){
     return std::forward<first_type_t<T...>>(nth_value<0>(args...));
