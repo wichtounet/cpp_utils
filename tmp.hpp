@@ -55,6 +55,17 @@ struct or_helper : std::integral_constant<bool, H || or_helper<T...>::value> {};
 template<bool H>
 struct or_helper<H> : std::integral_constant<bool, H> {};
 
+template<std::size_t I, std::size_t S, typename F, typename... T>
+struct is_homogeneous_helper {
+    template<std::size_t I1, std::size_t S1, typename Enable = void>
+    struct helper_int : bool_constant_c<and_c<std::is_same<F, nth_type_t<I1, T...>>, is_homogeneous_helper<I1+1, S1, F, T...>>> {};
+
+    template<std::size_t I1, std::size_t S1>
+    struct helper_int<I1, S1, std::enable_if_t<I1 == S1>> : bool_constant_c<std::is_same<F, nth_type_t<I1, T...>>> {};
+
+    static constexpr const auto value = helper_int<I, S>::value;
+};
+
 } //end of namespace tmp_detail
 
 template<int I, typename Tuple, typename Functor>
@@ -435,19 +446,8 @@ struct all_convertible_to : bool_constant_c<and_c<all_convertible_to<V, F>, all_
 template<typename V, typename F>
 struct all_convertible_to<V, F> : bool_constant_c<std::is_convertible<F, V>> {};
 
-template<std::size_t I, std::size_t S, typename F, typename... T>
-struct is_homogeneous_helper {
-    template<std::size_t I1, std::size_t S1, typename Enable = void>
-    struct helper_int : bool_constant_c<and_c<std::is_same<F, nth_type_t<I1, T...>>, is_homogeneous_helper<I1+1, S1, F, T...>>> {};
-
-    template<std::size_t I1, std::size_t S1>
-    struct helper_int<I1, S1, std::enable_if_t<I1 == S1>> : bool_constant_c<std::is_same<F, nth_type_t<I1, T...>>> {};
-
-    static constexpr const auto value = helper_int<I, S>::value;
-};
-
 template<typename F, typename... T>
-struct is_homogeneous : bool_constant_c<is_homogeneous_helper<0, sizeof...(T)-1, F, T...>> {};
+struct is_homogeneous : bool_constant_c<tmp_detail::is_homogeneous_helper<0, sizeof...(T)-1, F, T...>> {};
 
 template<typename F>
 struct is_homogeneous <F> : std::true_type {};
