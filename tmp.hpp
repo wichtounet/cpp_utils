@@ -391,36 +391,52 @@ struct is_specialization_of : std::false_type {};
 template<template<typename...> class TT, typename... Args>
 struct is_specialization_of<TT, TT<Args...>> : std::true_type {};
 
-//Variadic manipulations utilities
-
+/*!
+ * \brief Traits to get the Nth type from a variadic list of types.
+ * \tparam N The index to get
+ * \tparam T The list of types
+ */
 template<std::size_t N, typename... T>
 struct nth_type {
     using type = typename std::tuple_element<N, std::tuple<T...>>::type;
 };
 
+/*!
+ * \brief Traits to get the first type from a variadic list of types.
+ * \tparam T The list of types
+ */
 template<typename... T>
 struct first_type {
     using type = typename nth_type<0, T...>::type;
 };
 
+/*!
+ * \brief Traits to get the last type from a variadic list of types.
+ * \tparam T The list of types
+ */
 template<typename... T>
 struct last_type {
     using type = typename nth_type<sizeof...(T)-1, T...>::type;
 };
 
-//Some helpers
-
+/*!
+ * \brief Helper traits to get the Nth type from a variadic type list
+ * \tparam N The index to get
+ * \tparam T The list of types
+ */
 template<std::size_t N, typename... T>
 using nth_type_t = typename nth_type<N, T...>::type;
 
 /*!
  * \brief Helper traits to get the last type from a variadic type list
+ * \tparam T The list of types
  */
 template<typename... T>
 using first_type_t = typename first_type<T...>::type;
 
 /*!
  * \brief Helper traits to get the last type from a variadic type list
+ * \tparam T The list of types
  */
 template<typename... T>
 using last_type_t = typename last_type<T...>::type;
