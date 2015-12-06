@@ -41,6 +41,56 @@ public:                                                                         
 
 namespace cpp {
 
+/*!
+ * \brief Traits to get the Nth type from a variadic list of types.
+ * \tparam N The index to get
+ * \tparam T The list of types
+ */
+template<std::size_t N, typename... T>
+struct nth_type {
+    using type = typename std::tuple_element<N, std::tuple<T...>>::type;
+};
+
+/*!
+ * \brief Traits to get the first type from a variadic list of types.
+ * \tparam T The list of types
+ */
+template<typename... T>
+struct first_type {
+    using type = typename nth_type<0, T...>::type;
+};
+
+/*!
+ * \brief Traits to get the last type from a variadic list of types.
+ * \tparam T The list of types
+ */
+template<typename... T>
+struct last_type {
+    using type = typename nth_type<sizeof...(T)-1, T...>::type;
+};
+
+/*!
+ * \brief Helper traits to get the Nth type from a variadic type list
+ * \tparam N The index to get
+ * \tparam T The list of types
+ */
+template<std::size_t N, typename... T>
+using nth_type_t = typename nth_type<N, T...>::type;
+
+/*!
+ * \brief Helper traits to get the last type from a variadic type list
+ * \tparam T The list of types
+ */
+template<typename... T>
+using first_type_t = typename first_type<T...>::type;
+
+/*!
+ * \brief Helper traits to get the last type from a variadic type list
+ * \tparam T The list of types
+ */
+template<typename... T>
+using last_type_t = typename last_type<T...>::type;
+
 namespace tmp_detail {
 
 template<bool H, bool... T>
@@ -58,10 +108,10 @@ struct or_helper<H> : std::integral_constant<bool, H> {};
 template<std::size_t I, std::size_t S, typename F, typename... T>
 struct is_homogeneous_helper {
     template<std::size_t I1, std::size_t S1, typename Enable = void>
-    struct helper_int : bool_constant_c<and_c<std::is_same<F, nth_type_t<I1, T...>>, is_homogeneous_helper<I1+1, S1, F, T...>>> {};
+    struct helper_int : and_helper<std::is_same<F, nth_type_t<I1, T...>>::value, is_homogeneous_helper<I1+1, S1, F, T...>::value> {};
 
     template<std::size_t I1, std::size_t S1>
-    struct helper_int<I1, S1, std::enable_if_t<I1 == S1>> : bool_constant_c<std::is_same<F, nth_type_t<I1, T...>>> {};
+    struct helper_int<I1, S1, std::enable_if_t<I1 == S1>> : std::is_same<F, nth_type_t<I1, T...>> {};
 
     static constexpr const auto value = helper_int<I, S>::value;
 };
@@ -390,56 +440,6 @@ struct is_specialization_of : std::false_type {};
 
 template<template<typename...> class TT, typename... Args>
 struct is_specialization_of<TT, TT<Args...>> : std::true_type {};
-
-/*!
- * \brief Traits to get the Nth type from a variadic list of types.
- * \tparam N The index to get
- * \tparam T The list of types
- */
-template<std::size_t N, typename... T>
-struct nth_type {
-    using type = typename std::tuple_element<N, std::tuple<T...>>::type;
-};
-
-/*!
- * \brief Traits to get the first type from a variadic list of types.
- * \tparam T The list of types
- */
-template<typename... T>
-struct first_type {
-    using type = typename nth_type<0, T...>::type;
-};
-
-/*!
- * \brief Traits to get the last type from a variadic list of types.
- * \tparam T The list of types
- */
-template<typename... T>
-struct last_type {
-    using type = typename nth_type<sizeof...(T)-1, T...>::type;
-};
-
-/*!
- * \brief Helper traits to get the Nth type from a variadic type list
- * \tparam N The index to get
- * \tparam T The list of types
- */
-template<std::size_t N, typename... T>
-using nth_type_t = typename nth_type<N, T...>::type;
-
-/*!
- * \brief Helper traits to get the last type from a variadic type list
- * \tparam T The list of types
- */
-template<typename... T>
-using first_type_t = typename first_type<T...>::type;
-
-/*!
- * \brief Helper traits to get the last type from a variadic type list
- * \tparam T The list of types
- */
-template<typename... T>
-using last_type_t = typename last_type<T...>::type;
 
 template<int I, typename T1, typename... T, enable_if_u<(I == 0)> = detail::dummy>
 auto nth_value(T1&& t, T&&... /*args*/) -> decltype(std::forward<T1>(t)) {
