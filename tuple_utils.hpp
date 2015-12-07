@@ -17,6 +17,8 @@
 
 namespace cpp {
 
+namespace tuple_detail {
+
 template<size_t I, typename Tuple, typename F>
 struct for_each_impl {
     static void for_each(Tuple& t, F&& f) {
@@ -119,6 +121,8 @@ struct dual_for_each_impl<0, Tuple1, Tuple2, F> {
     }
 };
 
+} //end of nanespace tuple_detail
+
 /*!
  * \brief Call the given functor with each element of the tuple
  * \param t The tuple to iterate over
@@ -128,7 +132,7 @@ struct dual_for_each_impl<0, Tuple1, Tuple2, F> {
  */
 template<typename Tuple, typename F>
 void for_each(Tuple& t, F&& f) {
-    for_each_impl<std::tuple_size<Tuple>::value - 1, Tuple, F>::for_each(t, std::forward<F>(f));
+    tuple_detail::for_each_impl<std::tuple_size<Tuple>::value - 1, Tuple, F>::for_each(t, std::forward<F>(f));
 }
 
 
@@ -141,7 +145,7 @@ void for_each(Tuple& t, F&& f) {
  */
 template<typename Tuple, typename F>
 void for_each_i(Tuple& t, F&& f) {
-    for_each_impl<std::tuple_size<Tuple>::value - 1, Tuple, F>::for_each_i(t, std::forward<F>(f));
+    tuple_detail::for_each_impl<std::tuple_size<Tuple>::value - 1, Tuple, F>::for_each_i(t, std::forward<F>(f));
 }
 
 /*!
@@ -154,7 +158,7 @@ void for_each_i(Tuple& t, F&& f) {
 template<typename Tuple, typename F>
 void for_each_pair(Tuple& t, F&& f) {
     if(std::tuple_size<Tuple>::value > 1){
-        for_each_impl<std::tuple_size<Tuple>::value - 2, Tuple, F>::for_each_pair(t, std::forward<F>(f));
+        tuple_detail::for_each_impl<std::tuple_size<Tuple>::value - 2, Tuple, F>::for_each_pair(t, std::forward<F>(f));
     }
 }
 
@@ -168,55 +172,99 @@ void for_each_pair(Tuple& t, F&& f) {
 template<typename Tuple, typename F>
 void for_each_pair_i(Tuple& t, F&& f) {
     if(std::tuple_size<Tuple>::value > 1){
-        for_each_impl<std::tuple_size<Tuple>::value - 2, Tuple, F>::for_each_pair_i(t, std::forward<F>(f));
+        tuple_detail::for_each_impl<std::tuple_size<Tuple>::value - 2, Tuple, F>::for_each_pair_i(t, std::forward<F>(f));
     }
 }
 
+/*!
+ * \brief Call the given functor with each contiguous pair of element of the tuple , in reverse order.
+ * \param t The tuple to iterate over
+ * \param f The functor to use
+ *
+ * If the tuple is heterogeneous, the functor must be generic (i.e. generic lambda)
+ */
 template<typename Tuple, typename F>
 void for_each_rpair(Tuple& t, F&& f) {
     if(std::tuple_size<Tuple>::value > 1){
-        for_each_impl<std::tuple_size<Tuple>::value - 2, Tuple, F>::for_each_rpair(t, std::forward<F>(f));
+        tuple_detail::for_each_impl<std::tuple_size<Tuple>::value - 2, Tuple, F>::for_each_rpair(t, std::forward<F>(f));
     }
 }
 
+/*!
+ * \brief Call the given functor with each position of contiguous pair of element of the tuple, in reverse order.
+ * \param t The tuple to iterate over
+ * \param f The functor to use
+ *
+ * If the tuple is heterogeneous, the functor must be generic (i.e. generic lambda)
+ */
 template<typename Tuple, typename F>
 void for_each_rpair_i(Tuple& t, F&& f) {
     if(std::tuple_size<Tuple>::value > 1){
-        for_each_impl<std::tuple_size<Tuple>::value - 2, Tuple, F>::for_each_rpair_i(t, std::forward<F>(f));
+        tuple_detail::for_each_impl<std::tuple_size<Tuple>::value - 2, Tuple, F>::for_each_rpair_i(t, std::forward<F>(f));
     }
 }
 
-//Dual versions
-
+/*!
+ * \brief Call the given function with elements of both tuples.
+ * \param t1 The first tuple to iterate
+ * \param t2 The second tuple to iterate
+ * \param f The functor to use
+ *
+ * If the tuples are heterogeneous, the functor must be generic (i.e. generic lambda)
+ */
 template<typename Tuple1, typename Tuple2, typename F>
 void for_each(Tuple1& t1, Tuple2& t2, F&& f) {
     static_assert(std::tuple_size<Tuple1>::value == std::tuple_size<Tuple2>::value, "Can only iterate tuples of same size");
 
-    dual_for_each_impl<std::tuple_size<Tuple1>::value - 1, Tuple1, Tuple2, F>::for_each(t1, t2, std::forward<F>(f));
+    tuple_detail::dual_for_each_impl<std::tuple_size<Tuple1>::value - 1, Tuple1, Tuple2, F>::for_each(t1, t2, std::forward<F>(f));
 }
 
+/*!
+ * \brief Call the given function with position of elements of both tuples.
+ * \param t1 The first tuple to iterate
+ * \param t2 The second tuple to iterate
+ * \param f The functor to use
+ *
+ * If the tuples are heterogeneous, the functor must be generic (i.e. generic lambda)
+ */
 template<typename Tuple1, typename Tuple2, typename F>
 void for_each_i(Tuple1& t1, Tuple2& t2, F&& f) {
     static_assert(std::tuple_size<Tuple1>::value == std::tuple_size<Tuple2>::value, "Can only iterate tuples of same size");
 
-    dual_for_each_impl<std::tuple_size<Tuple1>::value - 1, Tuple1, Tuple2, F>::for_each_i(t1, t2, std::forward<F>(f));
+    tuple_detail::dual_for_each_impl<std::tuple_size<Tuple1>::value - 1, Tuple1, Tuple2, F>::for_each_i(t1, t2, std::forward<F>(f));
 }
 
+/*!
+ * \brief Call the given function with pair of elements of both tuples.
+ * \param t1 The first tuple to iterate
+ * \param t2 The second tuple to iterate
+ * \param f The functor to use
+ *
+ * If the tuples are heterogeneous, the functor must be generic (i.e. generic lambda)
+ */
 template<typename Tuple1, typename Tuple2, typename F>
 void for_each_pair(Tuple1& t1, Tuple2& t2, F&& f) {
     static_assert(std::tuple_size<Tuple1>::value == std::tuple_size<Tuple2>::value, "Can only iterate tuples of same size");
 
     if(std::tuple_size<Tuple1>::value > 1){
-        dual_for_each_impl<std::tuple_size<Tuple1>::value - 2, Tuple1, Tuple2, F>::for_each_pair(t1, t2, std::forward<F>(f));
+        tuple_detail::dual_for_each_impl<std::tuple_size<Tuple1>::value - 2, Tuple1, Tuple2, F>::for_each_pair(t1, t2, std::forward<F>(f));
     }
 }
 
+/*!
+ * \brief Call the given function with position of pair of elements of both tuples, in reverse order.
+ * \param t1 The first tuple to iterate
+ * \param t2 The second tuple to iterate
+ * \param f The functor to use
+ *
+ * If the tuples are heterogeneous, the functor must be generic (i.e. generic lambda)
+ */
 template<typename Tuple1, typename Tuple2, typename F>
 void for_each_rpair_i(Tuple1& t1, Tuple2& t2, F&& f) {
     static_assert(std::tuple_size<Tuple1>::value == std::tuple_size<Tuple2>::value, "Can only iterate tuples of same size");
 
     if(std::tuple_size<Tuple1>::value > 1){
-        dual_for_each_impl<std::tuple_size<Tuple1>::value - 2, Tuple1, Tuple2, F>::for_each_rpair_i(t1, t2, std::forward<F>(f));
+        tuple_detail::dual_for_each_impl<std::tuple_size<Tuple1>::value - 2, Tuple1, Tuple2, F>::for_each_rpair_i(t1, t2, std::forward<F>(f));
     }
 }
 
