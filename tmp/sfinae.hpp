@@ -8,6 +8,12 @@
 /*!
  * \file
  * \brief Contains Template Metaprogramming (TMP) utilities for SFINAE.
+ *
+ * Clang compiler tries to do smart error reporting based on enable-if. For
+ * this reason, all the aliases are defined in terms of enable-if and not by
+ * composition. Nevertheless, even with that, error reporting fails short when
+ * enable_if is not used directly. Therefore, it is advised to use the macros
+ * instead of the aliases.
  */
 
 #ifndef CPP_UTILS_TMP_SFINAE_HPP
@@ -15,11 +21,26 @@
 
 namespace cpp {
 
-//enable_if utilities
-
+/*!
+ * \brief Helper to use a enable-if-not (disable-if)
+ *
+ * This can be used to improve readibility of the code
+ *
+ * \tparam B The boolean disabler
+ * \tparam T The type in case of success
+ */
 template<bool B, typename T = void>
 using disable_if = std::enable_if<!B, T>;
 
+/*!
+ * \brief Helper to use a enable-if-not (disable-if), this helper is directly
+ * the type of the disabler.
+ *
+ * This can be used to improve readibility of the code
+ *
+ * \tparam B The boolean disabler
+ * \tparam T The type in case of success
+ */
 template<bool B, typename T = void>
 using disable_if_t = typename std::enable_if<!B, T>::type;
 
@@ -41,39 +62,87 @@ constexpr const enabler_t dummy = enabler_t::DUMMY;
 //Even with this, the error reporting using these alias declarations is pretty
 //bad, this is the reason, the macros have been written :(
 
+/*!
+ * \brief Universal enable_if helper, the success-type is a dummy type.
+ * \tparam B The boolean enabler
+ */
 template<bool B>
 using enable_if_u = typename std::enable_if<B, detail::enabler_t>::type;
 
+/*!
+ * \brief Universal disable_if helper, the success-type is a dummy type.
+ * \tparam B The boolean disabler
+ */
 template<bool B>
 using disable_if_u = typename std::enable_if<not_u<B>::value, detail::enabler_t>::type;
 
+/*!
+ * \brief Universal enable_if helper from traits, the success-type is a dummy type.
+ * \tparam C The traits to extract the value from.
+ */
 template<typename C>
 using enable_if_c = typename std::enable_if<C::value, detail::enabler_t>::type;
 
+/*!
+ * \brief Universal disable_if helper from traits, the success-type is a dummy type.
+ * \tparam C The traits to extract the value from.
+ */
 template<typename C>
 using disable_if_c = typename std::enable_if<not_c<C>::value, detail::enabler_t>::type;
 
+/*!
+ * \brief Universal enable_if helper for several boolean values (AND), the success-type is a dummy type.
+ * \tparam B The boolean values for enabler
+ */
 template<bool... B>
 using enable_if_all_u = typename std::enable_if<and_u<B...>::value, detail::enabler_t>::type;
 
+/*!
+ * \brief Universal disable_if helper for several boolean values (AND), the success-type is a dummy type.
+ * \tparam B The boolean values for disabler
+ */
 template<bool... B>
 using disable_if_all_u = typename std::enable_if<not_c<and_u<B...>>::value, detail::enabler_t>::type;
 
+/*!
+ * \brief Universal enable_if helper for several traits (AND), the success-type is a dummy type.
+ * \tparam C The traits for enabler
+ */
 template<typename... C>
 using enable_if_all_c = typename std::enable_if<and_c<C...>::value, detail::enabler_t>::type;
 
+/*!
+ * \brief Universal disable_if helper for several traits (AND), the success-type is a dummy type.
+ * \tparam C The traits for disabler
+ */
 template<typename... C>
 using disable_if_all_c = typename std::enable_if<not_c<and_c<C...>>::value, detail::enabler_t>::type;
 
+/*!
+ * \brief Universal enable_if helper for several boolean values (OR), the success-type is a dummy type.
+ * \tparam B The boolean values for enabler
+ */
 template<bool... B>
 using enable_if_one_u = typename std::enable_if<or_u<B...>::value, detail::enabler_t>::type;
 
+/*!
+ * \brief Universal disable_if helper for several boolean values (OR), the success-type is a dummy type.
+ * \tparam B The boolean values for disabler
+ */
 template<bool... B>
 using disable_if_one_u = typename std::enable_if<not_c<or_u<B...>>::value, detail::enabler_t>::type;
 
+/*!
+ * \brief Universal enable_if helper for several traits (OR), the success-type is a dummy type.
+ * \tparam C The traits for enabler
+ */
 template<typename... C>
 using enable_if_one_c = typename std::enable_if<or_c<C...>::value, detail::enabler_t>::type;
 
+/*!
+ * \brief Universal disable_if helper for several traits (OR), the success-type is a dummy type.
+ * \tparam C The traits for disabler
+ */
 template<typename... C>
 using disable_if_one_c = typename std::enable_if<not_c<or_c<C...>>::value, detail::enabler_t>::type;
 
