@@ -19,11 +19,18 @@
 
 namespace cpp {
 
+/*!
+ * \brief A conditional thread pool
+ * \tparam Parallel Defines if the thread pool is parallel or not
+ */
 template<bool Parallel>
 struct thread_pool {
     //Does not do anything by default
 };
 
+/*!
+ * \copydoc thread_pool
+ */
 template<>
 struct thread_pool<true> : default_thread_pool<> {
     //Simply inherits from default thread pool

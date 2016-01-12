@@ -105,8 +105,10 @@ using add_const_lvalue_t = std::add_lvalue_reference_t<std::add_const_t<T>>;
 template<typename T>
 using add_const_rvalue_t = std::add_rvalue_reference_t<std::add_const_t<T>>;
 
-//Integral constants
-
+/*!
+ * \brief Base class for an integral boolean constant extracting its value from a TMP class.
+ * \tparam C The TMP class to extract the value from.
+ */
 template<typename T, typename C>
 using integral_constant_c = std::integral_constant<T, C::value>;
 
@@ -134,6 +136,12 @@ using bool_constant_c = std::integral_constant<bool, C::value>;
 template<typename V>
 struct auto_constant : std::integral_constant<decltype(V::value), V::value> {};
 
+/*!
+ * \brief A conditional constant extracting its from either V1 or V2 depending on the condition
+ * \tparam C The boolean value
+ * \tparam V1 The first value class
+ * \tparam V2 The second value class
+ */
 template<bool C, typename V1, typename V2>
 struct conditional_constant;
 
