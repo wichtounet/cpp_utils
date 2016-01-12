@@ -150,6 +150,8 @@ using disable_if_one_c = typename std::enable_if<not_c<or_c<C...>>::value, detai
 //simpler versions
 //Note: We don't surround args by parenths, since this would result in being evaluated as the comma operator
 
+#ifndef SONAR_ANALYSIS
+
 #define cpp_enable_if(...) typename std::enable_if<cpp::and_u<__VA_ARGS__>::value, cpp::detail::enabler_t>::type = cpp::detail::dummy
 #define cpp_disable_if(...) typename std::enable_if<cpp::not_c<cpp::and_u<__VA_ARGS__>>::value, cpp::detail::enabler_t>::type= cpp::detail::dummy
 
@@ -164,6 +166,28 @@ using disable_if_one_c = typename std::enable_if<not_c<or_c<C...>>::value, detai
 
 #define cpp_enable_if_cst(...) bool CPP_CST_ENABLE = true, typename std::enable_if<(__VA_ARGS__) && CPP_CST_ENABLE, cpp::detail::enabler_t>::type = cpp::detail::dummy
 #define cpp_disable_if_cst(...) bool CPP_CST_ENABLE = true, typename std::enable_if<!((__VA_ARGS__) && CPP_CST_ENABLE), cpp::detail::enabler_t>::type = cpp::detail::dummy
+
+#else
+
+//sonar-cxx does a very poor job of handling the macros directly. Therefore we simply use std::enable_if_t to avoid false positives by the hundreds
+//These versions cannot be used in the general case for debugging reasons (see explanations above)
+
+#define cpp_enable_if(...) std::enable_if_t<cpp::and_u<__VA_ARGS__>::value, cpp::detail::enabler_t> = cpp::detail::dummy
+#define cpp_disable_if(...) std::enable_if_t<cpp::not_c<cpp::and_u<__VA_ARGS__>>::value, cpp::detail::enabler_t> = cpp::detail::dummy
+
+#define cpp_enable_if_fwd(...) std::enable_if_t<cpp::and_u<__VA_ARGS__>::value, cpp::detail::enabler_t>
+#define cpp_disable_if_fwd(...) std::enable_if_t<cpp::not_c<cpp::and_u<__VA_ARGS__>>::value, cpp::detail::enabler_t>
+
+#define cpp_enable_if_or(...) std::enable_if_t<cpp::or_u<__VA_ARGS__>::value, cpp::detail::enabler_t> = cpp::detail::dummy
+#define cpp_disable_if_or(...) std::enable_if_t<cpp::not_c<cpp::or_u<__VA_ARGS__>>::value, cpp::detail::enabler_t> = cpp::detail::dummy
+
+#define cpp_enable_if_or_fwd(...) std::enable_if_t<cpp::or_u<__VA_ARGS__>::value, cpp::detail::enabler_t>
+#define cpp_disable_if_or_fwd(...) std::enable_if_t<cpp::not_c<cpp::or_u<__VA_ARGS__>>::value, cpp::detail::enabler_t>
+
+#define cpp_enable_if_cst(...) bool CPP_CST_ENABLE = true, std::enable_if_t<(__VA_ARGS__) && CPP_CST_ENABLE, cpp::detail::enabler_t> = cpp::detail::dummy
+#define cpp_disable_if_cst(...) bool CPP_CST_ENABLE = true, std::enable_if_t<!((__VA_ARGS__) && CPP_CST_ENABLE), cpp::detail::enabler_t> = cpp::detail::dummy
+
+#endif
 
 } //end of namespace cpp
 
