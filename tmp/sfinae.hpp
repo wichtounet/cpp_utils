@@ -53,7 +53,9 @@ namespace detail {
 /*!
  * \brief Simple enum type for enable_if to return
  */
-enum class enabler_t { DUMMY };
+enum class enabler_t {
+    DUMMY ///< The dummy value to assign to enabler-if template type default value
+};
 
 /*!
  * \brief Simple dummy constant to use as value in SFINAE

@@ -176,8 +176,13 @@ void foreach_pair_it(Container& container, Functor&& fun) noexcept(noexcept(fun(
     cpp::foreach_pair_it(begin(container), end(container), std::forward<Functor>(fun));
 }
 
-// Foreach loops operating on two ranges giving elements
-
+/*!
+ * \brief Applies the given binary functor to the result of dereferencing every iterator in the ranges [first, last) and [second, ) in order.
+ * \param first The beginning of the range
+ * \param last The end of the range
+ * \param second The beginning of the second range
+ * \param fun The functor to apply.
+ */
 template<typename IT1, typename IT2, typename Functor>
 void foreach_dual(IT1 first, IT1 last, IT2 second, Functor fun) noexcept(noexcept(fun(*first, *second))) {
     for(; first != last; ++first, ++second){
@@ -185,6 +190,12 @@ void foreach_dual(IT1 first, IT1 last, IT2 second, Functor fun) noexcept(noexcep
     }
 }
 
+/*!
+ * \brief Applies the given binary functor to each elements of the two given containers in order.
+ * \param c1 The first container
+ * \param c2 The second container
+ * \param fun The functor to apply.
+ */
 template<typename C1, typename C2, typename Functor>
 void foreach_dual(C1& c1, C2& c2, Functor&& fun) noexcept(noexcept(fun(*c1.begin(), *c2.begin()))) {
     using std::begin;
@@ -192,8 +203,13 @@ void foreach_dual(C1& c1, C2& c2, Functor&& fun) noexcept(noexcept(fun(*c1.begin
     cpp::foreach_dual(begin(c1), end(c1), begin(c2), std::forward<Functor>(fun));
 }
 
-// Foreach loops operating on two ranges giving iterators
-
+/*!
+ * \brief Applies the given binary functor to the every iterator in the ranges [first, last) and [second, ) in order.
+ * \param first The beginning of the range
+ * \param last The end of the range
+ * \param second The beginning of the second range
+ * \param fun The functor to apply.
+ */
 template<typename IT1, typename IT2, typename Functor>
 void foreach_dual_it(IT1 first, IT1 last, IT2 second, Functor fun) noexcept(noexcept(fun(first, second))) {
     for(; first != last; ++first, ++second){
@@ -201,6 +217,12 @@ void foreach_dual_it(IT1 first, IT1 last, IT2 second, Functor fun) noexcept(noex
     }
 }
 
+/*!
+ * \brief Applies the given binary functor to each iterators of the two given containers in order.
+ * \param c1 The first container
+ * \param c2 The second container
+ * \param fun The functor to apply.
+ */
 template<typename C1, typename C2, typename Functor>
 void foreach_dual_it(C1& c1, C2& c2, Functor&& fun) noexcept(noexcept(fun(c1.begin(), c2.begin()))) {
     using std::begin;
@@ -208,8 +230,13 @@ void foreach_dual_it(C1& c1, C2& c2, Functor&& fun) noexcept(noexcept(fun(c1.beg
     cpp::foreach_dual_it(begin(c1), end(c1), begin(c2), std::forward<Functor>(fun));
 }
 
-// Foreach loops operating on two ranges giving elements and position
-
+/*!
+ * \brief Applies the given binary functor to the result of dereferencing every iterator in the ranges [first, last) and [second, ) and their index in order.
+ * \param first The beginning of the range
+ * \param last The end of the range
+ * \param second The beginning of the second range
+ * \param fun The functor to apply.
+ */
 template<typename IT1, typename IT2, typename Functor>
 void foreach_dual_i(IT1 first, IT1 last, IT2 second, Functor fun) noexcept(noexcept(fun(*first, *second, 0))) {
     std::size_t i = 0;
@@ -218,6 +245,12 @@ void foreach_dual_i(IT1 first, IT1 last, IT2 second, Functor fun) noexcept(noexc
     }
 }
 
+/*!
+ * \brief Applies the given binary functor to each elements of the two given containers and their index in order.
+ * \param c1 The first container
+ * \param c2 The second container
+ * \param fun The functor to apply.
+ */
 template<typename C1, typename C2, typename Functor>
 void foreach_dual_i(C1& c1, C2& c2, Functor&& fun) noexcept(noexcept(fun(*c1.begin(), *c2.begin(), 0))) {
     using std::begin;
@@ -240,6 +273,13 @@ void foreach_n(std::size_t first, std::size_t last, Functor&& fun){
 
 // Create a new vector with the transformation of a sequence
 
+/*!
+ * \brief Transform a range and store the result into a vector
+ * \param first The beginning of the range
+ * \param last The end of the range
+ * \param fun The transform functor
+ * \return A vector filled with the transformed objects
+ */
 template<typename Iterator, typename Functor>
 auto vector_transform(Iterator first, Iterator last, Functor&& fun){
     std::vector<decltype(fun(*first))> transformed;

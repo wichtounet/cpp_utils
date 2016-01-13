@@ -639,6 +639,9 @@ public:
 
     default_thread_pool() : default_thread_pool(std::thread::hardware_concurrency()) {}
 
+    /*!
+     * \brief Destroys the thread pool and wait for the threads to be done
+     */
     ~default_thread_pool(){
         with_lock(main_lock, [this]{ stop_flag = true; });
 
@@ -649,10 +652,17 @@ public:
         }
     }
 
+    /*!
+     * \brief return the number of threads of the thread pool
+     * \return the number of threads of the thread pool
+     */
     std::size_t size() const {
         return threads.size();
     }
 
+    /*!
+     * \brief Wait for every thread to be done
+     */
     void wait(){
         while(true){
             std::unique_lock<std::mutex> ulock(main_lock);
@@ -669,6 +679,11 @@ public:
         }
     }
 
+    /*!
+     * \brief Submit a task to the pool
+     * \param fun The functor to execute
+     * \param args The arguments to be passed to the functor
+     */
     template<class Functor, typename... Args>
     void do_task(Functor fun, Args... args){
         with_lock(main_lock, [fun, args..., this](){
