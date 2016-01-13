@@ -50,7 +50,14 @@ namespace detail {
 //possible to use universal enable_if/disable_if directly, it is necessary to
 //use the dummy :( FU Clang!
 
+/*!
+ * \brief Simple enum type for enable_if to return
+ */
 enum class enabler_t { DUMMY };
+
+/*!
+ * \brief Simple dummy constant to use as value in SFINAE
+ */
 constexpr const enabler_t dummy = enabler_t::DUMMY;
 
 } //end of detail

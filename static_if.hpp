@@ -48,6 +48,16 @@ struct statement<false> {
 
 } //end of namespace static_if_detail
 
+/*!
+ * \brief Execute the lambda if the static condition is verified
+ *
+ * This should be usd to auto lambda to ensure instantiation is only made for
+ * the "true" branch
+ *
+ * \tparam Cond The static condition
+ * \param f The lambda to execute if true
+ * \return a statement object to execute else_ if necessary
+ */
 template<bool Cond, typename F>
 static_if_detail::statement<Cond> static_if(F const& f){
     static_if_detail::statement<Cond> if_;

@@ -157,7 +157,7 @@ struct conditional_constant<false, V1, V2> : auto_constant<V2> {};
  */
 template<typename T>
 struct type_constant {
-    using type = T;
+    using type = T; ///< The result type
 };
 
 /*!
@@ -166,7 +166,7 @@ struct type_constant {
  */
 template<typename T>
 struct type_constant_c {
-    using type = typename T::value;
+    using type = typename T::value; ///< The result type
 };
 
 template<bool C, typename V1, typename V2>
@@ -174,12 +174,12 @@ struct conditional_type_constant;
 
 template<typename V1, typename V2>
 struct conditional_type_constant<true, V1, V2> {
-    using type = V1;
+    using type = V1; ///< The result type
 };
 
 template<typename V1, typename V2>
 struct conditional_type_constant<false, V1, V2> {
-    using type = V2;
+    using type = V2; ///< The result type
 };
 
 template<bool C, typename V1, typename V2>
@@ -187,12 +187,12 @@ struct conditional_type_constant_c;
 
 template<typename V1, typename V2>
 struct conditional_type_constant_c<true, V1, V2> {
-    using type = typename V1::value;
+    using type = typename V1::value; ///< The result type
 };
 
 template<typename V1, typename V2>
 struct conditional_type_constant_c<false, V1, V2> {
-    using type = typename V2::value;
+    using type = typename V2::value; ///< The result type
 };
 
 /*!
@@ -201,6 +201,9 @@ struct conditional_type_constant_c<false, V1, V2> {
  */
 template<typename TT>
 struct template_type_constant {
+    /*!
+     * \brief The result type
+     */
     template<typename T>
     using type = TT;
 };
@@ -211,6 +214,9 @@ struct template_type_constant {
  */
 template<typename TT>
 struct template_type_constant_c {
+    /*!
+     * \brief The result type
+     */
     template<typename T>
     using type = typename TT::template value<T>;
 };
@@ -220,12 +226,18 @@ struct conditional_template_type_constant;
 
 template<template<typename> class V1, template<typename> class V2>
 struct conditional_template_type_constant<true, V1, V2> {
+    /*!
+     * \brief The result type
+     */
     template<typename T>
     using type = V1<T>;
 };
 
 template<template<typename> class V1, template<typename> class V2>
 struct conditional_template_type_constant<false, V1, V2> {
+    /*!
+     * \brief The result type
+     */
     template<typename T>
     using type = V2<T>;
 };
@@ -235,12 +247,18 @@ struct conditional_template_type_constant_c;
 
 template<typename V1, typename V2>
 struct conditional_template_type_constant_c<true, V1, V2> {
+    /*!
+     * \brief The result type
+     */
     template<typename T>
     using type = typename V1::template value<T>;
 };
 
 template<typename V1, typename V2>
 struct conditional_template_type_constant_c<false, V1, V2> {
+    /*!
+     * \brief The result type
+     */
     template<typename T>
     using type = typename V2::template value<T>;
 };

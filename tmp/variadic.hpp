@@ -13,6 +13,8 @@
 #ifndef CPP_UTILS_TMP_VARIADIC_HPP
 #define CPP_UTILS_TMP_VARIADIC_HPP
 
+#include "sfinae.hpp"
+
 namespace cpp {
 
 /*!
@@ -68,7 +70,7 @@ using last_type_t = typename last_type<T...>::type;
 /*
  * \brief Extract the Ith value from the variadic list
  */
-template<int I, typename T1, typename... T, enable_if_u<(I == 0)> = detail::dummy>
+template<int I, typename T1, typename... T, cpp_enable_if(I == 0)>
 auto nth_value(T1&& t, T&&... /*args*/) -> decltype(std::forward<T1>(t)) {
     return std::forward<T1>(t);
 }
@@ -76,7 +78,7 @@ auto nth_value(T1&& t, T&&... /*args*/) -> decltype(std::forward<T1>(t)) {
 /*
  * \brief Extract the Ith value from the variadic list
  */
-template<int I, typename T1, typename... T, enable_if_u<(I > 0)> = detail::dummy>
+template<int I, typename T1, typename... T, cpp_enable_if((I > 0))>
 auto nth_value(T1&& /*t*/, T&&... args)
         -> decltype(std::forward<nth_type_t<I, T1, T...>>(std::declval<nth_type_t<I, T1, T...>>())){
     return std::forward<nth_type_t<I, T1, T...>>(nth_value<I - 1>((std::forward<T>(args))...));

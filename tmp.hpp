@@ -64,36 +64,79 @@ void for_each_tuple_t(Functor&& func){
     for_each_tuple_t_impl<static_cast<int>(std::tuple_size<Tuple>::value) - 1, Tuple, Functor>::for_each(std::forward<Functor>(func));
 }
 
+/*!
+ * \brief Traits to test if a type is a specialization of a template
+ * \tparam TT The template type
+ * \tparam T The type to test
+ */
 template<template<typename...> class TT, typename T>
 struct is_specialization_of : std::false_type {};
 
+/*!
+ * \copydoc is_specialization_of
+ */
 template<template<typename...> class TT, typename... Args>
 struct is_specialization_of<TT, TT<Args...>> : std::true_type {};
 
+/*!
+ * \brief Traits to test if all the given types are convertible to V
+ * \tparam V The target type
+ * \tparam F The first type to test
+ * \tparam S The types to test
+ */
 template<typename V, typename F, typename... S>
 struct all_convertible_to : bool_constant_c<and_c<all_convertible_to<V, F>, all_convertible_to<V, S...>>> {};
 
+/*!
+ * \copydoc all_convertible_to
+ */
 template<typename V, typename F>
 struct all_convertible_to<V, F> : bool_constant_c<std::is_convertible<F, V>> {};
 
+/*!
+ * \brief Test is a list of types homogeneous
+ * \tparam F The first type
+ * \tparam T The types
+ */
 template<typename F, typename... T>
 struct is_homogeneous : bool_constant_c<tmp_detail::is_homogeneous_helper<0, sizeof...(T)-1, F, T...>> {};
 
+/*!
+ * \copydoc all_convertible_to
+ */
 template<typename F>
 struct is_homogeneous <F> : std::true_type {};
 
+/*
+ * \brief Test if a list of types is sub-homogeneous
+ *
+ * A sub-homogeneous list of types is a list where the N-1 first types are the
+ * same and the last one is different
+ */
 template<typename... T>
 struct is_sub_homogeneous;
 
+/*!
+ * \copydoc all_convertible_to
+ */
 template<>
 struct is_sub_homogeneous<> : std::false_type {};
 
+/*!
+ * \copydoc all_convertible_to
+ */
 template<typename T>
 struct is_sub_homogeneous<T> : std::false_type {};
 
+/*!
+ * \copydoc all_convertible_to
+ */
 template<typename T1, typename T2>
 struct is_sub_homogeneous<T1, T2> : bool_constant_c<not_c<std::is_same<T1, T2>>> {};
 
+/*!
+ * \copydoc all_convertible_to
+ */
 template<typename T1, typename T2, typename T3, typename... T>
 struct is_sub_homogeneous<T1, T2, T3, T...> : bool_constant_c<
     and_c<
@@ -117,12 +160,23 @@ void for_each_in(F&& f, T&&... args){
     for_each_in_subset(f, std::make_index_sequence<sizeof...(T)>(), std::forward<T>(args)...);
 }
 
+/*!
+ * \brief Test if the variadic list of types containg the given type
+ * \tparam T1 The type to search
+ * \tparam T The list of types
+ */
 template<typename T1, typename... T>
 struct variadic_contains;
 
+/*!
+ * \copydoc variadic_contains
+ */
 template<typename T1, typename T2, typename... T>
 struct variadic_contains<T1, T2, T...> : bool_constant_c<or_c<std::is_same<T1, T2>, variadic_contains<T1, T...>>> {};
 
+/*!
+ * \copydoc variadic_contains
+ */
 template<typename T1>
 struct variadic_contains<T1> : std::false_type {};
 
