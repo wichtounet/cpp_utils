@@ -37,6 +37,9 @@ struct is_homogeneous_helper {
 
 } //end of namespace tmp_detail
 
+/*!
+ * \brief Implementation of helper for for_each_tuple_t
+ */
 template<int I, typename Tuple, typename Functor>
 struct for_each_tuple_t_impl {
     static void for_each(Functor&& func){
@@ -45,6 +48,9 @@ struct for_each_tuple_t_impl {
     }
 };
 
+/*!
+ * \copydoc for_each_tuple_t_impl
+ */
 template<typename Tuple, typename Functor>
 struct for_each_tuple_t_impl<0, Tuple, Functor> {
     static void for_each(Functor&& func){
@@ -52,6 +58,9 @@ struct for_each_tuple_t_impl<0, Tuple, Functor> {
     }
 };
 
+/*!
+ * \copydoc for_each_tuple_t_impl
+ */
 template<typename Tuple, typename Functor>
 struct for_each_tuple_t_impl<-1, Tuple, Functor> {
     static void for_each(Functor&& /*func*/){
@@ -59,6 +68,11 @@ struct for_each_tuple_t_impl<-1, Tuple, Functor> {
     }
 };
 
+/*!
+ * \brief Call the given functor for each type in the tuple
+ * \tparam The tuple type
+ * \param func The functor to call
+ */
 template<typename Tuple, typename Functor>
 void for_each_tuple_t(Functor&& func){
     for_each_tuple_t_impl<static_cast<int>(std::tuple_size<Tuple>::value) - 1, Tuple, Functor>::for_each(std::forward<Functor>(func));

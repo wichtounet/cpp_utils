@@ -19,6 +19,9 @@ namespace cpp {
 
 namespace tuple_detail {
 
+/*!
+ * \brief Implementation o the functors for for_each
+ */
 template<size_t I, typename Tuple, typename F>
 struct for_each_impl {
     static void for_each(Tuple& t, F&& f) {
@@ -52,6 +55,9 @@ struct for_each_impl {
     }
 };
 
+/*!
+ * \copydoc for_each_impl
+ */
 template<typename Tuple, typename F>
 struct for_each_impl<0, Tuple, F> {
     static void for_each(Tuple& t, F&& f) {
@@ -79,6 +85,9 @@ struct for_each_impl<0, Tuple, F> {
     }
 };
 
+/*!
+ * \brief Implementation of the functors for dual_for_each functions
+ */
 template<size_t I, typename Tuple1, typename Tuple2, typename F>
 struct dual_for_each_impl {
     static void for_each(Tuple1& t1, Tuple2& t2, F&& f) {
@@ -102,6 +111,9 @@ struct dual_for_each_impl {
     }
 };
 
+/*!
+ * \copydoc dual_for_each_impl
+ */
 template<typename Tuple1, typename Tuple2, typename F>
 struct dual_for_each_impl<0, Tuple1, Tuple2, F> {
     static void for_each(Tuple1& t1, Tuple2& t2, F&& f) {

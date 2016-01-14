@@ -6,7 +6,7 @@
 //=======================================================================
 
 /*!
- * \file parallel.hpp
+ * \file
  * \brief Contains parallel algorithms and thread pool implementations.
  */
 
@@ -589,9 +589,12 @@ void parallel_foreach_pair_i(TP& thread_pool, Iterator f_first, Iterator f_last,
  */
 template<template<typename...> class queue_t = std::deque>
 struct default_thread_pool {
+    /*!
+     * \brief Enumeration for the status of threads
+     */
     enum class thread_status {
-        WAITING,
-        WORKING
+        WAITING, ///< The thread is waiting on a task
+        WORKING  ///< The thread is working on a task
     };
 
 private:
@@ -604,6 +607,10 @@ private:
     volatile bool stop_flag = false;
 
 public:
+    /*!
+     * \brief Construct a thread pool with the given number of threads
+     * \param n The number of threads
+     */
     default_thread_pool(std::size_t n) : status(n, thread_status::WAITING) {
         for(std::size_t t = 0; t < n; ++t){
             threads.emplace_back([this, t]{
@@ -637,6 +644,9 @@ public:
         }
     }
 
+    /*!
+     * \brief Construct a thread pool with as many threads as the hardware has concurrency
+     */
     default_thread_pool() : default_thread_pool(std::thread::hardware_concurrency()) {}
 
     /*!
