@@ -17,16 +17,16 @@ namespace cpp {
 
 namespace tmp_detail {
 
-template<bool H, bool... T>
+template <bool H, bool... T>
 struct and_helper : std::integral_constant<bool, H && and_helper<T...>::value> {};
 
-template<bool H>
+template <bool H>
 struct and_helper<H> : std::integral_constant<bool, H> {};
 
-template<bool H, bool... T>
+template <bool H, bool... T>
 struct or_helper : std::integral_constant<bool, H || or_helper<T...>::value> {};
 
-template<bool H>
+template <bool H>
 struct or_helper<H> : std::integral_constant<bool, H> {};
 
 } //end of namespace tmp_detail
@@ -38,7 +38,7 @@ struct or_helper<H> : std::integral_constant<bool, H> {};
  *
  * \tparam B The boolean value to negate
  */
-template<bool B>
+template <bool B>
 struct not_u : std::integral_constant<bool, !B> {};
 
 /*!
@@ -48,7 +48,7 @@ struct not_u : std::integral_constant<bool, !B> {};
  *
  * \tparam C The TMP class whose value to negate.
  */
-template<typename C>
+template <typename C>
 struct not_c : std::integral_constant<bool, !C::value> {};
 
 /*!
@@ -58,7 +58,7 @@ struct not_c : std::integral_constant<bool, !C::value> {};
  *
  * \tparam C The sequence of boolean values to AND.
  */
-template<bool... C>
+template <bool... C>
 using and_u = tmp_detail::and_helper<C...>;
 
 /*!
@@ -68,7 +68,7 @@ using and_u = tmp_detail::and_helper<C...>;
  *
  * \tparam C The sequence of TMP classes whose value to AND.
  */
-template<typename... C>
+template <typename... C>
 using and_c = tmp_detail::and_helper<C::value...>;
 
 /*!
@@ -78,7 +78,7 @@ using and_c = tmp_detail::and_helper<C::value...>;
  *
  * \tparam C The sequence of boolean values to OR.
  */
-template<bool... C>
+template <bool... C>
 using or_u = tmp_detail::or_helper<C...>;
 
 /*!
@@ -88,42 +88,42 @@ using or_u = tmp_detail::or_helper<C...>;
  *
  * \tparam C The sequence of TMP classes whose value to OR.
  */
-template<typename... C>
+template <typename... C>
 using or_c = tmp_detail::or_helper<C::value...>;
 
 /*!
  * \brief Traits to add const and lvalue reference to T.
  * \tparam T the type to add const and lvalue reference to.
  */
-template<typename T>
+template <typename T>
 using add_const_lvalue_t = std::add_lvalue_reference_t<std::add_const_t<T>>;
 
 /*!
  * \brief Traits to add const and rvalue reference to T.
  * \tparam T the type to add const and rvalue reference to.
  */
-template<typename T>
+template <typename T>
 using add_const_rvalue_t = std::add_rvalue_reference_t<std::add_const_t<T>>;
 
 /*!
  * \brief Base class for an integral boolean constant extracting its value from a TMP class.
  * \tparam C The TMP class to extract the value from.
  */
-template<typename T, typename C>
+template <typename T, typename C>
 using integral_constant_c = std::integral_constant<T, C::value>;
 
 /*!
  * \brief Base class for an integral boolean constant.
  * \tparam B The boolean constant value.
  */
-template<bool B>
+template <bool B>
 using bool_constant = std::integral_constant<bool, B>;
 
 /*!
  * \brief Base class for an integral boolean constant.
  * \tparam C The TMP class to extract the boolean value from.
  */
-template<typename C>
+template <typename C>
 using bool_constant_c = std::integral_constant<bool, C::value>;
 
 /*!
@@ -133,7 +133,7 @@ using bool_constant_c = std::integral_constant<bool, C::value>;
  *
  * \tparam V The TMP class to extract the value from.
  */
-template<typename V>
+template <typename V>
 struct auto_constant : std::integral_constant<decltype(V::value), V::value> {};
 
 /*!
@@ -142,20 +142,20 @@ struct auto_constant : std::integral_constant<decltype(V::value), V::value> {};
  * \tparam V1 The first value class
  * \tparam V2 The second value class
  */
-template<bool C, typename V1, typename V2>
+template <bool C, typename V1, typename V2>
 struct conditional_constant;
 
-template<typename V1, typename V2>
+template <typename V1, typename V2>
 struct conditional_constant<true, V1, V2> : auto_constant<V1> {};
 
-template<typename V1, typename V2>
+template <typename V1, typename V2>
 struct conditional_constant<false, V1, V2> : auto_constant<V2> {};
 
 /*!
  * \brief Base class to define a type constant
  * \tparam T The type constant.
  */
-template<typename T>
+template <typename T>
 struct type_constant {
     using type = T; ///< The result type
 };
@@ -164,33 +164,33 @@ struct type_constant {
  * \brief Base class to define a type constant
  * \tparam T The type to extract the type constant from.
  */
-template<typename T>
+template <typename T>
 struct type_constant_c {
     using type = typename T::value; ///< The result type
 };
 
-template<bool C, typename V1, typename V2>
+template <bool C, typename V1, typename V2>
 struct conditional_type_constant;
 
-template<typename V1, typename V2>
+template <typename V1, typename V2>
 struct conditional_type_constant<true, V1, V2> {
     using type = V1; ///< The result type
 };
 
-template<typename V1, typename V2>
+template <typename V1, typename V2>
 struct conditional_type_constant<false, V1, V2> {
     using type = V2; ///< The result type
 };
 
-template<bool C, typename V1, typename V2>
+template <bool C, typename V1, typename V2>
 struct conditional_type_constant_c;
 
-template<typename V1, typename V2>
+template <typename V1, typename V2>
 struct conditional_type_constant_c<true, V1, V2> {
     using type = typename V1::value; ///< The result type
 };
 
-template<typename V1, typename V2>
+template <typename V1, typename V2>
 struct conditional_type_constant_c<false, V1, V2> {
     using type = typename V2::value; ///< The result type
 };
@@ -199,12 +199,12 @@ struct conditional_type_constant_c<false, V1, V2> {
  * \brief Base class to define a template type constant
  * \tparam TT The template type constant.
  */
-template<typename TT>
+template <typename TT>
 struct template_type_constant {
     /*!
      * \brief The result type
      */
-    template<typename T>
+    template <typename T>
     using type = TT;
 };
 
@@ -212,54 +212,54 @@ struct template_type_constant {
  * \brief Base class to define a template type constant
  * \tparam TT The type to extract the template type constant from.
  */
-template<typename TT>
+template <typename TT>
 struct template_type_constant_c {
     /*!
      * \brief The result type
      */
-    template<typename T>
+    template <typename T>
     using type = typename TT::template value<T>;
 };
 
-template<bool, template<typename> class V1, template<typename> class V2>
+template <bool, template <typename> class V1, template <typename> class V2>
 struct conditional_template_type_constant;
 
-template<template<typename> class V1, template<typename> class V2>
+template <template <typename> class V1, template <typename> class V2>
 struct conditional_template_type_constant<true, V1, V2> {
     /*!
      * \brief The result type
      */
-    template<typename T>
+    template <typename T>
     using type = V1<T>;
 };
 
-template<template<typename> class V1, template<typename> class V2>
+template <template <typename> class V1, template <typename> class V2>
 struct conditional_template_type_constant<false, V1, V2> {
     /*!
      * \brief The result type
      */
-    template<typename T>
+    template <typename T>
     using type = V2<T>;
 };
 
-template<bool C, typename V1, typename V2>
+template <bool C, typename V1, typename V2>
 struct conditional_template_type_constant_c;
 
-template<typename V1, typename V2>
+template <typename V1, typename V2>
 struct conditional_template_type_constant_c<true, V1, V2> {
     /*!
      * \brief The result type
      */
-    template<typename T>
+    template <typename T>
     using type = typename V1::template value<T>;
 };
 
-template<typename V1, typename V2>
+template <typename V1, typename V2>
 struct conditional_template_type_constant_c<false, V1, V2> {
     /*!
      * \brief The result type
      */
-    template<typename T>
+    template <typename T>
     using type = typename V2::template value<T>;
 };
 

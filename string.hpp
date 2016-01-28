@@ -25,7 +25,7 @@ namespace cpp {
  *
  * All the spaces on the left of the string will be removed.
  */
-template<typename CharT, typename Traits, typename Allocator> 
+template <typename CharT, typename Traits, typename Allocator>
 std::basic_string<CharT, Traits, Allocator>& ltrim(std::basic_string<CharT, Traits, Allocator>& s) {
     s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
     return s;
@@ -38,7 +38,7 @@ std::basic_string<CharT, Traits, Allocator>& ltrim(std::basic_string<CharT, Trai
  *
  * All the spaces on the right of the string will be removed.
  */
-template<typename CharT, typename Traits, typename Allocator> 
+template <typename CharT, typename Traits, typename Allocator>
 std::basic_string<CharT, Traits, Allocator>& rtrim(std::basic_string<CharT, Traits, Allocator>& s) {
     s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
     return s;
@@ -51,7 +51,7 @@ std::basic_string<CharT, Traits, Allocator>& rtrim(std::basic_string<CharT, Trai
  *
  * All the spaces on the left and the right of the string will be removed.
  */
-template<typename CharT, typename Traits, typename Allocator> 
+template <typename CharT, typename Traits, typename Allocator>
 std::basic_string<CharT, Traits, Allocator>& trim(std::basic_string<CharT, Traits, Allocator>& s) {
     return ltrim(rtrim(s));
 }

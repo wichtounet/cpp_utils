@@ -30,7 +30,7 @@ using clock_type = std::chrono::high_resolution_clock;
  *
  * The watch automatically starts when the constructor is called
  */
-template<typename P = std::chrono::milliseconds>
+template <typename P = std::chrono::milliseconds>
 class stop_watch {
 public:
     /*!
@@ -41,7 +41,7 @@ public:
     /*!
      * \brief Constructs a new stop_watch and starts it.
      */
-    stop_watch(){
+    stop_watch() {
         start_point = clock_type::now();
     }
 
@@ -49,7 +49,7 @@ public:
      * \brief Return the elapsed time since construction.
      * \return the elapsed time since construction.
      */
-    double elapsed(){
+    double elapsed() {
         auto end_point = clock_type::now();
         auto time = std::chrono::duration_cast<precision>(end_point - start_point);
         return time.count();
@@ -66,7 +66,7 @@ private:
  *
  * The watch automatically starts when the constructor is called and display the duration when destructed.
  */
-template<typename P = std::chrono::milliseconds>
+template <typename P = std::chrono::milliseconds>
 class auto_stop_watch {
 public:
     /*!
@@ -78,14 +78,15 @@ public:
      * \brief Constructs a new auto_stop_watch and starts it.
      * \param title The title that will be displayed when the watch is over.
      */
-    explicit auto_stop_watch(std::string title) : title(std::move(title)) {
+    explicit auto_stop_watch(std::string title)
+            : title(std::move(title)) {
         //Empty
     }
 
     /*!
      * \brief Destroys the auto_stop_watch and display the elapsed time.
      */
-    ~auto_stop_watch(){
+    ~auto_stop_watch() {
         std::cout << title << " took " << watch.elapsed() << std::endl;
     }
 

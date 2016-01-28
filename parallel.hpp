@@ -17,12 +17,12 @@
 #include <iostream>
 #endif
 
-#include<thread>
-#include<future>
-#include<vector>
-#include<deque>
-#include<functional>
-#include<algorithm>
+#include <thread>
+#include <future>
+#include <vector>
+#include <deque>
+#include <functional>
+#include <algorithm>
 
 #include "assert.hpp"
 #include "tmp.hpp"
@@ -36,8 +36,8 @@ namespace cpp {
  * \param lock The lock to lock
  * \param fun The functor to call.
  */
-template<typename Lock, typename Functor>
-void with_lock(Lock& lock, Functor fun){
+template <typename Lock, typename Functor>
+void with_lock(Lock& lock, Functor fun) {
     std::unique_lock<Lock> l(lock);
     fun();
 }
@@ -53,18 +53,17 @@ void with_lock(Lock& lock, Functor fun){
  * \param last The end of the range
  * \param fun The functor to apply.
  */
-template<typename Iterator, typename Functor>
-void parallel_foreach(Iterator first, Iterator last, Functor fun){
+template <typename Iterator, typename Functor>
+void parallel_foreach(Iterator first, Iterator last, Functor fun) {
     std::vector<std::future<void>> futures;
     futures.reserve(std::distance(first, last));
 
-    for(; first != last; ++first){
+    for (; first != last; ++first) {
         futures.push_back(std::move(std::async(std::launch::async, fun, *first)));
     }
 
     //No need to wait for the futures, the destructor will do it for us
 }
-
 
 /*!
  * \brief Applies the given functor, concurrently, to each value in the given container.
@@ -74,12 +73,12 @@ void parallel_foreach(Iterator first, Iterator last, Functor fun){
  * \param container The container to iterate.
  * \param fun The functor to apply.
  */
-template<typename Container, typename Functor>
-void parallel_foreach(Container& container, Functor fun){
+template <typename Container, typename Functor>
+void parallel_foreach(Container& container, Functor fun) {
     std::vector<std::future<void>> futures;
     futures.reserve(container.size());
 
-    for(std::size_t i = 0; i < container.size(); ++i){
+    for (std::size_t i = 0; i < container.size(); ++i) {
         futures.push_back(std::move(std::async(std::launch::async, fun, container[i])));
     }
 
@@ -95,12 +94,12 @@ void parallel_foreach(Container& container, Functor fun){
  * \param last The end of the range
  * \param fun The functor to apply.
  */
-template<typename Iterator, typename Functor>
-void parallel_foreach_i(Iterator first, Iterator last, Functor fun){
+template <typename Iterator, typename Functor>
+void parallel_foreach_i(Iterator first, Iterator last, Functor fun) {
     std::vector<std::future<void>> futures;
     futures.reserve(std::distance(first, last));
 
-    for(; first != last; ++first){
+    for (; first != last; ++first) {
         futures.push_back(std::move(std::async(std::launch::async, fun, *first, futures.size())));
     }
 
@@ -115,12 +114,12 @@ void parallel_foreach_i(Iterator first, Iterator last, Functor fun){
  * \param container The container to iterate.
  * \param fun The functor to apply.
  */
-template<typename Container, typename Functor>
-void parallel_foreach_i(Container& container, Functor fun){
+template <typename Container, typename Functor>
+void parallel_foreach_i(Container& container, Functor fun) {
     std::vector<std::future<void>> futures;
     futures.reserve(container.size());
 
-    for(std::size_t i = 0; i < container.size(); ++i){
+    for (std::size_t i = 0; i < container.size(); ++i) {
         futures.push_back(std::move(std::async(std::launch::async, fun, container[i], i)));
     }
 
@@ -136,12 +135,12 @@ void parallel_foreach_i(Container& container, Functor fun){
  * \param last The end of the range
  * \param fun The functor to apply.
  */
-template<typename Iterator, typename Functor>
-void parallel_foreach_it(Iterator first, Iterator last, Functor fun){
+template <typename Iterator, typename Functor>
+void parallel_foreach_it(Iterator first, Iterator last, Functor fun) {
     std::vector<std::future<void>> futures;
     futures.reserve(std::distance(first, last));
 
-    for(; first != last; ++first){
+    for (; first != last; ++first) {
         futures.push_back(std::move(std::async(std::launch::async, fun, first)));
     }
 
@@ -156,8 +155,8 @@ void parallel_foreach_it(Iterator first, Iterator last, Functor fun){
  * \param container The container to iterate.
  * \param fun The functor to apply.
  */
-template<typename Container, typename Functor>
-void parallel_foreach_it(Container& container, Functor fun){
+template <typename Container, typename Functor>
+void parallel_foreach_it(Container& container, Functor fun) {
     using std::begin;
     using std::end;
 
@@ -173,12 +172,12 @@ void parallel_foreach_it(Container& container, Functor fun){
  * \param last The end of the range
  * \param fun The functor to apply.
  */
-template<typename Functor>
-void parallel_foreach_n(std::size_t first, std::size_t last, Functor fun){
+template <typename Functor>
+void parallel_foreach_n(std::size_t first, std::size_t last, Functor fun) {
     std::vector<std::future<void>> futures;
     futures.reserve(last - first);
 
-    for(std::size_t i = first; i != last; ++i){
+    for (std::size_t i = first; i != last; ++i) {
         futures.push_back(std::move(std::async(std::launch::async, fun, i)));
     }
 
@@ -194,12 +193,12 @@ void parallel_foreach_n(std::size_t first, std::size_t last, Functor fun){
  * \param last The end of the range
  * \param fun The functor to apply.
  */
-template<typename Iterator, typename Functor>
-void parallel_foreach_i_only(Iterator first, Iterator last, Functor fun){
+template <typename Iterator, typename Functor>
+void parallel_foreach_i_only(Iterator first, Iterator last, Functor fun) {
     std::vector<std::future<void>> futures;
     futures.reserve(std::distance(first, last));
 
-    for(; first != last; ++first){
+    for (; first != last; ++first) {
         futures.push_back(std::move(std::async(std::launch::async, fun, futures.size())));
     }
 
@@ -214,8 +213,8 @@ void parallel_foreach_i_only(Iterator first, Iterator last, Functor fun){
  * \param container The container to iterate.
  * \param fun The functor to apply.
  */
-template<typename Container, typename Functor>
-void parallel_foreach_i_only(Container& container, Functor fun){
+template <typename Container, typename Functor>
+void parallel_foreach_i_only(Container& container, Functor fun) {
     parallel_foreach_n(0, container.size(), fun);
 }
 
@@ -233,34 +232,34 @@ void parallel_foreach_i_only(Container& container, Functor fun){
  * \param last The end of the range
  * \param fun The functor to apply.
  */
-template<typename TP, typename Iterator, typename Functor,
-    cpp_enable_if(std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value)>
-void parallel_foreach(TP& thread_pool, Iterator first, Iterator last, Functor fun){
-    auto n = std::distance(first, last);
+template <typename TP, typename Iterator, typename Functor,
+          cpp_enable_if(std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value)>
+void parallel_foreach(TP& thread_pool, Iterator first, Iterator last, Functor fun) {
+    auto n    = std::distance(first, last);
     auto part = n / thread_pool.size();
 
-    if(part < 2){
-        for(; first != last; ++first){
+    if (part < 2) {
+        for (; first != last; ++first) {
             thread_pool.do_task(fun, *first);
         }
     } else {
-        auto batch_functor = [fun](Iterator first, Iterator last){
-            for(Iterator it = first; it != last; ++it){
+        auto batch_functor = [fun](Iterator first, Iterator last) {
+            for (Iterator it = first; it != last; ++it) {
                 fun(*it);
             }
         };
 
         //Distribute evenly the batches
 
-        for(std::size_t t = 0; t < thread_pool.size(); ++t){
-            thread_pool.do_task(batch_functor, first + t * part, first + (t+1) * part);
+        for (std::size_t t = 0; t < thread_pool.size(); ++t) {
+            thread_pool.do_task(batch_functor, first + t * part, first + (t + 1) * part);
         }
 
         //Distribute the remainders
 
         auto rem = n % thread_pool.size();
-        if(rem > 0){
-            for(Iterator it = last - rem; it < last; ++it){
+        if (rem > 0) {
+            for (Iterator it = last - rem; it < last; ++it) {
                 thread_pool.do_task(fun, *it);
             }
         }
@@ -279,10 +278,10 @@ void parallel_foreach(TP& thread_pool, Iterator first, Iterator last, Functor fu
  * \param last The end of the range
  * \param fun The functor to apply.
  */
-template<typename TP, typename Iterator, typename Functor,
-    cpp_disable_if(std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value)>
-void parallel_foreach(TP& thread_pool, Iterator first, Iterator last, Functor fun){
-    for(; first != last; ++first){
+template <typename TP, typename Iterator, typename Functor,
+          cpp_disable_if(std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value)>
+void parallel_foreach(TP& thread_pool, Iterator first, Iterator last, Functor fun) {
+    for (; first != last; ++first) {
         thread_pool.do_task(fun, *first);
     }
 
@@ -298,8 +297,8 @@ void parallel_foreach(TP& thread_pool, Iterator first, Iterator last, Functor fu
  * \param container The container to iterate through.
  * \param fun The functor to apply.
  */
-template<typename TP, typename Container, typename Functor>
-void parallel_foreach(TP& thread_pool, Container& container, Functor fun){
+template <typename TP, typename Container, typename Functor>
+void parallel_foreach(TP& thread_pool, Container& container, Functor fun) {
     using std::begin;
     using std::end;
     parallel_foreach(thread_pool, begin(container), end(container), fun);
@@ -315,36 +314,36 @@ void parallel_foreach(TP& thread_pool, Container& container, Functor fun){
  * \param last The end of the range
  * \param fun The functor to apply.
  */
-template<typename TP, typename Iterator, typename Functor,
-    cpp_enable_if(std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value)>
-void parallel_foreach_i(TP& thread_pool, Iterator first, Iterator last, Functor fun){
-    auto n = std::distance(first, last);
+template <typename TP, typename Iterator, typename Functor,
+          cpp_enable_if(std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value)>
+void parallel_foreach_i(TP& thread_pool, Iterator first, Iterator last, Functor fun) {
+    auto n    = std::distance(first, last);
     auto part = n / thread_pool.size();
 
-    if(part < 2){
-        for(std::size_t i = 0; first != last; ++first, ++i){
+    if (part < 2) {
+        for (std::size_t i = 0; first != last; ++first, ++i) {
             thread_pool.do_task(fun, *first, i);
         }
     } else {
-        auto batch_functor = [fun](Iterator first, Iterator last, std::size_t i_start){
+        auto batch_functor = [fun](Iterator first, Iterator last, std::size_t i_start) {
             std::size_t i = i_start;
-            for(Iterator it = first; it != last; ++it, ++i){
+            for (Iterator it = first; it != last; ++it, ++i) {
                 fun(*it, i);
             }
         };
 
         //Distribute evenly the batches
 
-        for(std::size_t t = 0; t < thread_pool.size(); ++t){
-            thread_pool.do_task(batch_functor, first + t * part, first + (t+1) * part, t * part);
+        for (std::size_t t = 0; t < thread_pool.size(); ++t) {
+            thread_pool.do_task(batch_functor, first + t * part, first + (t + 1) * part, t * part);
         }
 
         //Distribute the remainders
 
         auto rem = n % thread_pool.size();
-        if(rem > 0){
+        if (rem > 0) {
             std::size_t i = n - rem;
-            for(Iterator it = last - rem; it < last; ++it, ++i){
+            for (Iterator it = last - rem; it < last; ++it, ++i) {
                 thread_pool.do_task(fun, *it, i);
             }
         }
@@ -363,10 +362,10 @@ void parallel_foreach_i(TP& thread_pool, Iterator first, Iterator last, Functor 
  * \param last The end of the range
  * \param fun The functor to apply.
  */
-template<typename TP, typename Iterator, typename Functor,
-    cpp_disable_if(std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value)>
-void parallel_foreach_i(TP& thread_pool, Iterator first, Iterator last, Functor fun){
-    for(std::size_t i = 0; first != last; ++first, ++i){
+template <typename TP, typename Iterator, typename Functor,
+          cpp_disable_if(std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value)>
+void parallel_foreach_i(TP& thread_pool, Iterator first, Iterator last, Functor fun) {
+    for (std::size_t i = 0; first != last; ++first, ++i) {
         thread_pool.do_task(fun, *first, i);
     }
 
@@ -382,8 +381,8 @@ void parallel_foreach_i(TP& thread_pool, Iterator first, Iterator last, Functor 
  * \param container the container to iterate through
  * \param fun The functor to apply.
  */
-template<typename TP, typename Container, typename Functor>
-void parallel_foreach_i(TP& thread_pool, Container& container, Functor fun){
+template <typename TP, typename Container, typename Functor>
+void parallel_foreach_i(TP& thread_pool, Container& container, Functor fun) {
     using std::begin;
     using std::end;
     parallel_foreach_i(thread_pool, begin(container), end(container), fun);
@@ -399,34 +398,34 @@ void parallel_foreach_i(TP& thread_pool, Container& container, Functor fun){
  * \param last The end of the range
  * \param fun The functor to apply.
  */
-template<typename TP, typename Iterator, typename Functor,
-    cpp_enable_if(std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value)>
-void parallel_foreach_it(TP& thread_pool, Iterator first, Iterator last, Functor fun){
-    auto n = std::distance(first, last);
+template <typename TP, typename Iterator, typename Functor,
+          cpp_enable_if(std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value)>
+void parallel_foreach_it(TP& thread_pool, Iterator first, Iterator last, Functor fun) {
+    auto n    = std::distance(first, last);
     auto part = n / thread_pool.size();
 
-    if(part < 2){
-        for(; first != last; ++first){
+    if (part < 2) {
+        for (; first != last; ++first) {
             thread_pool.do_task(fun, first);
         }
     } else {
-        auto batch_functor = [fun](Iterator first, Iterator last){
-            for(Iterator it = first; it != last; ++it){
+        auto batch_functor = [fun](Iterator first, Iterator last) {
+            for (Iterator it = first; it != last; ++it) {
                 fun(it);
             }
         };
 
         //Distribute evenly the batches
 
-        for(std::size_t t = 0; t < thread_pool.size(); ++t){
-            thread_pool.do_task(batch_functor, first + t * part, first + (t+1) * part);
+        for (std::size_t t = 0; t < thread_pool.size(); ++t) {
+            thread_pool.do_task(batch_functor, first + t * part, first + (t + 1) * part);
         }
 
         //Distribute the remainders
 
         auto rem = n % thread_pool.size();
-        if(rem > 0){
-            for(Iterator it = last - rem; it < last; ++it){
+        if (rem > 0) {
+            for (Iterator it = last - rem; it < last; ++it) {
                 thread_pool.do_task(fun, it);
             }
         }
@@ -445,10 +444,10 @@ void parallel_foreach_it(TP& thread_pool, Iterator first, Iterator last, Functor
  * \param last The end of the range
  * \param fun The functor to apply.
  */
-template<typename TP, typename Iterator, typename Functor,
-    cpp_disable_if(std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value)>
-void parallel_foreach_it(TP& thread_pool, Iterator first, Iterator last, Functor fun){
-    for(; first != last; ++first){
+template <typename TP, typename Iterator, typename Functor,
+          cpp_disable_if(std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value)>
+void parallel_foreach_it(TP& thread_pool, Iterator first, Iterator last, Functor fun) {
+    for (; first != last; ++first) {
         thread_pool.do_task(fun, first);
     }
 
@@ -464,8 +463,8 @@ void parallel_foreach_it(TP& thread_pool, Iterator first, Iterator last, Functor
  * \param container The container to iterate through.
  * \param fun The functor to apply.
  */
-template<typename TP, typename Container, typename Functor>
-void parallel_foreach_it(TP& thread_pool, Container& container, Functor fun){
+template <typename TP, typename Container, typename Functor>
+void parallel_foreach_it(TP& thread_pool, Container& container, Functor fun) {
     using std::begin;
     using std::end;
 
@@ -482,12 +481,12 @@ void parallel_foreach_it(TP& thread_pool, Container& container, Functor fun){
  * \param last The end of the range
  * \param fun The functor to apply.
  */
-template<typename TP, typename Iterator, typename Functor>
-void parallel_foreach_i_only(TP& thread_pool, Iterator first, Iterator last, Functor fun){
-    if(std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value){
+template <typename TP, typename Iterator, typename Functor>
+void parallel_foreach_i_only(TP& thread_pool, Iterator first, Iterator last, Functor fun) {
+    if (std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value) {
         parallel_foreach_n(thread_pool, 0, std::distance(first, last), fun);
     } else {
-        for(std::size_t i = 0; first != last; ++first, ++i){
+        for (std::size_t i = 0; first != last; ++first, ++i) {
             thread_pool.do_task(fun, i);
         }
 
@@ -504,8 +503,8 @@ void parallel_foreach_i_only(TP& thread_pool, Iterator first, Iterator last, Fun
  * \param container The container to iterate through.
  * \param fun The functor to apply.
  */
-template<typename TP, typename Container, typename Functor>
-void parallel_foreach_i_only(TP& thread_pool, Container& container, Functor fun){
+template <typename TP, typename Container, typename Functor>
+void parallel_foreach_i_only(TP& thread_pool, Container& container, Functor fun) {
     parallel_foreach_n(thread_pool, 0, container.size(), fun);
 }
 
@@ -519,33 +518,33 @@ void parallel_foreach_i_only(TP& thread_pool, Container& container, Functor fun)
  * \param last The end of the range
  * \param fun The functor to apply.
  */
-template<typename TP, typename Functor>
-void parallel_foreach_n(TP& thread_pool, std::size_t first, std::size_t last, Functor fun){
-    auto n = last - first;
+template <typename TP, typename Functor>
+void parallel_foreach_n(TP& thread_pool, std::size_t first, std::size_t last, Functor fun) {
+    auto n    = last - first;
     auto part = n / thread_pool.size();
 
-    if(part < 2){
-        for(std::size_t i = first; i < last; ++i){
+    if (part < 2) {
+        for (std::size_t i = first; i < last; ++i) {
             thread_pool.do_task(fun, i);
         }
     } else {
-        auto batch_functor = [fun](std::size_t first, std::size_t last){
-            for(std::size_t i = first; i < last; ++i){
+        auto batch_functor = [fun](std::size_t first, std::size_t last) {
+            for (std::size_t i = first; i < last; ++i) {
                 fun(i);
             }
         };
 
         //Distribute evenly the batches
 
-        for(std::size_t t = 0; t < thread_pool.size(); ++t){
-            thread_pool.do_task(batch_functor, t * part, (t+1) * part);
+        for (std::size_t t = 0; t < thread_pool.size(); ++t) {
+            thread_pool.do_task(batch_functor, t * part, (t + 1) * part);
         }
 
         //Distribute the remainders
 
         auto rem = n % thread_pool.size();
-        if(rem > 0){
-            for(std::size_t i = last - rem; i < last; ++i){
+        if (rem > 0) {
+            for (std::size_t i = last - rem; i < last; ++i) {
                 thread_pool.do_task(fun, i);
             }
         }
@@ -567,11 +566,11 @@ void parallel_foreach_n(TP& thread_pool, std::size_t first, std::size_t last, Fu
  * \param s_last The end of the second range
  * \param fun The functor to apply.
  */
-template<typename TP, typename Iterator, typename Iterator2, typename Functor>
-void parallel_foreach_pair_i(TP& thread_pool, Iterator f_first, Iterator f_last, Iterator2 s_first, Iterator2 s_last, Functor fun){
+template <typename TP, typename Iterator, typename Iterator2, typename Functor>
+void parallel_foreach_pair_i(TP& thread_pool, Iterator f_first, Iterator f_last, Iterator2 s_first, Iterator2 s_last, Functor fun) {
     cpp_unused(s_last);
 
-    for(std::size_t i = 0; f_first != f_last; ++f_first, ++s_first, ++i){
+    for (std::size_t i = 0; f_first != f_last; ++f_first, ++s_first, ++i) {
         thread_pool.do_task(fun, *f_first, *s_first, i);
     }
 
@@ -587,7 +586,7 @@ void parallel_foreach_pair_i(TP& thread_pool, Iterator f_first, Iterator f_last,
  *
  * \tparam queue_t The type of queue to use (std::deque by default)
  */
-template<template<typename...> class queue_t = std::deque>
+template <template <typename...> class queue_t = std::deque>
 struct default_thread_pool {
     /*!
      * \brief Enumeration for the status of threads
@@ -611,10 +610,11 @@ public:
      * \brief Construct a thread pool with the given number of threads
      * \param n The number of threads
      */
-    default_thread_pool(std::size_t n) : status(n, thread_status::WAITING) {
-        for(std::size_t t = 0; t < n; ++t){
-            threads.emplace_back([this, t]{
-                while(true){
+    default_thread_pool(std::size_t n)
+            : status(n, thread_status::WAITING) {
+        for (std::size_t t = 0; t < n; ++t) {
+            threads.emplace_back([this, t] {
+                while (true) {
                     std::function<void()> task;
 
                     {
@@ -624,11 +624,11 @@ public:
 
                         wait_condition.notify_one();
 
-                        condition.wait(ulock, [this]{
+                        condition.wait(ulock, [this] {
                             return stop_flag || !tasks.empty();
                         });
 
-                        if(stop_flag && tasks.empty()){
+                        if (stop_flag && tasks.empty()) {
                             return;
                         }
 
@@ -647,17 +647,18 @@ public:
     /*!
      * \brief Construct a thread pool with as many threads as the hardware has concurrency
      */
-    default_thread_pool() : default_thread_pool(std::thread::hardware_concurrency()) {}
+    default_thread_pool()
+            : default_thread_pool(std::thread::hardware_concurrency()) {}
 
     /*!
      * \brief Destroys the thread pool and wait for the threads to be done
      */
-    ~default_thread_pool(){
-        with_lock(main_lock, [this]{ stop_flag = true; });
+    ~default_thread_pool() {
+        with_lock(main_lock, [this] { stop_flag = true; });
 
         condition.notify_all();
 
-        for(auto& thread : threads){
+        for (auto& thread : threads) {
             thread.join();
         }
     }
@@ -673,17 +674,17 @@ public:
     /*!
      * \brief Wait for every thread to be done
      */
-    void wait(){
-        while(true){
+    void wait() {
+        while (true) {
             std::unique_lock<std::mutex> ulock(main_lock);
 
-            if(tasks.empty() && std::find(status.begin(), status.end(), thread_status::WORKING) == status.end()){
+            if (tasks.empty() && std::find(status.begin(), status.end(), thread_status::WORKING) == status.end()) {
                 return;
             }
 
             //At this point, there are still some threads working, we wait for
             //one of them to notify a change of status
-            wait_condition.wait(ulock, [this]{
+            wait_condition.wait(ulock, [this] {
                 return tasks.empty();
             });
         }
@@ -694,10 +695,10 @@ public:
      * \param fun The functor to execute
      * \param args The arguments to be passed to the functor
      */
-    template<class Functor, typename... Args>
-    void do_task(Functor fun, Args... args){
-        with_lock(main_lock, [fun, args..., this](){
-            if(stop_flag){
+    template <class Functor, typename... Args>
+    void do_task(Functor fun, Args... args) {
+        with_lock(main_lock, [fun, args..., this]() {
+            if (stop_flag) {
 #ifndef CPP_UTILS_NO_EXCEPT
                 throw std::runtime_error("cpp_utils: enqueue on stopped ThreadPool");
 #else
@@ -707,7 +708,7 @@ public:
             }
 
             //Execute the task
-            tasks.emplace_back([fun, args...]{
+            tasks.emplace_back([fun, args...] {
                 fun(args...);
             });
         });

@@ -13,8 +13,8 @@
 #ifndef CPP_UTILS_DATA_HPP
 #define CPP_UTILS_DATA_HPP
 
-#include <numeric>  //for std::accumulate
-#include <cmath>    //for std::sqrt
+#include <numeric> //for std::accumulate
+#include <cmath>   //for std::sqrt
 
 #include "assert.hpp"
 
@@ -30,8 +30,8 @@ namespace cpp {
  * \param last End of the range
  * \return the mean of the values of the given range
  */
-template<typename Iterator>
-double mean(Iterator first, Iterator last){
+template <typename Iterator>
+double mean(Iterator first, Iterator last) {
     return std::accumulate(first, last, 0.0) / std::distance(first, last);
 }
 
@@ -40,8 +40,8 @@ double mean(Iterator first, Iterator last){
  * \param container The container to compute the mean from.
  * \return the mean of the values in the given container.
  */
-template<typename Container>
-double mean(const Container& container){
+template <typename Container>
+double mean(const Container& container) {
     return mean(std::begin(container), std::end(container));
 }
 
@@ -52,10 +52,10 @@ double mean(const Container& container){
  * \param mean The mean of the range
  * \return the standard deviation of the values of the given range
  */
-template<typename Iterator>
-double stddev(Iterator first, Iterator last, double mean){
+template <typename Iterator>
+double stddev(Iterator first, Iterator last, double mean) {
     double std = 0.0;
-    for(auto it = first; it != last; ++it){
+    for (auto it = first; it != last; ++it) {
         std += (*it - mean) * (*it - mean);
     }
     return std::sqrt(std / std::distance(first, last));
@@ -67,8 +67,8 @@ double stddev(Iterator first, Iterator last, double mean){
  * \param mean The mean of the range
  * \return the standard deviation of the values in the given container.
  */
-template<typename Container>
-double stddev(const Container& container, double mean){
+template <typename Container>
+double stddev(const Container& container, double mean) {
     return stddev(std::begin(container), std::end(container), mean);
 }
 
@@ -78,19 +78,19 @@ double stddev(const Container& container, double mean){
  *
  * The values are normalized so the range has zero-mean and unit-variance.
  */
-template<typename Container>
-void normalize(Container& container){
+template <typename Container>
+void normalize(Container& container) {
     //normalize to zero-mean
     auto m = mean(container);
-    for(auto& v : container){
+    for (auto& v : container) {
         v -= m;
     }
 
     //normalize to unit variance
     auto s = stddev(container, 0.0);
 
-    if(s != 0.0){
-        for(auto& v : container){
+    if (s != 0.0) {
+        for (auto& v : container) {
             v /= s;
         }
     }
@@ -103,9 +103,9 @@ void normalize(Container& container){
  *
  * The values are normalized so the range has zero-mean and unit-variance.
  */
-template<typename Iterator>
-void normalize_each(Iterator first, Iterator last){
-    for(; first != last; ++first){
+template <typename Iterator>
+void normalize_each(Iterator first, Iterator last) {
+    for (; first != last; ++first) {
         normalize(*first);
     }
 }
@@ -116,8 +116,8 @@ void normalize_each(Iterator first, Iterator last){
  *
  * The values are normalized so the range has zero-mean and unit-variance.
  */
-template<typename Container>
-void normalize_each(Container& container){
+template <typename Container>
+void normalize_each(Container& container) {
     using std::begin;
     using std::end;
     normalize_each(begin(container), end(container));

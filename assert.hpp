@@ -45,30 +45,36 @@
 
 #ifdef CPP_UTILS_ASSERT_EXCEPTION
 
-#define cpp_assert(condition, message) if(cpp_likely(condition)) \
-    ((void)0); \
-    else throw std::runtime_error("Assertion failed");
+#define cpp_assert(condition, message) \
+    if (cpp_likely(condition))         \
+        ((void)0);                     \
+    else                               \
+        throw std::runtime_error("Assertion failed");
 
 #else
 
-#define cpp_assert(condition, message) (cpp_likely(condition) \
-    ? ((void)0) \
-    : ::cpp::assertion::detail::assertion_failed_msg(#condition, message, \
-    __PRETTY_FUNCTION__, __FILE__, __LINE__))
+#define cpp_assert(condition, message) (cpp_likely(condition)                                                     \
+                                            ? ((void)0)                                                           \
+                                            : ::cpp::assertion::detail::assertion_failed_msg(#condition, message, \
+                                                                                             __PRETTY_FUNCTION__, __FILE__, __LINE__))
 
 #endif
 
 #if defined __clang__
 
 #if __has_builtin(__builtin_unreachable)
-#define cpp_unreachable(message) cpp_assert(false, message); __builtin_unreachable();
+#define cpp_unreachable(message) \
+    cpp_assert(false, message);  \
+    __builtin_unreachable();
 #else
 #define cpp_unreachable(message) cpp_assert(false, message);
 #endif //__has_builtin(__builtin_unreachable)
 
 #elif defined __GNUC__
 
-#define cpp_unreachable(message) cpp_assert(false, message); __builtin_unreachable();
+#define cpp_unreachable(message) \
+    cpp_assert(false, message);  \
+    __builtin_unreachable();
 
 #endif //__clang__
 
@@ -78,8 +84,8 @@ namespace cpp {
 namespace assertion {
 namespace detail {
 
-template< typename CharT >
-void assertion_failed_msg(const CharT* expr, const char* msg, const char* function, const char* file, long line){
+template <typename CharT>
+void assertion_failed_msg(const CharT* expr, const char* msg, const char* function, const char* file, long line) {
     std::cerr
         << "***** Internal Program Error - assertion (" << expr << ") failed in "
         << function << ":\n"

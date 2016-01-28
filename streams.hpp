@@ -30,11 +30,11 @@ namespace cpp {
  * \tparam A The allocator type of the vector
  * \return The output stream. 
  */
-template<typename T, typename A>
+template <typename T, typename A>
 std::ostream& operator<<(std::ostream& os, const std::vector<T, A>& vec) {
     os << "[";
     std::string comma;
-    for(auto& v : vec){
+    for (auto& v : vec) {
         os << comma << v;
         comma = ", ";
     }
@@ -50,11 +50,11 @@ std::ostream& operator<<(std::ostream& os, const std::vector<T, A>& vec) {
  * \tparam A The allocator type of the list
  * \return The output stream. 
  */
-template<typename T, typename A>
+template <typename T, typename A>
 std::ostream& operator<<(std::ostream& os, const std::list<T, A>& list) {
     os << "[";
     std::string comma;
-    for(auto& v : list){
+    for (auto& v : list) {
         os << comma << v;
         comma = ", ";
     }
@@ -70,11 +70,11 @@ std::ostream& operator<<(std::ostream& os, const std::list<T, A>& list) {
  * \tparam A The allocator type of the deque
  * \return The output stream. 
  */
-template<typename T, typename A>
+template <typename T, typename A>
 std::ostream& operator<<(std::ostream& os, const std::deque<T, A>& deq) {
     os << "[";
     std::string comma;
-    for(auto& v : deq){
+    for (auto& v : deq) {
         os << comma << v;
         comma = ", ";
     }
