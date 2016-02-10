@@ -70,7 +70,7 @@ struct for_each_tuple_t_impl<-1, Tuple, Functor> {
 
 /*!
  * \brief Call the given functor for each type in the tuple
- * \tparam The tuple type
+ * \tparam Tuple The tuple type
  * \param func The functor to call
  */
 template <typename Tuple, typename Functor>
