@@ -24,31 +24,61 @@ namespace tuple_detail {
  */
 template <size_t I, typename Tuple, typename F>
 struct for_each_impl {
+    /*!
+     * \brief Apply the functor to each element of the tuple
+     * \param t the tuple
+     * \param f The functor
+     */
     static void for_each(Tuple& t, F&& f) {
         for_each_impl<I - 1, Tuple, F>::for_each(t, std::forward<F>(f));
         f(std::get<I>(t));
     }
 
+    /*!
+     * \brief Apply the functor to each element of the tuple and its index
+     * \param t the tuple
+     * \param f The functor
+     */
     static void for_each_i(Tuple& t, F&& f) {
         for_each_impl<I - 1, Tuple, F>::for_each_i(t, std::forward<F>(f));
         f(I, std::get<I>(t));
     }
 
+    /*!
+     * \brief Apply the functor to each neighbouring pair of the tuple
+     * \param t the tuple
+     * \param f The functor
+     */
     static void for_each_pair(Tuple& t, F&& f) {
         for_each_impl<I - 1, Tuple, F>::for_each_pair(t, std::forward<F>(f));
         f(std::get<I>(t), std::get<I + 1>(t));
     }
 
+    /*!
+     * \brief Apply the functor to each neighbouring pair of the tuple and its index
+     * \param t the tuple
+     * \param f The functor
+     */
     static void for_each_pair_i(Tuple& t, F&& f) {
         for_each_impl<I - 1, Tuple, F>::for_each_pair_i(t, std::forward<F>(f));
         f(I, std::get<I>(t), std::get<I + 1>(t));
     }
 
+    /*!
+     * \brief Apply the functor to each neighbouring pair of the tuple, from the end
+     * \param t the tuple
+     * \param f The functor
+     */
     static void for_each_rpair(Tuple& t, F&& f) {
         f(std::get<I>(t), std::get<I + 1>(t));
         for_each_impl<I - 1, Tuple, F>::for_each_rpair(t, std::forward<F>(f));
     }
 
+    /*!
+     * \brief Apply the functor to each neighbouring pair of the tuple and its index, from the end
+     * \param t the tuple
+     * \param f The functor
+     */
     static void for_each_rpair_i(Tuple& t, F&& f) {
         f(I, std::get<I>(t), std::get<I + 1>(t));
         for_each_impl<I - 1, Tuple, F>::for_each_rpair_i(t, std::forward<F>(f));
@@ -60,26 +90,44 @@ struct for_each_impl {
  */
 template <typename Tuple, typename F>
 struct for_each_impl<0, Tuple, F> {
+    /*!
+     * \copydoc for_each_impl::for_each
+     */
     static void for_each(Tuple& t, F&& f) {
         f(std::get<0>(t));
     }
 
+    /*!
+     * \copydoc for_each_impl::for_each_i
+     */
     static void for_each_i(Tuple& t, F&& f) {
         f(0, std::get<0>(t));
     }
 
+    /*!
+     * \copydoc for_each_impl::for_each_pair
+     */
     static void for_each_pair(Tuple& t, F&& f) {
         f(std::get<0>(t), std::get<1>(t));
     }
 
+    /*!
+     * \copydoc for_each_impl::for_each_pair_i
+     */
     static void for_each_pair_i(Tuple& t, F&& f) {
         f(0, std::get<0>(t), std::get<1>(t));
     }
 
+    /*!
+     * \copydoc for_each_impl::for_each_rpair
+     */
     static void for_each_rpair(Tuple& t, F&& f) {
         f(std::get<0>(t), std::get<1>(t));
     }
 
+    /*!
+     * \copydoc for_each_impl::for_each_rpair_i
+     */
     static void for_each_rpair_i(Tuple& t, F&& f) {
         f(0, std::get<0>(t), std::get<1>(t));
     }
@@ -90,21 +138,45 @@ struct for_each_impl<0, Tuple, F> {
  */
 template <size_t I, typename Tuple1, typename Tuple2, typename F>
 struct dual_for_each_impl {
+    /*!
+     * \brief Apply the functor to each element of both tuples, parallely
+     * \param t1 The first tuple
+     * \param t2 The second tuple
+     * \param f The functor
+     */
     static void for_each(Tuple1& t1, Tuple2& t2, F&& f) {
         dual_for_each_impl<I - 1, Tuple1, Tuple2, F>::for_each(t1, t2, std::forward<F>(f));
         f(std::get<I>(t1), std::get<I>(t2));
     }
 
+    /*!
+     * \brief Apply the functor to each element of both tuples and their index, parallely
+     * \param t1 The first tuple
+     * \param t2 The second tuple
+     * \param f The functor
+     */
     static void for_each_i(Tuple1& t1, Tuple2& t2, F&& f) {
         dual_for_each_impl<I - 1, Tuple1, Tuple2, F>::for_each_i(t1, t2, std::forward<F>(f));
         f(I, std::get<I>(t1), std::get<I>(t2));
     }
 
+    /*!
+     * \brief Apply the functor to each pair of elements of both tuples, parallely
+     * \param t1 The first tuple
+     * \param t2 The second tuple
+     * \param f The functor
+     */
     static void for_each_pair(Tuple1& t1, Tuple2& t2, F&& f) {
         dual_for_each_impl<I - 1, Tuple1, Tuple2, F>::for_each_pair(t1, t2, std::forward<F>(f));
         f(std::get<I>(t1), std::get<I + 1>(t1), std::get<I>(t2), std::get<I + 1>(t2));
     }
 
+    /*!
+     * \brief Apply the functor to each pair of elements of both tuples and its index, in reverse order, parallely
+     * \param t1 The first tuple
+     * \param t2 The second tuple
+     * \param f The functor
+     */
     static void for_each_rpair_i(Tuple1& t1, Tuple2& t2, F&& f) {
         f(I, std::get<I>(t1), std::get<I + 1>(t1), std::get<I>(t2), std::get<I + 1>(t2));
         dual_for_each_impl<I - 1, Tuple1, Tuple2, F>::for_each_rpair_i(t1, t2, std::forward<F>(f));
@@ -116,18 +188,30 @@ struct dual_for_each_impl {
  */
 template <typename Tuple1, typename Tuple2, typename F>
 struct dual_for_each_impl<0, Tuple1, Tuple2, F> {
+    /*!
+     * \copydoc dual_for_each_impl::for_each
+     */
     static void for_each(Tuple1& t1, Tuple2& t2, F&& f) {
         f(std::get<0>(t1), std::get<0>(t2));
     }
 
+    /*!
+     * \copydoc dual_for_each_impl::for_each_i
+     */
     static void for_each_i(Tuple1& t1, Tuple2& t2, F&& f) {
         f(0, std::get<0>(t1), std::get<0>(t2));
     }
 
+    /*!
+     * \copydoc dual_for_each_impl::for_each_pair
+     */
     static void for_each_pair(Tuple1& t1, Tuple2& t2, F&& f) {
         f(std::get<0>(t1), std::get<1>(t1), std::get<0>(t2), std::get<1>(t2));
     }
 
+    /*!
+     * \copydoc dual_for_each_impl::for_each_rpair_i
+     */
     static void for_each_rpair_i(Tuple1& t1, Tuple2& t2, F&& f) {
         f(0, std::get<0>(t1), std::get<1>(t1), std::get<0>(t2), std::get<1>(t2));
     }
