@@ -1,8 +1,6 @@
 //=======================================================================
 // Copyright (c) 2013-2016 Baptiste Wicht
-// Distributed under the terms of the MIT License.
-// (See accompanying file LICENSE or copy at
-//  http://opensource.org/licenses/MIT)
+// Distributed under the terms of the MIT License.  // (See accompanying file LICENSE or copy at //  http://opensource.org/licenses/MIT)
 //=======================================================================
 
 /*!
@@ -570,11 +568,38 @@ template <typename TP, typename Iterator, typename Iterator2, typename Functor>
 void parallel_foreach_pair_i(TP& thread_pool, Iterator f_first, Iterator f_last, Iterator2 s_first, Iterator2 s_last, Functor fun) {
     cpp_unused(s_last);
 
-    for (std::size_t i = 0; f_first != f_last; ++f_first, ++s_first, ++i) {
-        thread_pool.do_task(fun, *f_first, *s_first, i);
-    }
+    if (std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value) {
+        const std::size_t n    = std::distance(f_first, f_last);
+        const std::size_t t    = thread_pool.size();
+        const std::size_t part = n / t;
 
-    thread_pool.wait();
+        auto batch_functor = [fun, f_first, s_first](std::size_t first, std::size_t last) {
+            for (std::size_t i = first; i < last; ++i) {
+                fun(*(std::next(f_first, i)), *(std::next(s_first, i)), i);
+            }
+        };
+
+        //Distribute evenly the batches
+
+        for (std::size_t i = 0; i < t; ++i) {
+            thread_pool.do_task(batch_functor, i * part, (i + 1) * part);
+        }
+
+        //Distribute the remainders
+
+        auto rem = n % t;
+        if (rem > 0) {
+            for (std::size_t i = n - rem; i < n; ++i) {
+                thread_pool.do_task(fun, *(std::next(f_first, i)), *(std::next(s_first, i)), i);
+            }
+        }
+    } else {
+        for (std::size_t i = 0; f_first != f_last; ++f_first, ++s_first, ++i) {
+            thread_pool.do_task(fun, *f_first, *s_first, i);
+        }
+
+        thread_pool.wait();
+    }
 }
 
 /*!
