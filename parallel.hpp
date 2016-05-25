@@ -597,9 +597,9 @@ void parallel_foreach_pair_i(TP& thread_pool, Iterator f_first, Iterator f_last,
         for (std::size_t i = 0; f_first != f_last; ++f_first, ++s_first, ++i) {
             thread_pool.do_task(fun, *f_first, *s_first, i);
         }
-
-        thread_pool.wait();
     }
+
+    thread_pool.wait();
 }
 
 /*!
