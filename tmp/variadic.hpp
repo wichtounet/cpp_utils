@@ -67,7 +67,7 @@ using first_type_t = typename first_type<T...>::type;
 template <typename... T>
 using last_type_t = typename last_type<T...>::type;
 
-/*
+/*!
  * \brief Extract the Ith value from the variadic list
  */
 template <int I, typename T1, typename... T, cpp_enable_if(I == 0)>
@@ -75,7 +75,7 @@ auto nth_value(T1&& t, T&&... /*args*/) -> decltype(std::forward<T1>(t)) {
     return std::forward<T1>(t);
 }
 
-/*
+/*!
  * \brief Extract the Ith value from the variadic list
  */
 template <int I, typename T1, typename... T, cpp_enable_if((I > 0))>
