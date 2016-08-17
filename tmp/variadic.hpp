@@ -24,7 +24,7 @@ namespace cpp {
  */
 template <std::size_t N, typename... T>
 struct nth_type {
-    using type = typename std::tuple_element<N, std::tuple<T...>>::type;
+    using type = typename std::tuple_element<N, std::tuple<T...>>::type; ///< The result type
 };
 
 /*!
@@ -33,7 +33,7 @@ struct nth_type {
  */
 template <typename... T>
 struct first_type {
-    using type = typename nth_type<0, T...>::type;
+    using type = typename nth_type<0, T...>::type; ///< The result type
 };
 
 /*!
@@ -42,7 +42,7 @@ struct first_type {
  */
 template <typename... T>
 struct last_type {
-    using type = typename nth_type<sizeof...(T)-1, T...>::type;
+    using type = typename nth_type<sizeof...(T)-1, T...>::type; ///< The result type
 };
 
 /*!
