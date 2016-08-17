@@ -13,6 +13,8 @@
 #ifndef CPP_STATIC_IF_HPP
 #define CPP_STATIC_IF_HPP
 
+#include "assert.hpp" // For cpp_unused
+
 namespace cpp {
 
 namespace static_if_detail {
