@@ -17,15 +17,27 @@ namespace cpp {
 
 namespace tmp_detail {
 
+/*!
+ * \brief Helper to compute the conjuction of several traits
+ */
 template <bool H, bool... T>
 struct and_helper : std::integral_constant<bool, H && and_helper<T...>::value> {};
 
+/*!
+ * \copydoc or_helper
+ */
 template <bool H>
 struct and_helper<H> : std::integral_constant<bool, H> {};
 
+/*!
+ * \brief Helper to compute the disjunction of several traits
+ */
 template <bool H, bool... T>
 struct or_helper : std::integral_constant<bool, H || or_helper<T...>::value> {};
 
+/*!
+ * \copydoc or_helper
+ */
 template <bool H>
 struct or_helper<H> : std::integral_constant<bool, H> {};
 
@@ -137,7 +149,7 @@ template <typename V>
 struct auto_constant : std::integral_constant<decltype(V::value), V::value> {};
 
 /*!
- * \brief A conditional constant extracting its from either V1 or V2 depending on the condition
+ * \brief A conditional constant extracting its value from either V1 or V2 depending on the condition
  * \tparam C The boolean value
  * \tparam V1 The first value class
  * \tparam V2 The second value class
@@ -145,9 +157,15 @@ struct auto_constant : std::integral_constant<decltype(V::value), V::value> {};
 template <bool C, typename V1, typename V2>
 struct conditional_constant;
 
+/*!
+ * \copydoc conditional_constant
+ */
 template <typename V1, typename V2>
 struct conditional_constant<true, V1, V2> : auto_constant<V1> {};
 
+/*!
+ * \copydoc conditional_constant
+ */
 template <typename V1, typename V2>
 struct conditional_constant<false, V1, V2> : auto_constant<V2> {};
 
@@ -169,27 +187,51 @@ struct type_constant_c {
     using type = typename T::value; ///< The result type
 };
 
+/*!
+ * \brief A conditional type constant whose type is either V1 or V2 depending on the condition
+ * \tparam C The boolean value
+ * \tparam V1 The first type
+ * \tparam V2 The second type
+ */
 template <bool C, typename V1, typename V2>
 struct conditional_type_constant;
 
+/*!
+ * \copydoc conditional_type_constant
+ */
 template <typename V1, typename V2>
 struct conditional_type_constant<true, V1, V2> {
     using type = V1; ///< The result type
 };
 
+/*!
+ * \copydoc conditional_type_constant
+ */
 template <typename V1, typename V2>
 struct conditional_type_constant<false, V1, V2> {
     using type = V2; ///< The result type
 };
 
+/*!
+ * \brief A conditional type constant extracting its type from either V1 or V2 depending on the condition
+ * \tparam C The boolean value
+ * \tparam V1 The first type value class
+ * \tparam V2 The second type value class
+ */
 template <bool C, typename V1, typename V2>
 struct conditional_type_constant_c;
 
+/*!
+ * \copydoc conditional_type_constant_c
+ */
 template <typename V1, typename V2>
 struct conditional_type_constant_c<true, V1, V2> {
     using type = typename V1::value; ///< The result type
 };
 
+/*!
+ * \copydoc conditional_type_constant_c
+ */
 template <typename V1, typename V2>
 struct conditional_type_constant_c<false, V1, V2> {
     using type = typename V2::value; ///< The result type
@@ -221,9 +263,18 @@ struct template_type_constant_c {
     using type = typename TT::template value<T>;
 };
 
+/*!
+ * \brief A conditional template type constant whose type is either V1 or V2 depending on the condition
+ * \tparam C The boolean value
+ * \tparam V1 The first template type
+ * \tparam V2 The second template type
+ */
 template <bool, template <typename> class V1, template <typename> class V2>
 struct conditional_template_type_constant;
 
+/*!
+ * \brief conditional_template_type_constant
+ */
 template <template <typename> class V1, template <typename> class V2>
 struct conditional_template_type_constant<true, V1, V2> {
     /*!
@@ -233,6 +284,9 @@ struct conditional_template_type_constant<true, V1, V2> {
     using type = V1<T>;
 };
 
+/*!
+ * \brief conditional_template_type_constant
+ */
 template <template <typename> class V1, template <typename> class V2>
 struct conditional_template_type_constant<false, V1, V2> {
     /*!
@@ -242,9 +296,18 @@ struct conditional_template_type_constant<false, V1, V2> {
     using type = V2<T>;
 };
 
+/*!
+ * \brief A conditional template type constant extracting its template type from either V1 or V2 depending on the condition
+ * \tparam C The boolean value
+ * \tparam V1 The first template type value class
+ * \tparam V2 The second template type value class
+ */
 template <bool C, typename V1, typename V2>
 struct conditional_template_type_constant_c;
 
+/*!
+ * \brief conditional_template_type_constant_c
+ */
 template <typename V1, typename V2>
 struct conditional_template_type_constant_c<true, V1, V2> {
     /*!
@@ -254,6 +317,9 @@ struct conditional_template_type_constant_c<true, V1, V2> {
     using type = typename V1::template value<T>;
 };
 
+/*!
+ * \brief conditional_template_type_constant_c
+ */
 template <typename V1, typename V2>
 struct conditional_template_type_constant_c<false, V1, V2> {
     /*!

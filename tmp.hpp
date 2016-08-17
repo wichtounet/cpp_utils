@@ -24,15 +24,25 @@ namespace cpp {
 
 namespace tmp_detail {
 
+    /*!
+     * \brief Helper Traits to test if all the types from I to N in
+     * T are homogeneous
+     */
 template <std::size_t I, std::size_t S, typename F, typename... T>
 struct is_homogeneous_helper {
+    /*!
+     * \brief Sub helper for recursive instantiations
+     */
     template <std::size_t I1, std::size_t S1, typename Enable = void>
     struct helper_int : and_helper<std::is_same<F, nth_type_t<I1, T...>>::value, is_homogeneous_helper<I1 + 1, S1, F, T...>::value> {};
 
+    /*!
+     * \copydoc helper_int
+     */
     template <std::size_t I1, std::size_t S1>
     struct helper_int<I1, S1, std::enable_if_t<I1 == S1>> : std::is_same<F, nth_type_t<I1, T...>> {};
 
-    static constexpr const auto value = helper_int<I, S>::value;
+    static constexpr const auto value = helper_int<I, S>::value; ///< Indicates if the sequence of types is homogeneous
 };
 
 } //end of namespace tmp_detail
@@ -42,6 +52,9 @@ struct is_homogeneous_helper {
  */
 template <int I, typename Tuple, typename Functor>
 struct for_each_tuple_t_impl {
+    /*!
+     * \brief Apply the functof for each elements in the tuple, from I
+     */
     static void for_each(Functor&& func) {
         std::forward<Functor>(func).template operator()<typename std::tuple_element<I, Tuple>::type>();
         for_each_tuple_t_impl<I - 1, Tuple, Functor>::for_each(std::forward<Functor>(func));
@@ -53,6 +66,9 @@ struct for_each_tuple_t_impl {
  */
 template <typename Tuple, typename Functor>
 struct for_each_tuple_t_impl<0, Tuple, Functor> {
+    /*!
+     * \brief Apply the functof for each elements in the tuple, from I
+     */
     static void for_each(Functor&& func) {
         std::forward<Functor>(func).template operator()<typename std::tuple_element<0, Tuple>::type>();
     }
@@ -63,6 +79,9 @@ struct for_each_tuple_t_impl<0, Tuple, Functor> {
  */
 template <typename Tuple, typename Functor>
 struct for_each_tuple_t_impl<-1, Tuple, Functor> {
+    /*!
+     * \brief End of the the recursion
+     */
     static void for_each(Functor&& /*func*/) {
         //Nothing to be done
     }
@@ -131,25 +150,25 @@ template <typename... T>
 struct is_sub_homogeneous;
 
 /*!
- * \copydoc all_convertible_to
+ * \copydoc is_sub_homogeneous
  */
 template <>
 struct is_sub_homogeneous<> : std::false_type {};
 
 /*!
- * \copydoc all_convertible_to
+ * \copydoc is_sub_homogeneous
  */
 template <typename T>
 struct is_sub_homogeneous<T> : std::false_type {};
 
 /*!
- * \copydoc all_convertible_to
+ * \copydoc is_sub_homogeneous
  */
 template <typename T1, typename T2>
 struct is_sub_homogeneous<T1, T2> : bool_constant_c<not_c<std::is_same<T1, T2>>> {};
 
 /*!
- * \copydoc all_convertible_to
+ * \copydoc is_sub_homogeneous
  */
 template <typename T1, typename T2, typename T3, typename... T>
 struct is_sub_homogeneous<T1, T2, T3, T...> : bool_constant_c<
@@ -157,17 +176,38 @@ struct is_sub_homogeneous<T1, T2, T3, T...> : bool_constant_c<
                                                       std::is_same<T1, T2>,
                                                       is_sub_homogeneous<T2, T3, T...>>> {};
 
+/*!
+ * \brief Apply the given function to each element of the variadic
+ * packs whose position is present in the sequence
+ * \param f The functor
+ * \param i The index sequence
+ * \param args The arguments
+ */
 template <typename F, std::size_t I1, std::size_t... I, typename... T, enable_if_u<(sizeof...(I) == 0)> = detail::dummy>
-void for_each_in_subset(F&& f, const std::index_sequence<I1, I...>& /*i*/, T&&... args) {
+void for_each_in_subset(F&& f, const std::index_sequence<I1, I...>& i, T&&... args) {
     f(std::forward<nth_type_t<I1, T...>>(nth_value<I1>(args...)));
+    cpp_unused(i);
 }
 
+/*!
+ * \brief Apply the given function to each element of the variadic
+ * packs whose position is present in the sequence
+ * \param f The functor
+ * \param i The index sequence
+ * \param args The arguments
+ */
 template <typename F, std::size_t I1, std::size_t... I, typename... T, enable_if_u<(sizeof...(I) > 0)> = detail::dummy>
-void for_each_in_subset(F&& f, const std::index_sequence<I1, I...>& /*i*/, T&&... args) {
+void for_each_in_subset(F&& f, const std::index_sequence<I1, I...>& i, T&&... args) {
     f(std::forward<nth_type_t<I1, T...>>(nth_value<I1>(args...)));
     for_each_in_subset(f, std::index_sequence<I...>(), std::forward<T>(args)...);
+    cpp_unused(i);
 }
 
+/*!
+ * \brief Apply the given function to each element of the variadic pack
+ * \param f The functor
+ * \param args The arguments
+ */
 template <typename F, typename... T>
 void for_each_in(F&& f, T&&... args) {
     for_each_in_subset(f, std::make_index_sequence<sizeof...(T)>(), std::forward<T>(args)...);

@@ -17,29 +17,65 @@ namespace cpp {
 
 namespace static_if_detail {
 
+/*!
+ * \brief Identify functor
+ */
 struct identity {
+    /*!
+     * \brief Returns exactly what was passsed as argument
+     */
     template <typename T>
     T operator()(T&& x) const {
         return std::forward<T>(x);
     }
 };
 
+/*!
+ * \brief Helper for static if
+ *
+ * This base type is when the condition is true
+ */
 template <bool Cond>
 struct statement {
+    /*!
+     * \brief Execute the if part of the statement
+     * \param f The functor to execute
+     */
     template <typename F>
     void then(const F& f) {
         f(identity());
     }
 
+    /*!
+     * \brief Execute the else part of the statement
+     * \param f The functor to execute
+     */
     template <typename F>
-    void else_(const F&) {}
+    void else_(const F& f) {
+        cpp_unused(f);
+    }
 };
 
+/*!
+ * \brief Helper for static if
+ *
+ * Specialization for condition is false
+ */
 template <>
 struct statement<false> {
+    /*!
+     * \brief Execute the if part of the statement
+     * \param f The functor to execute
+     */
     template <typename F>
-    void then(const F&) {}
+    void then(const F& f) {
+        cpp_unused(f);
+    }
 
+    /*!
+     * \brief Execute the else part of the statement
+     * \param f The functor to execute
+     */
     template <typename F>
     void else_(const F& f) {
         f(identity());

@@ -25,6 +25,10 @@ namespace cpp {
  */
 template <bool Parallel>
 struct thread_pool {
+    /*!
+     * \brief Construct the thread pool and forward the args to the
+     * real implementation (if any)
+     */
     template<typename... Args>
     thread_pool(Args... /*args*/){
         //Does not do anything by default
@@ -36,6 +40,10 @@ struct thread_pool {
  */
 template <>
 struct thread_pool<true> : default_thread_pool<> {
+    /*!
+     * \brief Construct the thread pool and forward the args to the
+     * real implementation (if any)
+     */
     template<typename... Args>
     thread_pool(Args... args) : default_thread_pool<>(std::forward<Args>(args)...){
         //Simply inherits from default thread pool
@@ -44,31 +52,85 @@ struct thread_pool<true> : default_thread_pool<> {
 
 //parallel versions
 
+/*!
+ * \brief Apply the given function to each element of the given
+ * container, in parallel if the thread pool is paralle,
+ * sequentially otherwise.
+ * \param thread_pool The thread pool
+ * \param contaner The container to iterate
+ * \param fun The functor to apply
+ */
 template <typename Container, typename Functor>
 void maybe_parallel_foreach(thread_pool<true>& thread_pool, const Container& container, Functor&& fun) {
     parallel_foreach(thread_pool, container, std::forward<Functor>(fun));
 }
 
+/*!
+ * \brief Apply the given function to each element of the given
+ * range, in parallel if the thread pool is paralle,
+ * sequentially otherwise.
+ * \param thread_pool The thread pool
+ * \param first The beginning of the range
+ * \param last The end of the range
+ * \param fun The functor to apply
+ */
 template <typename Iterator, typename Functor>
 void maybe_parallel_foreach(thread_pool<true>& thread_pool, Iterator first, Iterator last, Functor&& fun) {
     parallel_foreach(thread_pool, first, last, std::forward<Functor>(fun));
 }
 
+/*!
+ * \brief Apply the given function to each element of the given
+ * container and its position, in parallel if the thread pool is paralle,
+ * sequentially otherwise.
+ * \param thread_pool The thread pool
+ * \param contaner The container to iterate
+ * \param fun The functor to apply
+ */
 template <typename Container, typename Functor>
 void maybe_parallel_foreach_i(thread_pool<true>& thread_pool, const Container& container, Functor&& fun) {
     parallel_foreach_i(thread_pool, container, std::forward<Functor>(fun));
 }
 
+/*!
+ * \brief Apply the given function to each element of the given
+ * range and its position, in parallel if the thread pool is paralle,
+ * sequentially otherwise.
+ * \param thread_pool The thread pool
+ * \param first The beginning of the range
+ * \param last The end of the range
+ * \param fun The functor to apply
+ */
 template <typename Iterator, typename Functor>
 void maybe_parallel_foreach_i(thread_pool<true>& thread_pool, Iterator it, Iterator end, Functor&& fun) {
     parallel_foreach_i(thread_pool, it, end, std::forward<Functor>(fun));
 }
 
+/*!
+ * \brief Apply the given function to each pair of element of the given
+ * ranges and its position, in parallel if the thread pool is paralle,
+ * sequentially otherwise.
+ * \param thread_pool The thread pool
+ * \param it The beginning of the first range
+ * \param end The end of the first range
+ * \param iit The beginning of the second range
+ * \param ilast The end of the second range
+ * \param fun The functor to apply
+ */
 template <typename Iterator, typename Iterator2, typename Functor>
 void maybe_parallel_foreach_pair_i(thread_pool<true>& thread_pool, Iterator it, Iterator end, Iterator2 iit, Iterator2 ilast, Functor&& fun) {
     parallel_foreach_pair_i(thread_pool, it, end, iit, ilast, std::forward<Functor>(fun));
 }
 
+/*!
+ * \brief Apply the given function to each position in the given
+ * range, in parallel if the thread pool is paralle,
+ * sequentially otherwise.
+ * \param thread_pool The thread pool
+ * \param first The beginning of the range
+ * \param last The end of the range
+ * \param fun The functor to apply
+ */
 template <typename Functor>
 void maybe_parallel_foreach_n(thread_pool<true>& thread_pool, std::size_t first, std::size_t last, Functor&& fun) {
     parallel_foreach_n(thread_pool, first, last, std::forward<Functor>(fun));
@@ -76,28 +138,71 @@ void maybe_parallel_foreach_n(thread_pool<true>& thread_pool, std::size_t first,
 
 //non-parallel versions
 
+/*!
+ * \brief Apply the given function to each element of the given
+ * container, in parallel if the thread pool is paralle,
+ * sequentially otherwise.
+ * \param thread_pool The thread pool
+ * \param contaner The container to iterate
+ * \param fun The functor to apply
+ */
 template <typename Container, typename Functor>
 void maybe_parallel_foreach(thread_pool<false>& /*thread_pool*/, const Container& container, Functor&& fun) {
-    foreach (container, fun)
-        ;
+    foreach (container, fun);
 }
 
+/*!
+ * \brief Apply the given function to each element of the given
+ * range, in parallel if the thread pool is paralle,
+ * sequentially otherwise.
+ * \param thread_pool The thread pool
+ * \param first The beginning of the range
+ * \param last The end of the range
+ * \param fun The functor to apply
+ */
 template <typename Iterator, typename Functor>
 void maybe_parallel_foreach(thread_pool<false>& /*thread_pool*/, Iterator first, Iterator last, Functor&& fun) {
-    foreach (first, last, fun)
-        ;
+    foreach (first, last, fun);
 }
 
+/*!
+ * \brief Apply the given function to each element of the given
+ * container and its position, in parallel if the thread pool is paralle,
+ * sequentially otherwise.
+ * \param thread_pool The thread pool
+ * \param contaner The container to iterate
+ * \param fun The functor to apply
+ */
 template <typename Container, typename Functor>
 void maybe_parallel_foreach_i(thread_pool<false>& /*thread_pool*/, const Container& container, Functor&& fun) {
     foreach_i(container, fun);
 }
 
+/*!
+ * \brief Apply the given function to each element of the given
+ * range and its position, in parallel if the thread pool is paralle,
+ * sequentially otherwise.
+ * \param thread_pool The thread pool
+ * \param first The beginning of the range
+ * \param last The end of the range
+ * \param fun The functor to apply
+ */
 template <typename Iterator, typename Functor>
 void maybe_parallel_foreach_i(thread_pool<false>& /*thread_pool*/, Iterator it, Iterator end, Functor&& fun) {
     foreach_i(it, end, fun);
 }
 
+/*!
+ * \brief Apply the given function to each pair of element of the given
+ * ranges and its position, in parallel if the thread pool is paralle,
+ * sequentially otherwise.
+ * \param thread_pool The thread pool
+ * \param it The beginning of the first range
+ * \param end The end of the first range
+ * \param iit The beginning of the second range
+ * \param ilast The end of the second range
+ * \param fun The functor to apply
+ */
 template <typename Iterator, typename Iterator2, typename Functor>
 void maybe_parallel_foreach_pair_i(thread_pool<false>& /*thread_pool*/, Iterator it, Iterator end, Iterator2 iit, Iterator2 ilast, Functor&& fun) {
     cpp_unused(ilast);
@@ -107,6 +212,15 @@ void maybe_parallel_foreach_pair_i(thread_pool<false>& /*thread_pool*/, Iterator
     }
 }
 
+/*!
+ * \brief Apply the given function to each position in the given
+ * range, in parallel if the thread pool is paralle,
+ * sequentially otherwise.
+ * \param thread_pool The thread pool
+ * \param first The beginning of the range
+ * \param last The end of the range
+ * \param fun The functor to apply
+ */
 template <typename functor>
 void maybe_parallel_foreach_n(thread_pool<false>& /*thread_pool*/, std::size_t first, std::size_t last, functor&& fun) {
     foreach_n(first, last, fun);

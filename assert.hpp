@@ -84,6 +84,9 @@ namespace cpp {
 namespace assertion {
 namespace detail {
 
+/*!
+ * \brief Function call when an assertion failed
+ */
 template <typename CharT>
 void assertion_failed_msg(const CharT* expr, const char* msg, const char* function, const char* file, long line) {
     std::cerr
