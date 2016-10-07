@@ -158,9 +158,6 @@ private:
     aligned_allocator& operator=(const aligned_allocator&);
 };
 
-template <typename T, std::size_t A>
-using aligned_vector = std::vector<T, aligned_allocator<T, A>>;
-
 } //end of namespace cpp
 
 #endif //CPP_ARRAY_WRAPPER_HPP
