@@ -165,10 +165,22 @@ struct aligned_array {
         }
     }
 
+    void swap(aligned_array& other){
+        for(size_t i = 0; i < size(); ++i){
+            using std::swap;
+            swap((*this)[i], other[i]);
+        }
+    }
+
 private:
     T* aligned_data;
     char storage[S * sizeof(T) + (A - 1)];
 };
+
+template <typename T, std::size_t N>
+void swap(array<T, N>& lhs, array<T, N>& rhs){
+    lhs.swap(rhs);
+}
 
 } //end of namespace cpp
 
