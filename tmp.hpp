@@ -16,6 +16,8 @@
 #include <tuple>
 #include <utility>
 
+#include "assert.hpp"
+
 #include "tmp/tmp.hpp"
 #include "tmp/sfinae.hpp"
 #include "tmp/variadic.hpp"
