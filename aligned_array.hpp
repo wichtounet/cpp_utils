@@ -177,8 +177,8 @@ private:
     char storage[S * sizeof(T) + (A - 1)];
 };
 
-template <typename T, std::size_t N>
-void swap(aligned_array<T, N>& lhs, aligned_array<T, N>& rhs){
+template <typename T, std::size_t N, std::size_t A>
+void swap(aligned_array<T, N, A>& lhs, aligned_array<T, N, A>& rhs){
     lhs.swap(rhs);
 }
 
