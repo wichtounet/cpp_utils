@@ -70,7 +70,7 @@ struct aligned_allocator {
     // Returns true if and only if storage allocated from *this
     // can be deallocated from other, and vice versa.
     // Always returns true for stateless allocators.
-    bool operator==(const aligned_allocator& other) const {
+    bool operator==(const aligned_allocator& /*other*/) const {
         return true;
     }
 
