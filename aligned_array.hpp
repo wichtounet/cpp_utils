@@ -178,7 +178,7 @@ private:
 };
 
 template <typename T, std::size_t N>
-void swap(array<T, N>& lhs, array<T, N>& rhs){
+void swap(aligned_array<T, N>& lhs, aligned_array<T, N>& rhs){
     lhs.swap(rhs);
 }
 
