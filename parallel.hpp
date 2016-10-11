@@ -722,7 +722,7 @@ public:
      */
     template <class Functor, typename... Args>
     void do_task(Functor fun, Args... args) {
-        with_lock(main_lock, [fun, args..., this]() {
+        with_lock(main_lock, [fun, args..., this] () mutable {
             if (stop_flag) {
 #ifndef CPP_UTILS_NO_EXCEPT
                 throw std::runtime_error("cpp_utils: enqueue on stopped ThreadPool");
@@ -733,7 +733,7 @@ public:
             }
 
             //Execute the task
-            tasks.emplace_back([fun, args...] {
+            tasks.emplace_back([fun, args...] () mutable {
                 fun(args...);
             });
         });
