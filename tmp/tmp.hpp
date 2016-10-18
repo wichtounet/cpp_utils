@@ -17,17 +17,14 @@ namespace cpp {
 
 namespace tmp_detail {
 
-/*!
- * \brief Helper to compute the conjuction of several traits
- */
-template <bool H, bool... T>
-struct and_helper : std::integral_constant<bool, H && and_helper<T...>::value> {};
+template <bool... B>
+struct bool_list {};
 
 /*!
  * \copydoc or_helper
  */
-template <bool H>
-struct and_helper<H> : std::integral_constant<bool, H> {};
+template <bool... B>
+struct and_helper : std::integral_constant<bool, std::is_same<bool_list<true, B...>, bool_list<B..., true>>::value> {};
 
 /*!
  * \brief Helper to compute the disjunction of several traits
