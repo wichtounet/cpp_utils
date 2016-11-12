@@ -266,7 +266,7 @@ struct template_type_constant_c {
  * \tparam V1 The first template type
  * \tparam V2 The second template type
  */
-template <bool, template <typename> class V1, template <typename> class V2>
+template <bool C, template <typename> class V1, template <typename> class V2>
 struct conditional_template_type_constant;
 
 /*!
