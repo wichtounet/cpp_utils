@@ -48,7 +48,7 @@ struct aligned_array {
             aligned_data = reinterpret_cast<value_type*>(raw);
         }
 
-        new (aligned_data) value_type[size()];
+        new (aligned_data) value_type[size()]();
     }
 
     reference at(std::size_t i) {
