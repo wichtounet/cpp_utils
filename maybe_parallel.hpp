@@ -97,8 +97,8 @@ void maybe_parallel_foreach_i(thread_pool<true>& thread_pool, const Container& c
  * range and its position, in parallel if the thread pool is paralle,
  * sequentially otherwise.
  * \param thread_pool The thread pool
- * \param first The beginning of the range
- * \param last The end of the range
+ * \param it The beginning of the range
+ * \param end The end of the range
  * \param fun The functor to apply
  */
 template <typename Iterator, typename Functor>
