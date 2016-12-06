@@ -43,8 +43,8 @@ void binary_write_all(std::ostream& os, const Container& c) {
 
 /*!
  * \brief Load the binary representation of the given value
- * \param os The stream to read from
- * \param c The value to read
+ * \param is The stream to read from
+ * \param v The value to read
  */
 template <typename T>
 void binary_load(std::istream& is, T& v) {
@@ -53,7 +53,7 @@ void binary_load(std::istream& is, T& v) {
 
 /*!
  * \brief Load the binary representation of all the given values
- * \param os The stream to read from
+ * \param is The stream to read from
  * \param c The container containing the values to read
  */
 template <typename Container>
