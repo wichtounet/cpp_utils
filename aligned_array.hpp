@@ -173,8 +173,8 @@ struct aligned_array {
     }
 
 private:
-    T* aligned_data;
     char storage[S * sizeof(T) + (A - 1)];
+    T* aligned_data;
 };
 
 template <typename T, std::size_t N, std::size_t A>
