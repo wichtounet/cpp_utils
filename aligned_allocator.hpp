@@ -86,7 +86,7 @@ struct aligned_allocator {
     aligned_allocator(const aligned_allocator&)  = default;
 
     template <typename U>
-    aligned_allocator(const aligned_allocator<U, A>&) = default;
+    aligned_allocator(const aligned_allocator<U, A>&);
 
     ~aligned_allocator() = default;
 
