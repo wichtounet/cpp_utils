@@ -88,7 +88,7 @@ namespace detail {
  * \brief Function call when an assertion failed
  */
 template <typename CharT>
-void assertion_failed_msg(const CharT* expr, const char* msg, const char* function, const char* file, long line) {
+void assertion_failed_msg(const CharT* expr, const char* msg, const char* function, const char* file, size_t line) {
     std::cerr
         << "***** Internal Program Error - assertion (" << expr << ") failed in "
         << function << ":\n"
