@@ -54,7 +54,7 @@ struct aligned_allocator {
     // The following must be the same for all allocators.
     template <typename U>
     struct rebind {
-        typedef aligned_allocator<U, A> other;
+        using other = aligned_allocator<U, A>;
     };
 
     bool operator!=(const aligned_allocator& other) const {
