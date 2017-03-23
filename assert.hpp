@@ -21,7 +21,7 @@
 
 #include "likely.hpp"
 
-#define cpp_unused(x) ((void)x)
+#define cpp_unused(x) ((void)(x))
 
 #ifdef NDEBUG
 
