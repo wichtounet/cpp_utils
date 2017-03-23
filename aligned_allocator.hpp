@@ -25,13 +25,13 @@ namespace cpp {
  */
 template <typename T, std::size_t A>
 struct aligned_allocator {
-    using pointer         = T*;
-    using const_pointer   = const T*;
-    using reference       = T&;
-    using const_reference = const T&;
-    using value_type      = T;
-    using size_type       = std::size_t;
-    using difference_type = ptrdiff_t;
+    using pointer         = T*;          ///< The pointer type
+    using const_pointer   = const T*;    ///< The const pointer type
+    using reference       = T&;          ///< The reference type
+    using const_reference = const T&;    ///< The const reference type
+    using value_type      = T;           ///< The value type
+    using size_type       = std::size_t; ///< The size type
+    using difference_type = ptrdiff_t;   ///< The difference type
 
     T* address(T& r) const {
         return &r;
@@ -41,6 +41,10 @@ struct aligned_allocator {
         return &s;
     }
 
+    /*!
+     *  \brief Return the maximum size allocated by this allocator
+     *  \return the maximum size supported by this allocator
+     */
     std::size_t max_size() const {
         // The following has been carefully written to be independent of
         // the definition of size_t and to avoid signed/unsigned warnings.
@@ -63,6 +67,9 @@ struct aligned_allocator {
         new (pv) T(t);
     }
 
+    /*!
+     * \brief Destroy a previously allocated object
+     */
     void destroy(T* const p) const {
         p->~T();
     }
@@ -74,16 +81,14 @@ struct aligned_allocator {
         return true;
     }
 
-    // Default constructor, copy constructor, rebinding constructor, and destructor.
-    // Empty for stateless allocators.
-    aligned_allocator() {}
+    aligned_allocator() = default;
 
-    aligned_allocator(const aligned_allocator&) {}
+    aligned_allocator(const aligned_allocator&)  = default;
 
     template <typename U>
-    aligned_allocator(const aligned_allocator<U, A>&) {}
+    aligned_allocator(const aligned_allocator<U, A>&) = default;
 
-    ~aligned_allocator() {}
+    ~aligned_allocator() = default;
 
     static T* aligned_allocate(std::size_t size) {
         auto required_bytes = sizeof(T) * size;
