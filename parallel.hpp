@@ -635,7 +635,7 @@ public:
      * \brief Construct a thread pool with the given number of threads
      * \param n The number of threads
      */
-    default_thread_pool(std::size_t n)
+    explicit default_thread_pool(std::size_t n)
             : status(n, thread_status::WAITING) {
         for (std::size_t t = 0; t < n; ++t) {
             threads.emplace_back([this, t] {
