@@ -30,7 +30,7 @@ struct thread_pool {
      * real implementation (if any)
      */
     template<typename... Args>
-    thread_pool(Args... /*args*/){
+    explicit thread_pool(Args... /*args*/){
         //Does not do anything by default
     }
 };
@@ -45,7 +45,7 @@ struct thread_pool<true> : default_thread_pool<> {
      * real implementation (if any)
      */
     template<typename... Args>
-    thread_pool(Args... args) : default_thread_pool<>(std::forward<Args>(args)...){
+    explicit thread_pool(Args... args) : default_thread_pool<>(std::forward<Args>(args)...){
         //Simply inherits from default thread pool
     }
 };
