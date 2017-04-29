@@ -681,7 +681,7 @@ void for_each_ix(Tuple1& t1, Tuple2& t2, F&& f) {
  *
  * If the tuples are heterogeneous, the functor must be generic (i.e. generic lambda)
  */
-template <typename Tuple1, typename Tuple2, typename F, cpp_enable_if((std::tuple_size<Tuple1>::value > 0 && std::tuple_size<Tuple2>::value > 0))>
+template <typename Tuple1, typename Tuple2, typename F, cpp_enable_if((std::tuple_size<Tuple1>::value > 1 && std::tuple_size<Tuple2>::value > 1))>
 void for_each_pair(Tuple1& t1, Tuple2& t2, F&& f) {
     static_assert(std::tuple_size<Tuple1>::value == std::tuple_size<Tuple2>::value, "Can only iterate tuples of same size");
 
@@ -717,7 +717,7 @@ void for_each_pair(Tuple1& t1, Tuple2& t2, F&& f) {
  *
  * If the tuples are heterogeneous, the functor must be generic (i.e. generic lambda)
  */
-template <typename Tuple1, typename Tuple2, typename F, cpp_enable_if((std::tuple_size<Tuple1>::value > 0 && std::tuple_size<Tuple2>::value > 0))>
+template <typename Tuple1, typename Tuple2, typename F, cpp_enable_if((std::tuple_size<Tuple1>::value > 1 && std::tuple_size<Tuple2>::value > 1))>
 void for_each_rpair_i(Tuple1& t1, Tuple2& t2, F&& f) {
     static_assert(std::tuple_size<Tuple1>::value == std::tuple_size<Tuple2>::value, "Can only iterate tuples of same size");
 
@@ -753,7 +753,7 @@ void for_each_rpair_i(Tuple1& t1, Tuple2& t2, F&& f) {
  *
  * If the tuples are heterogeneous, the functor must be generic (i.e. generic lambda)
  */
-template <typename Tuple1, typename Tuple2, typename F, cpp_enable_if((std::tuple_size<Tuple1>::value > 0 && std::tuple_size<Tuple2>::value > 0))>
+template <typename Tuple1, typename Tuple2, typename F, cpp_enable_if((std::tuple_size<Tuple1>::value > 1 && std::tuple_size<Tuple2>::value > 1))>
 void for_each_rpair_ix(Tuple1& t1, Tuple2& t2, F&& f) {
     static_assert(std::tuple_size<Tuple1>::value == std::tuple_size<Tuple2>::value, "Can only iterate tuples of same size");
 
