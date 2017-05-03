@@ -24,8 +24,6 @@
 #include "assert.hpp"
 #include "tmp.hpp"
 
-#include "thread_pool.hpp"
-
 namespace cpp {
 
 /*!
@@ -604,5 +602,7 @@ void parallel_foreach_pair_i(TP& thread_pool, Iterator f_first, Iterator f_last,
 }
 
 } //end of the cpp namespace
+
+#include "thread_pool.hpp"
 
 #endif //CPP_UTILS_PARALLEL_HPP
