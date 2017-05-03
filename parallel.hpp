@@ -622,21 +622,26 @@ struct default_thread_pool {
     };
 
 private:
-    std::vector<std::thread> threads;
-    std::vector<thread_status> status;
-    queue_t<std::function<void()>, std::allocator<std::function<void()>>> tasks;
-    std::mutex main_lock;
-    std::condition_variable condition;
-    std::condition_variable wait_condition;
-    volatile bool stop_flag = false;
+    std::vector<std::thread> threads;                                            ///< The current threads
+    std::vector<thread_status> status;                                           ///< The status of each thread
+    queue_t<std::function<void()>, std::allocator<std::function<void()>>> tasks; ///< The queue of tasks
+    std::mutex main_lock;                                                        ///< The main lock mutex
+    std::condition_variable condition;                                           ///< The global condition variable for the main thread
+    std::condition_variable wait_condition;                                      ///< The condition variable for the threads waiting for tasks
+    volatile bool stop_flag = false;                                             ///< Flag indicating if the thread pool is currently being release
 
 public:
     /*!
      * \brief Construct a thread pool with the given number of threads
      * \param n The number of threads
      */
-    explicit default_thread_pool(std::size_t n)
-            : status(n, thread_status::WAITING) {
+    explicit default_thread_pool(std::size_t n) : status(n, thread_status::WAITING) {
+        // The thread pool is of fixed size, avoid any possible reallocation
+        threads.reserve(n);
+
+        // Lets all the threads start at the same time and avoid any possible race conditions
+        std::unique_lock<std::mutex> ulock(main_lock);
+
         for (std::size_t t = 0; t < n; ++t) {
             threads.emplace_back([this, t] {
                 while (true) {
