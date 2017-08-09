@@ -30,6 +30,12 @@
 #define CPP_DEBUG_AUTO_TRICK
 #endif
 
+// Utility for conditional C++14 Generalized constexpr
+
+#if __cpp_constexpr >= 201304
+#define cpp14_constexpr constexpr
+#else
+
 //Only clang and GCC >=5 supports constexpr functions in their C++14 full fashion
 
 #ifdef __clang__ //clang version
@@ -38,6 +44,7 @@
 #define cpp14_constexpr constexpr
 #else //other compilers
 #define cpp14_constexpr
+#endif
 #endif
 
 //Fix an assertion failed in Intel C++ Compiler
