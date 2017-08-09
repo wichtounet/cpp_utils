@@ -290,7 +290,7 @@ constexpr bool is_homogeneous_v = is_homogeneous<F, T...>::value;
  * same and the last one is different
  */
 template <typename... T>
-constexpr bool is_sub_homogeneous_v = is_sub_homogeneous<T...>;
+constexpr bool is_sub_homogeneous_v = is_sub_homogeneous<T...>::value;
 
 /*!
  * \brief Value traits to test if the variadic list of types containg the given type
