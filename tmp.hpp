@@ -251,6 +251,57 @@ struct type_list {
     }
 };
 
+// If the compiler supports it, declare value traits to complement all
+// the existing traits
+
+#if __cpp_variable_templates >= 201304
+
+/*!
+ * \brief Value Traits to test if a type is a specialization of a template
+ *
+ * \tparam TT The template type
+ * \tparam T The type to test
+ */
+template <template <typename...> class TT, typename T>
+constexpr bool is_specialization_of_v = is_specialization_of<TT, T>::value;
+
+/*!
+ * \brief Value traits to test if all the given types are convertible to V
+ *
+ * \tparam V The target type
+ * \tparam F The first type to test
+ * \tparam S The types to test
+ */
+template <typename V, typename F, typename... S>
+constexpr bool all_convertible_to_v = all_convertible_to<V, F, S...>::value;
+
+/*!
+ * \brief Value traits to test if is a list of types homogeneous
+ * \tparam F The first type
+ * \tparam T The types
+ */
+template <typename F, typename... T>
+constexpr bool is_homogeneous_v = is_homogeneous<F, T...>::value;
+
+/*
+ * \brief Value traits to test if a list of types is sub-homogeneous
+ *
+ * A sub-homogeneous list of types is a list where the N-1 first types are the
+ * same and the last one is different
+ */
+template <typename... T>
+constexpr bool is_sub_homogeneous_v = is_sub_homogeneous<T...>;
+
+/*!
+ * \brief Value traits to test if the variadic list of types containg the given type
+ * \tparam T1 The type to search
+ * \tparam T The list of types
+ */
+template <typename T1, typename... T>
+constexpr bool variadic_contains_v = variadic_contains<T1, T...>::value;
+
+#endif
+
 } //end of namespace cpp
 
 #endif //CPP_UTILS_TMP_HPP
