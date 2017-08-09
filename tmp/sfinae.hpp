@@ -161,6 +161,9 @@ using disable_if_one_c = typename std::enable_if<not_c<or_c<C...>>::value, detai
 
 #ifndef SONAR_ANALYSIS
 
+#define cpp_enable_iff(...) typename std::enable_if<((__VA_ARGS__)), cpp::detail::enabler_t>::type = cpp::detail::dummy
+#define cpp_disable_iff(...) typename std::enable_if<!((__VA_ARGS__)), cpp::detail::enabler_t>::type = cpp::detail::dummy
+
 #define cpp_enable_if(...) typename std::enable_if<cpp::and_u<__VA_ARGS__>::value, cpp::detail::enabler_t>::type = cpp::detail::dummy
 #define cpp_disable_if(...) typename std::enable_if<cpp::not_c<cpp::and_u<__VA_ARGS__>>::value, cpp::detail::enabler_t>::type = cpp::detail::dummy
 
@@ -180,6 +183,9 @@ using disable_if_one_c = typename std::enable_if<not_c<or_c<C...>>::value, detai
 
 //sonar-cxx does a very poor job of handling the macros directly. Therefore we simply use std::enable_if_t to avoid false positives by the hundreds
 //These versions cannot be used in the general case for debugging reasons (see explanations above)
+
+#define cpp_enable_iff(...) std::enable_if_t<((__VA_ARGS__)), cpp::detail::enabler_t> = cpp::detail::dummy
+#define cpp_disable_iff(...) std::enable_if_t<!((__VA_ARGS__)), cpp::detail::enabler_t> = cpp::detail::dummy
 
 #define cpp_enable_if(...) std::enable_if_t<cpp::and_u<__VA_ARGS__>::value, cpp::detail::enabler_t> = cpp::detail::dummy
 #define cpp_disable_if(...) std::enable_if_t<cpp::not_c<cpp::and_u<__VA_ARGS__>>::value, cpp::detail::enabler_t> = cpp::detail::dummy
