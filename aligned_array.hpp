@@ -51,6 +51,66 @@ struct aligned_array {
         new (aligned_data) value_type[size()]();
     }
 
+    /*!
+     * \brief Copy construct an aligned_array
+     */
+    aligned_array(const aligned_array& rhs) noexcept {
+        auto raw = reinterpret_cast<std::size_t>(storage);
+
+        if (raw % A) {
+            aligned_data = reinterpret_cast<value_type*>(raw + (A - (raw % A)));
+        } else {
+            aligned_data = reinterpret_cast<value_type*>(raw);
+        }
+
+        for(size_t i = 0; i < S; ++i){
+            (*this)[i] = rhs[i];
+        }
+    }
+
+    /*!
+     * \brief Move construct an aligned_array
+     */
+    aligned_array(aligned_array&& rhs) noexcept {
+        auto raw = reinterpret_cast<std::size_t>(storage);
+
+        if (raw % A) {
+            aligned_data = reinterpret_cast<value_type*>(raw + (A - (raw % A)));
+        } else {
+            aligned_data = reinterpret_cast<value_type*>(raw);
+        }
+
+        for(size_t i = 0; i < S; ++i){
+            (*this)[i] = rhs[i];
+        }
+    }
+
+    /*!
+     * \brief Copy assign an aligned_array
+     */
+    aligned_array& operator=(const aligned_array& rhs) noexcept {
+        if (this != &rhs) {
+            for (size_t i = 0; i < S; ++i) {
+                (*this)[i] = rhs[i];
+            }
+        }
+
+        return *this;
+    }
+
+    /*!
+     * \brief Move assign an aligned_array
+     */
+    aligned_array& operator=(aligned_array&& rhs) noexcept {
+        if (this != &rhs) {
+            for (size_t i = 0; i < S; ++i) {
+                (*this)[i] = rhs[i];
+            }
+        }
+
+        return *this;
+    }
+
     reference at(std::size_t i) {
         if (i >= size()) {
             throw std::out_of_range("Out of bounds aligned_array");
