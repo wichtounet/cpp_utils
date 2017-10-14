@@ -316,6 +316,24 @@ void parallel_shuffle(IT1 first_1, IT1 last_1, IT2 first_2, IT2 last_2, RNG&& g)
     }
 }
 
+/*!
+ * \brief Shuffles the sequences [first_1, last_1) and [first_2, last_2] so that the same random reordering is chosen for the two sequences.
+ * \param first_1 The beginning of the first range.
+ * \param last_1 The end of the first range.
+ * \param first_2 The beginning of the second range.
+ * \param last_2 The end of the second range.
+ */
+template <typename IT1, typename IT2>
+void parallel_shuffle(IT1 first_1, IT1 last_1, IT2 first_2, IT2 last_2) {
+    cpp_assert(std::distance(first_1, last_1) == std::distance(first_2, last_2), "The two sequences should be of the same size");
+    cpp_unused(last_2); //Ensure no warning is issued for last_2 (used only in debug mode)
+
+    std::random_device rd;
+    std::default_random_engine g(rd());
+
+    parallel_shuffle(first_1, last_1, first_2, last_2, g);
+}
+
 } //end of the cpp namespace
 
 #endif //CPP_UTILS_ALGORITHM_HPP
