@@ -314,8 +314,8 @@ void parallel_foreach(TP& thread_pool, Container& container, Functor fun) {
 template <typename TP, typename Iterator, typename Functor,
           cpp_enable_if(std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value)>
 void parallel_foreach_i(TP& thread_pool, Iterator first, Iterator last, Functor fun) {
-    auto n    = std::distance(first, last);
-    auto part = n / thread_pool.size();
+    const auto n    = std::distance(first, last);
+    const auto part = n / thread_pool.size();
 
     if (part < 2) {
         for (std::size_t i = 0; first != last; ++first, ++i) {
@@ -329,19 +329,19 @@ void parallel_foreach_i(TP& thread_pool, Iterator first, Iterator last, Functor 
             }
         };
 
-        //Distribute evenly the batches
+        // Distribute evenly the batches
 
         for (std::size_t t = 0; t < thread_pool.size(); ++t) {
             thread_pool.do_task(batch_functor, first + t * part, first + (t + 1) * part, t * part);
         }
 
-        //Distribute the remainders
+        // Compute the remainders
 
         auto rem = n % thread_pool.size();
         if (rem > 0) {
             std::size_t i = n - rem;
             for (Iterator it = last - rem; it < last; ++it, ++i) {
-                thread_pool.do_task(fun, *it, i);
+                fun(*it, i);
             }
         }
     }
@@ -398,8 +398,8 @@ void parallel_foreach_i(TP& thread_pool, Container& container, Functor fun) {
 template <typename TP, typename Iterator, typename Functor,
           cpp_enable_if(std::is_same<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>::value)>
 void parallel_foreach_it(TP& thread_pool, Iterator first, Iterator last, Functor fun) {
-    auto n    = std::distance(first, last);
-    auto part = n / thread_pool.size();
+    const auto n    = std::distance(first, last);
+    const auto part = n / thread_pool.size();
 
     if (part < 2) {
         for (; first != last; ++first) {
@@ -412,18 +412,18 @@ void parallel_foreach_it(TP& thread_pool, Iterator first, Iterator last, Functor
             }
         };
 
-        //Distribute evenly the batches
+        // Distribute evenly the batches
 
         for (std::size_t t = 0; t < thread_pool.size(); ++t) {
             thread_pool.do_task(batch_functor, first + t * part, first + (t + 1) * part);
         }
 
-        //Distribute the remainders
+        // Compute the remainders
 
         auto rem = n % thread_pool.size();
         if (rem > 0) {
             for (Iterator it = last - rem; it < last; ++it) {
-                thread_pool.do_task(fun, it);
+                fun(it);
             }
         }
     }
@@ -517,8 +517,8 @@ void parallel_foreach_i_only(TP& thread_pool, Container& container, Functor fun)
  */
 template <typename TP, typename Functor>
 void parallel_foreach_n(TP& thread_pool, std::size_t first, std::size_t last, Functor fun) {
-    auto n    = last - first;
-    auto part = n / thread_pool.size();
+    const auto n    = last - first;
+    const auto part = n / thread_pool.size();
 
     if (part < 2) {
         for (std::size_t i = first; i < last; ++i) {
@@ -531,18 +531,18 @@ void parallel_foreach_n(TP& thread_pool, std::size_t first, std::size_t last, Fu
             }
         };
 
-        //Distribute evenly the batches
+        // Distribute evenly the batches
 
         for (std::size_t t = 0; t < thread_pool.size(); ++t) {
             thread_pool.do_task(batch_functor, t * part, (t + 1) * part);
         }
 
-        //Distribute the remainders
+        // Compute the remainders
 
         auto rem = n % thread_pool.size();
         if (rem > 0) {
             for (std::size_t i = last - rem; i < last; ++i) {
-                thread_pool.do_task(fun, i);
+                fun(i);
             }
         }
     }
@@ -584,12 +584,12 @@ void parallel_foreach_pair_i(TP& thread_pool, Iterator f_first, Iterator f_last,
             thread_pool.do_task(batch_functor, i * part, (i + 1) * part);
         }
 
-        //Distribute the remainders
+        // Compute the remainders
 
         auto rem = n % t;
         if (rem > 0) {
             for (std::size_t i = n - rem; i < n; ++i) {
-                thread_pool.do_task(fun, *(std::next(f_first, i)), *(std::next(s_first, i)), i);
+                fun(*(std::next(f_first, i)), *(std::next(s_first, i)), i);
             }
         }
     } else {
