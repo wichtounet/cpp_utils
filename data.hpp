@@ -42,7 +42,7 @@ double mean(Iterator first, Iterator last) {
  */
 template <typename Container>
 double mean(const Container& container) {
-    return mean(std::begin(container), std::end(container));
+    return cpp::mean(std::begin(container), std::end(container));
 }
 
 /*!
@@ -69,7 +69,7 @@ double stddev(Iterator first, Iterator last, double mean) {
  */
 template <typename Container>
 double stddev(const Container& container, double mean) {
-    return stddev(std::begin(container), std::end(container), mean);
+    return cpp::stddev(std::begin(container), std::end(container), mean);
 }
 
 /*!
@@ -81,13 +81,13 @@ double stddev(const Container& container, double mean) {
 template <typename Container>
 void normalize(Container& container) {
     //normalize to zero-mean
-    auto m = mean(container);
+    auto m = cpp::mean(container);
     for (auto& v : container) {
         v -= m;
     }
 
     //normalize to unit variance
-    auto s = stddev(container, 0.0);
+    auto s = cpp::stddev(container, 0.0);
 
     if (s != 0.0) {
         for (auto& v : container) {
@@ -106,7 +106,7 @@ void normalize(Container& container) {
 template <typename Iterator>
 void normalize_each(Iterator first, Iterator last) {
     for (; first != last; ++first) {
-        normalize(*first);
+        cpp::normalize(*first);
     }
 }
 
@@ -120,7 +120,7 @@ template <typename Container>
 void normalize_each(Container& container) {
     using std::begin;
     using std::end;
-    normalize_each(begin(container), end(container));
+    cpp::normalize_each(begin(container), end(container));
 }
 
 } //end of the cpp namespace
