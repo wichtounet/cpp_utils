@@ -24,7 +24,10 @@ namespace cpp {
  * \brief Aligned std::array implementation
  * \tparam T The value type
  * \tparam S The size of the collection
- * \tparam A The alignment in bytes
+ * \tparam A The alignment in bytes. This must be a positive power of two.
+ *
+ * If A needs to be other numbers than positive powers of two, aligned_array can
+ * be used but with significantly more space overhead.
  */
 template <typename T, std::size_t S, std::size_t A>
 struct alignas(A) soft_aligned_array : std::array<T, S> {};
