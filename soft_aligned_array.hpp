@@ -18,6 +18,8 @@
 #ifndef CPP_SOFT_ALIGNED_ARRAY_HPP
 #define CPP_SOFT_ALIGNED_ARRAY_HPP
 
+namespace cpp {
+
 /*!
  * \brief Aligned std::array implementation
  * \tparam T The value type
