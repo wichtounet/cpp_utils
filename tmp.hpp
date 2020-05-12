@@ -36,7 +36,7 @@ struct is_homogeneous_helper {
      * \brief Sub helper for recursive instantiations
      */
     template <std::size_t I1, std::size_t S1, typename Enable = void>
-    struct helper_int : and_helper<std::is_same<F, nth_type_t<I1, T...>>::value, is_homogeneous_helper<I1 + 1, S1, F, T...>::value> {};
+    struct helper_int : and_helper<std::is_same_v<F, nth_type_t<I1, T...>>, is_homogeneous_helper<I1 + 1, S1, F, T...>::value> {};
 
     /*!
      * \copydoc helper_int
