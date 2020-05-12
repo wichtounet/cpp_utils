@@ -36,7 +36,7 @@ struct is_homogeneous_helper {
      * \brief Sub helper for recursive instantiations
      */
     template <std::size_t I1, std::size_t S1, typename Enable = void>
-    struct helper_int : and_helper<std::is_same_v<F, nth_type_t<I1, T...>>, is_homogeneous_helper<I1 + 1, S1, F, T...>::value> {};
+    struct helper_int : and_u<std::is_same_v<F, nth_type_t<I1, T...>>, is_homogeneous_helper<I1 + 1, S1, F, T...>::value> {};
 
     /*!
      * \copydoc helper_int
@@ -119,14 +119,8 @@ struct is_specialization_of<TT, TT<Args...>> : std::true_type {};
  * \tparam F The first type to test
  * \tparam S The types to test
  */
-template <typename V, typename F, typename... S>
-struct all_convertible_to : bool_constant_c<and_c<all_convertible_to<V, F>, all_convertible_to<V, S...>>> {};
-
-/*!
- * \copydoc all_convertible_to
- */
-template <typename V, typename F>
-struct all_convertible_to<V, F> : bool_constant_c<std::is_convertible<F, V>> {};
+template <typename V, typename... S>
+using all_convertible_to = std::bool_constant<(... && std::is_convertible_v<V, S>)>;
 
 /*!
  * \brief Test is a list of types homogeneous
@@ -221,19 +215,7 @@ void for_each_in(F&& f, T&&... args) {
  * \tparam T The list of types
  */
 template <typename T1, typename... T>
-struct variadic_contains;
-
-/*!
- * \copydoc variadic_contains
- */
-template <typename T1, typename T2, typename... T>
-struct variadic_contains<T1, T2, T...> : bool_constant_c<or_c<std::is_same<T1, T2>, variadic_contains<T1, T...>>> {};
-
-/*!
- * \copydoc variadic_contains
- */
-template <typename T1>
-struct variadic_contains<T1> : std::false_type {};
+struct variadic_contains : std::bool_constant<(... || std::is_same_v<T1, T>)> {};
 
 /*!
  * \brief A compile-time type list.
@@ -250,11 +232,6 @@ struct type_list {
         return variadic_contains<V, T...>::value;
     }
 };
-
-// If the compiler supports it, declare value traits to complement all
-// the existing traits
-
-#if __cpp_variable_templates >= 201304
 
 /*!
  * \brief Value Traits to test if a type is a specialization of a template
@@ -299,8 +276,6 @@ constexpr bool is_sub_homogeneous_v = is_sub_homogeneous<T...>::value;
  */
 template <typename T1, typename... T>
 constexpr bool variadic_contains_v = variadic_contains<T1, T...>::value;
-
-#endif
 
 } //end of namespace cpp
 

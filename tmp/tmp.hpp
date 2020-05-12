@@ -15,31 +15,6 @@
 
 namespace cpp {
 
-namespace tmp_detail {
-
-template <bool... B>
-struct bool_list {};
-
-/*!
- * \copydoc or_helper
- */
-template <bool... B>
-struct and_helper : std::integral_constant<bool, std::is_same_v<bool_list<true, B...>, bool_list<B..., true>>> {};
-
-/*!
- * \brief Helper to compute the disjunction of several traits
- */
-template <bool H, bool... T>
-struct or_helper : std::integral_constant<bool, H || or_helper<T...>::value> {};
-
-/*!
- * \copydoc or_helper
- */
-template <bool H>
-struct or_helper<H> : std::integral_constant<bool, H> {};
-
-} //end of namespace tmp_detail
-
 /*!
  * \brief TMP helper implementing the NOT boolean operator taking a boolean constant value.
  *
@@ -48,7 +23,10 @@ struct or_helper<H> : std::integral_constant<bool, H> {};
  * \tparam B The boolean value to negate
  */
 template <bool B>
-struct not_u : std::integral_constant<bool, !B> {};
+using not_u = std::bool_constant<!B>;
+
+template <bool B>
+inline constexpr bool not_u_v = !B;
 
 /*!
  * \brief TMP helper implementing the NOT boolean operator taking a TMP class.
@@ -58,7 +36,10 @@ struct not_u : std::integral_constant<bool, !B> {};
  * \tparam C The TMP class whose value to negate.
  */
 template <typename C>
-struct not_c : std::integral_constant<bool, !C::value> {};
+using not_c = std::bool_constant<!C::value>;
+
+template <typename C>
+inline constexpr bool not_c_v = !C::value;
 
 /*!
  * \brief TMP helper implementing the AND boolean operator of given boolean values.
@@ -68,7 +49,10 @@ struct not_c : std::integral_constant<bool, !C::value> {};
  * \tparam C The sequence of boolean values to AND.
  */
 template <bool... C>
-using and_u = tmp_detail::and_helper<C...>;
+using and_u = std::bool_constant<(... && C)>;
+
+template <bool... C>
+inline constexpr bool and_u_v = (... && C);
 
 /*!
  * \brief TMP helper implementing the AND boolean operator taking a sequence TMP class.
@@ -78,7 +62,10 @@ using and_u = tmp_detail::and_helper<C...>;
  * \tparam C The sequence of TMP classes whose value to AND.
  */
 template <typename... C>
-using and_c = tmp_detail::and_helper<C::value...>;
+using and_c = std::bool_constant<(... && C::value)>;
+
+template <typename... C>
+inline constexpr bool and_c_v = (... && C::value);
 
 /*!
  * \brief TMP helper implementing the OR boolean operator of given boolean values.
@@ -88,7 +75,10 @@ using and_c = tmp_detail::and_helper<C::value...>;
  * \tparam C The sequence of boolean values to OR.
  */
 template <bool... C>
-using or_u = tmp_detail::or_helper<C...>;
+using or_u = std::bool_constant<(... || C)>;
+
+template <bool... C>
+inline constexpr bool or_u_v = (... || C);
 
 /*!
  * \brief TMP helper implementing the OR boolean operator taking a sequence TMP class.
@@ -98,7 +88,10 @@ using or_u = tmp_detail::or_helper<C...>;
  * \tparam C The sequence of TMP classes whose value to OR.
  */
 template <typename... C>
-using or_c = tmp_detail::or_helper<C::value...>;
+using or_c = std::bool_constant<(... || C::value)>;
+
+template <typename... C>
+inline constexpr bool or_c_v = (... || C::value);
 
 /*!
  * \brief Traits to add const and lvalue reference to T.
@@ -123,17 +116,10 @@ using integral_constant_c = std::integral_constant<T, C::value>;
 
 /*!
  * \brief Base class for an integral boolean constant.
- * \tparam B The boolean constant value.
- */
-template <bool B>
-using bool_constant = std::integral_constant<bool, B>;
-
-/*!
- * \brief Base class for an integral boolean constant.
  * \tparam C The TMP class to extract the boolean value from.
  */
 template <typename C>
-using bool_constant_c = std::integral_constant<bool, C::value>;
+using bool_constant_c = std::bool_constant<C::value>;
 
 /*!
  * \brief Base class for an integral constant of auto type.
@@ -144,6 +130,10 @@ using bool_constant_c = std::integral_constant<bool, C::value>;
  */
 template <typename V>
 struct auto_constant : std::integral_constant<decltype(V::value), V::value> {};
+
+template <typename V>
+inline constexpr decltype(auto) auto_constant_v = V::value;
+
 
 /*!
  * \brief A conditional constant extracting its value from either V1 or V2 depending on the condition
@@ -165,6 +155,9 @@ struct conditional_constant<true, V1, V2> : auto_constant<V1> {};
  */
 template <typename V1, typename V2>
 struct conditional_constant<false, V1, V2> : auto_constant<V2> {};
+
+template <bool C, typename V1, typename V2>
+inline constexpr decltype(auto) conditional_constant_v = conditional_constant<C, V1, V2>::value;
 
 /*!
  * \brief Base class to define a type constant
