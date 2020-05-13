@@ -317,24 +317,11 @@ struct dual_for_each_impl<0, Tuple1, Tuple2, F> {
  *
  * If the tuple is heterogeneous, the functor must be generic (i.e. generic lambda)
  */
-template <typename Tuple, typename F, cpp_enable_if((std::tuple_size_v<Tuple> > 0))>
+template <typename Tuple, typename F>
 void for_each(Tuple& t, F&& f) {
-    tuple_detail::for_each_impl<std::tuple_size_v<Tuple> - 1, Tuple, F>::for_each(t, std::forward<F>(f));
-}
-
-/*!
- * \brief Call the given functor with each element of the tuple
- * \param t The tuple to iterate over
- * \param f The functor to use
- *
- * If the tuple is heterogeneous, the functor must be generic (i.e. generic lambda)
- */
-template <typename Tuple, typename F, cpp_disable_if((std::tuple_size_v<Tuple> > 0))>
-void for_each(Tuple& t, F&& f) {
-    cpp_unused(t);
-    cpp_unused(f);
-
-    // Nothing to iterate
+    if constexpr (std::tuple_size_v<Tuple> > 0) {
+        tuple_detail::for_each_impl<std::tuple_size_v<Tuple> - 1, Tuple, F>::for_each(t, std::forward<F>(f));
+    }
 }
 
 // for_each_i
@@ -346,24 +333,11 @@ void for_each(Tuple& t, F&& f) {
  *
  * If the tuple is heterogeneous, the functor must be generic (i.e. generic lambda)
  */
-template <typename Tuple, typename F, cpp_enable_if((std::tuple_size_v<Tuple> > 0))>
+template <typename Tuple, typename F>
 void for_each_i(Tuple& t, F&& f) {
-    tuple_detail::for_each_impl<std::tuple_size_v<Tuple> - 1, Tuple, F>::for_each_i(t, std::forward<F>(f));
-}
-
-/*!
- * \brief Call the given functor with each element of the tuple and its position (zero-indexing)
- * \param t The tuple to iterate over
- * \param f The functor to use
- *
- * If the tuple is heterogeneous, the functor must be generic (i.e. generic lambda)
- */
-template <typename Tuple, typename F, cpp_disable_if((std::tuple_size_v<Tuple> > 0))>
-void for_each_i(Tuple& t, F&& f) {
-    cpp_unused(t);
-    cpp_unused(f);
-
-    // Nothing to iterate
+    if constexpr (std::tuple_size_v<Tuple> > 0) {
+        tuple_detail::for_each_impl<std::tuple_size_v<Tuple> - 1, Tuple, F>::for_each_i(t, std::forward<F>(f));
+    }
 }
 
 // for_each_ix
@@ -375,24 +349,11 @@ void for_each_i(Tuple& t, F&& f) {
  *
  * If the tuple is heterogeneous, the functor must be generic (i.e. generic lambda)
  */
-template <typename Tuple, typename F, cpp_enable_if((std::tuple_size_v<Tuple> > 0))>
+template <typename Tuple, typename F>
 void for_each_ix(Tuple& t, F&& f) {
-    tuple_detail::for_each_impl<std::tuple_size_v<Tuple> - 1, Tuple, F>::for_each_ix(t, std::forward<F>(f));
-}
-
-/*!
- * \brief Call the given functor with each element of the tuple and its constexp position (zero-indexing)
- * \param t The tuple to iterate over
- * \param f The functor to use
- *
- * If the tuple is heterogeneous, the functor must be generic (i.e. generic lambda)
- */
-template <typename Tuple, typename F, cpp_disable_if((std::tuple_size_v<Tuple> > 0))>
-void for_each_ix(Tuple& t, F&& f) {
-    cpp_unused(t);
-    cpp_unused(f);
-
-    // Nothing to iterate
+    if constexpr (std::tuple_size_v<Tuple> > 0) {
+        tuple_detail::for_each_impl<std::tuple_size_v<Tuple> - 1, Tuple, F>::for_each_ix(t, std::forward<F>(f));
+    }
 }
 
 // for_each_pair
@@ -404,24 +365,11 @@ void for_each_ix(Tuple& t, F&& f) {
  *
  * If the tuple is heterogeneous, the functor must be generic (i.e. generic lambda)
  */
-template <typename Tuple, typename F, cpp_enable_if((std::tuple_size_v<Tuple> > 1))>
+template <typename Tuple, typename F>
 void for_each_pair(Tuple& t, F&& f) {
-    tuple_detail::for_each_impl<std::tuple_size_v<Tuple> - 2, Tuple, F>::for_each_pair(t, std::forward<F>(f));
-}
-
-/*!
- * \brief Call the given functor with each contiguous pair of element of the tuple.
- * \param t The tuple to iterate over
- * \param f The functor to use
- *
- * If the tuple is heterogeneous, the functor must be generic (i.e. generic lambda)
- */
-template <typename Tuple, typename F, cpp_disable_if((std::tuple_size_v<Tuple> > 1))>
-void for_each_pair(Tuple& t, F&& f) {
-    cpp_unused(t);
-    cpp_unused(f);
-
-    // Nothing to iterate
+    if constexpr (std::tuple_size_v<Tuple> > 1) {
+        tuple_detail::for_each_impl<std::tuple_size_v<Tuple> - 2, Tuple, F>::for_each_pair(t, std::forward<F>(f));
+    }
 }
 
 // for_each_pair_i
@@ -433,24 +381,11 @@ void for_each_pair(Tuple& t, F&& f) {
  *
  * If the tuple is heterogeneous, the functor must be generic (i.e. generic lambda)
  */
-template <typename Tuple, typename F, cpp_enable_if((std::tuple_size_v<Tuple> > 1))>
+template <typename Tuple, typename F>
 void for_each_pair_i(Tuple& t, F&& f) {
-    tuple_detail::for_each_impl<std::tuple_size_v<Tuple> - 2, Tuple, F>::for_each_pair_i(t, std::forward<F>(f));
-}
-
-/*!
- * \brief Call the given functor with each contiguous pair of element of the tuple and the position of the first element.
- * \param t The tuple to iterate over
- * \param f The functor to use
- *
- * If the tuple is heterogeneous, the functor must be generic (i.e. generic lambda)
- */
-template <typename Tuple, typename F, cpp_disable_if((std::tuple_size_v<Tuple> > 1))>
-void for_each_pair_i(Tuple& t, F&& f) {
-    cpp_unused(t);
-    cpp_unused(f);
-
-    // Nothing to iterate
+    if constexpr (std::tuple_size_v<Tuple> > 1) {
+        tuple_detail::for_each_impl<std::tuple_size_v<Tuple> - 2, Tuple, F>::for_each_pair_i(t, std::forward<F>(f));
+    }
 }
 
 // for_each_pair_ix
@@ -462,24 +397,11 @@ void for_each_pair_i(Tuple& t, F&& f) {
  *
  * If the tuple is heterogeneous, the functor must be generic (i.e. generic lambda)
  */
-template <typename Tuple, typename F, cpp_enable_if((std::tuple_size_v<Tuple> > 1))>
+template <typename Tuple, typename F>
 void for_each_pair_ix(Tuple& t, F&& f) {
-    tuple_detail::for_each_impl<std::tuple_size_v<Tuple> - 2, Tuple, F>::for_each_pair_ix(t, std::forward<F>(f));
-}
-
-/*!
- * \brief Call the given functor with each contiguous pair of element of the tuple and the position of the first element.
- * \param t The tuple to iterate over
- * \param f The functor to use
- *
- * If the tuple is heterogeneous, the functor must be generic (i.e. generic lambda)
- */
-template <typename Tuple, typename F, cpp_disable_if((std::tuple_size_v<Tuple> > 1))>
-void for_each_pair_ix(Tuple& t, F&& f) {
-    cpp_unused(t);
-    cpp_unused(f);
-
-    // Nothing to iterate
+    if constexpr (std::tuple_size_v<Tuple> > 1) {
+        tuple_detail::for_each_impl<std::tuple_size_v<Tuple> - 2, Tuple, F>::for_each_pair_ix(t, std::forward<F>(f));
+    }
 }
 
 // for_each_rpair
@@ -491,24 +413,11 @@ void for_each_pair_ix(Tuple& t, F&& f) {
  *
  * If the tuple is heterogeneous, the functor must be generic (i.e. generic lambda)
  */
-template <typename Tuple, typename F, cpp_enable_if((std::tuple_size_v<Tuple> > 1))>
+template <typename Tuple, typename F>
 void for_each_rpair(Tuple& t, F&& f) {
-    tuple_detail::for_each_impl<std::tuple_size_v<Tuple> - 2, Tuple, F>::for_each_rpair(t, std::forward<F>(f));
-}
-
-/*!
- * \brief Call the given functor with each contiguous pair of element of the tuple , in reverse order.
- * \param t The tuple to iterate over
- * \param f The functor to use
- *
- * If the tuple is heterogeneous, the functor must be generic (i.e. generic lambda)
- */
-template <typename Tuple, typename F, cpp_disable_if((std::tuple_size_v<Tuple> > 1))>
-void for_each_rpair(Tuple& t, F&& f) {
-    cpp_unused(t);
-    cpp_unused(f);
-
-    // Nothing to iterate
+    if constexpr (std::tuple_size_v<Tuple> > 1) {
+        tuple_detail::for_each_impl<std::tuple_size_v<Tuple> - 2, Tuple, F>::for_each_rpair(t, std::forward<F>(f));
+    }
 }
 
 // for_each_rpair_i
@@ -520,24 +429,11 @@ void for_each_rpair(Tuple& t, F&& f) {
  *
  * If the tuple is heterogeneous, the functor must be generic (i.e. generic lambda)
  */
-template <typename Tuple, typename F, cpp_enable_if((std::tuple_size_v<Tuple> > 1))>
+template <typename Tuple, typename F>
 void for_each_rpair_i(Tuple& t, F&& f) {
-    tuple_detail::for_each_impl<std::tuple_size_v<Tuple> - 2, Tuple, F>::for_each_rpair_i(t, std::forward<F>(f));
-}
-
-/*!
- * \brief Call the given functor with each position of contiguous pair of element of the tuple, in reverse order.
- * \param t The tuple to iterate over
- * \param f The functor to use
- *
- * If the tuple is heterogeneous, the functor must be generic (i.e. generic lambda)
- */
-template <typename Tuple, typename F, cpp_disable_if((std::tuple_size_v<Tuple> > 1))>
-void for_each_rpair_i(Tuple& t, F&& f) {
-    cpp_unused(t);
-    cpp_unused(f);
-
-    // Nothing to iterate
+    if constexpr (std::tuple_size_v<Tuple> > 1) {
+        tuple_detail::for_each_impl<std::tuple_size_v<Tuple> - 2, Tuple, F>::for_each_rpair_i(t, std::forward<F>(f));
+    }
 }
 
 // for_each_rpair_ix
@@ -549,24 +445,11 @@ void for_each_rpair_i(Tuple& t, F&& f) {
  *
  * If the tuple is heterogeneous, the functor must be generic (i.e. generic lambda)
  */
-template <typename Tuple, typename F, cpp_enable_if((std::tuple_size_v<Tuple> > 1))>
+template <typename Tuple, typename F>
 void for_each_rpair_ix(Tuple& t, F&& f) {
-    tuple_detail::for_each_impl<std::tuple_size_v<Tuple> - 2, Tuple, F>::for_each_rpair_ix(t, std::forward<F>(f));
-}
-
-/*!
- * \brief Call the given functor with each position of contiguous pair of element of the tuple, in reverse order.
- * \param t The tuple to iterate over
- * \param f The functor to use
- *
- * If the tuple is heterogeneous, the functor must be generic (i.e. generic lambda)
- */
-template <typename Tuple, typename F, cpp_disable_if((std::tuple_size_v<Tuple> > 1))>
-void for_each_rpair_ix(Tuple& t, F&& f) {
-    cpp_unused(t);
-    cpp_unused(f);
-
-    // Nothing to iterate
+    if constexpr (std::tuple_size_v<Tuple> > 1) {
+        tuple_detail::for_each_impl<std::tuple_size_v<Tuple> - 2, Tuple, F>::for_each_rpair_ix(t, std::forward<F>(f));
+    }
 }
 
 // for_each (t1, t2, f)
@@ -579,28 +462,13 @@ void for_each_rpair_ix(Tuple& t, F&& f) {
  *
  * If the tuples are heterogeneous, the functor must be generic (i.e. generic lambda)
  */
-template <typename Tuple1, typename Tuple2, typename F, cpp_enable_if((std::tuple_size_v<Tuple1> > 0 && std::tuple_size_v<Tuple2> > 0))>
+template <typename Tuple1, typename Tuple2, typename F>
 void for_each(Tuple1& t1, Tuple2& t2, F&& f) {
     static_assert(std::tuple_size_v<Tuple1> == std::tuple_size_v<Tuple2>, "Can only iterate tuples of same size");
 
-    tuple_detail::dual_for_each_impl<std::tuple_size_v<Tuple1> - 1, Tuple1, Tuple2, F>::for_each(t1, t2, std::forward<F>(f));
-}
-
-/*!
- * \brief Call the given function with elements of both tuples.
- * \param t1 The first tuple to iterate
- * \param t2 The second tuple to iterate
- * \param f The functor to use
- *
- * If the tuples are heterogeneous, the functor must be generic (i.e. generic lambda)
- */
-template <typename Tuple1, typename Tuple2, typename F, cpp_disable_if((std::tuple_size_v<Tuple1> > 0 && std::tuple_size_v<Tuple2> > 0))>
-void for_each(Tuple1& t1, Tuple2& t2, F&& f) {
-    cpp_unused(t1);
-    cpp_unused(t2);
-    cpp_unused(f);
-
-    // Nothing to iterate
+    if constexpr (std::tuple_size_v<Tuple1> > 0 && std::tuple_size_v<Tuple2> > 0) {
+        tuple_detail::dual_for_each_impl<std::tuple_size_v<Tuple1> - 1, Tuple1, Tuple2, F>::for_each(t1, t2, std::forward<F>(f));
+    }
 }
 
 // for_each_i (t1, t2, f)
@@ -613,28 +481,13 @@ void for_each(Tuple1& t1, Tuple2& t2, F&& f) {
  *
  * If the tuples are heterogeneous, the functor must be generic (i.e. generic lambda)
  */
-template <typename Tuple1, typename Tuple2, typename F, cpp_enable_if((std::tuple_size_v<Tuple1> > 0 && std::tuple_size_v<Tuple2> > 0))>
+template <typename Tuple1, typename Tuple2, typename F>
 void for_each_i(Tuple1& t1, Tuple2& t2, F&& f) {
     static_assert(std::tuple_size_v<Tuple1> == std::tuple_size_v<Tuple2>, "Can only iterate tuples of same size");
 
-    tuple_detail::dual_for_each_impl<std::tuple_size_v<Tuple1> - 1, Tuple1, Tuple2, F>::for_each_i(t1, t2, std::forward<F>(f));
-}
-
-/*!
- * \brief Call the given function with position of elements of both tuples.
- * \param t1 The first tuple to iterate
- * \param t2 The second tuple to iterate
- * \param f The functor to use
- *
- * If the tuples are heterogeneous, the functor must be generic (i.e. generic lambda)
- */
-template <typename Tuple1, typename Tuple2, typename F, cpp_disable_if((std::tuple_size_v<Tuple1> > 0 && std::tuple_size_v<Tuple2> > 0))>
-void for_each_i(Tuple1& t1, Tuple2& t2, F&& f) {
-    cpp_unused(t1);
-    cpp_unused(t2);
-    cpp_unused(f);
-
-    // Nothing to iterate
+    if constexpr (std::tuple_size_v<Tuple1> > 0 && std::tuple_size_v<Tuple2> > 0) {
+        tuple_detail::dual_for_each_impl<std::tuple_size_v<Tuple1> - 1, Tuple1, Tuple2, F>::for_each_i(t1, t2, std::forward<F>(f));
+    }
 }
 
 // for_each_ix (t1, t2, f)
@@ -647,28 +500,13 @@ void for_each_i(Tuple1& t1, Tuple2& t2, F&& f) {
  *
  * If the tuples are heterogeneous, the functor must be generic (i.e. generic lambda)
  */
-template <typename Tuple1, typename Tuple2, typename F, cpp_enable_if((std::tuple_size_v<Tuple1> > 0 && std::tuple_size_v<Tuple2> > 0))>
+template <typename Tuple1, typename Tuple2, typename F>
 void for_each_ix(Tuple1& t1, Tuple2& t2, F&& f) {
     static_assert(std::tuple_size_v<Tuple1> == std::tuple_size_v<Tuple2>, "Can only iterate tuples of same size");
 
-    tuple_detail::dual_for_each_impl<std::tuple_size_v<Tuple1> - 1, Tuple1, Tuple2, F>::for_each_ix(t1, t2, std::forward<F>(f));
-}
-
-/*!
- * \brief Call the given function with position of elements of both tuples.
- * \param t1 The first tuple to iterate
- * \param t2 The second tuple to iterate
- * \param f The functor to use
- *
- * If the tuples are heterogeneous, the functor must be generic (i.e. generic lambda)
- */
-template <typename Tuple1, typename Tuple2, typename F, cpp_disable_if((std::tuple_size_v<Tuple1> > 0 && std::tuple_size_v<Tuple2> > 0))>
-void for_each_ix(Tuple1& t1, Tuple2& t2, F&& f) {
-    cpp_unused(t1);
-    cpp_unused(t2);
-    cpp_unused(f);
-
-    // Nothing to iterate
+    if constexpr (std::tuple_size_v<Tuple1> > 0 && std::tuple_size_v<Tuple2> > 0) {
+        tuple_detail::dual_for_each_impl<std::tuple_size_v<Tuple1> - 1, Tuple1, Tuple2, F>::for_each_ix(t1, t2, std::forward<F>(f));
+    }
 }
 
 // for_each_pair (t1, t2, f)
@@ -681,32 +519,15 @@ void for_each_ix(Tuple1& t1, Tuple2& t2, F&& f) {
  *
  * If the tuples are heterogeneous, the functor must be generic (i.e. generic lambda)
  */
-template <typename Tuple1, typename Tuple2, typename F, cpp_enable_if((std::tuple_size_v<Tuple1> > 1 && std::tuple_size_v<Tuple2> > 1))>
+template <typename Tuple1, typename Tuple2, typename F>
 void for_each_pair(Tuple1& t1, Tuple2& t2, F&& f) {
     static_assert(std::tuple_size_v<Tuple1> == std::tuple_size_v<Tuple2>, "Can only iterate tuples of same size");
 
-    if constexpr (std::tuple_size_v<Tuple1> > 1) {
+    if constexpr (std::tuple_size_v<Tuple1> > 1 && std::tuple_size_v<Tuple2> > 1) {
         tuple_detail::dual_for_each_impl<std::tuple_size_v<Tuple1> - 2, Tuple1, Tuple2, F>::for_each_pair(t1, t2, std::forward<F>(f));
     }
 }
 
-/*!
- * \brief Call the given function with pair of elements of both tuples.
- * \param t1 The first tuple to iterate
- * \param t2 The second tuple to iterate
- * \param f The functor to use
- *
- * If the tuples are heterogeneous, the functor must be generic (i.e. generic lambda)
- */
-template <typename Tuple1, typename Tuple2, typename F, cpp_disable_if((std::tuple_size_v<Tuple1> > 1 && std::tuple_size_v<Tuple2> > 1))>
-void for_each_pair(Tuple1& t1, Tuple2& t2, F&& f) {
-    cpp_unused(t1);
-    cpp_unused(t2);
-    cpp_unused(f);
-
-    // Nothing to iterate
-}
-
 // for_each_rpair_i (t1, t2, f)
 
 /*!
@@ -717,32 +538,15 @@ void for_each_pair(Tuple1& t1, Tuple2& t2, F&& f) {
  *
  * If the tuples are heterogeneous, the functor must be generic (i.e. generic lambda)
  */
-template <typename Tuple1, typename Tuple2, typename F, cpp_enable_if((std::tuple_size_v<Tuple1> > 1 && std::tuple_size_v<Tuple2> > 1))>
+template <typename Tuple1, typename Tuple2, typename F>
 void for_each_rpair_i(Tuple1& t1, Tuple2& t2, F&& f) {
     static_assert(std::tuple_size_v<Tuple1> == std::tuple_size_v<Tuple2>, "Can only iterate tuples of same size");
 
-    if constexpr (std::tuple_size_v<Tuple1> > 1) {
+    if constexpr (std::tuple_size_v<Tuple1> > 1 && std::tuple_size_v<Tuple2> > 1) {
         tuple_detail::dual_for_each_impl<std::tuple_size_v<Tuple1> - 2, Tuple1, Tuple2, F>::for_each_rpair_i(t1, t2, std::forward<F>(f));
     }
 }
 
-/*!
- * \brief Call the given function with position of pair of elements of both tuples, in reverse order.
- * \param t1 The first tuple to iterate
- * \param t2 The second tuple to iterate
- * \param f The functor to use
- *
- * If the tuples are heterogeneous, the functor must be generic (i.e. generic lambda)
- */
-template <typename Tuple1, typename Tuple2, typename F, cpp_disable_if((std::tuple_size_v<Tuple1> > 1 && std::tuple_size_v<Tuple2> > 1))>
-void for_each_rpair_i(Tuple1& t1, Tuple2& t2, F&& f) {
-    cpp_unused(t1);
-    cpp_unused(t2);
-    cpp_unused(f);
-
-    // Nothing to iterate
-}
-
 // for_each_rpair_i (t1, t2, f)
 
 /*!
@@ -753,30 +557,13 @@ void for_each_rpair_i(Tuple1& t1, Tuple2& t2, F&& f) {
  *
  * If the tuples are heterogeneous, the functor must be generic (i.e. generic lambda)
  */
-template <typename Tuple1, typename Tuple2, typename F, cpp_enable_if((std::tuple_size_v<Tuple1> > 1 && std::tuple_size_v<Tuple2> > 1))>
+template <typename Tuple1, typename Tuple2, typename F>
 void for_each_rpair_ix(Tuple1& t1, Tuple2& t2, F&& f) {
     static_assert(std::tuple_size_v<Tuple1> == std::tuple_size_v<Tuple2>, "Can only iterate tuples of same size");
 
-    if constexpr (std::tuple_size_v<Tuple1> > 1) {
+    if constexpr (std::tuple_size_v<Tuple1> > 1 && std::tuple_size_v<Tuple2> > 1) {
         tuple_detail::dual_for_each_impl<std::tuple_size_v<Tuple1> - 2, Tuple1, Tuple2, F>::for_each_rpair_ix(t1, t2, std::forward<F>(f));
     }
-}
-
-/*!
- * \brief Call the given function with position of pair of elements of both tuples, in reverse order.
- * \param t1 The first tuple to iterate
- * \param t2 The second tuple to iterate
- * \param f The functor to use
- *
- * If the tuples are heterogeneous, the functor must be generic (i.e. generic lambda)
- */
-template <typename Tuple1, typename Tuple2, typename F, cpp_disable_if((std::tuple_size_v<Tuple1> > 1 && std::tuple_size_v<Tuple2> > 1))>
-void for_each_rpair_ix(Tuple1& t1, Tuple2& t2, F&& f) {
-    cpp_unused(t1);
-    cpp_unused(t2);
-    cpp_unused(f);
-
-    // Nothing to iterate
 }
 
 } //end of namespace cpp

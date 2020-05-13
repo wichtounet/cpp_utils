@@ -87,9 +87,7 @@ void normalize(Container& container) {
     }
 
     //normalize to unit variance
-    auto s = cpp::stddev(container, 0.0);
-
-    if (s != 0.0) {
+    if (auto s = cpp::stddev(container, 0.0); s != 0.0) {
         for (auto& v : container) {
             v /= s;
         }

@@ -229,57 +229,41 @@ void parallel_foreach_i_only(Container& container, Functor fun) {
  * \param last The end of the range
  * \param fun The functor to apply.
  */
-template <typename TP, typename Iterator, typename Functor,
-          cpp_enable_if(std::is_same_v<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>)>
+template <typename TP, typename Iterator, typename Functor>
 void parallel_foreach(TP& thread_pool, Iterator first, Iterator last, Functor fun) {
-    auto n    = std::distance(first, last);
-    auto part = n / thread_pool.size();
+    if constexpr (std::is_same_v<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>) {
+        auto n    = std::distance(first, last);
+        auto part = n / thread_pool.size();
 
-    if (part < 2) {
+        if (part < 2) {
+            for (; first != last; ++first) {
+                thread_pool.do_task(fun, *first);
+            }
+        } else {
+            auto batch_functor = [fun](Iterator first, Iterator last) {
+                for (Iterator it = first; it != last; ++it) {
+                    fun(*it);
+                }
+            };
+
+            //Distribute evenly the batches
+
+            for (std::size_t t = 0; t < thread_pool.size(); ++t) {
+                thread_pool.do_task(batch_functor, first + t * part, first + (t + 1) * part);
+            }
+
+            //Distribute the remainders
+
+            if (auto rem = n % thread_pool.size(); rem > 0) {
+                for (Iterator it = last - rem; it < last; ++it) {
+                    thread_pool.do_task(fun, *it);
+                }
+            }
+        }
+    } else {
         for (; first != last; ++first) {
             thread_pool.do_task(fun, *first);
         }
-    } else {
-        auto batch_functor = [fun](Iterator first, Iterator last) {
-            for (Iterator it = first; it != last; ++it) {
-                fun(*it);
-            }
-        };
-
-        //Distribute evenly the batches
-
-        for (std::size_t t = 0; t < thread_pool.size(); ++t) {
-            thread_pool.do_task(batch_functor, first + t * part, first + (t + 1) * part);
-        }
-
-        //Distribute the remainders
-
-        auto rem = n % thread_pool.size();
-        if (rem > 0) {
-            for (Iterator it = last - rem; it < last; ++it) {
-                thread_pool.do_task(fun, *it);
-            }
-        }
-    }
-
-    thread_pool.wait();
-}
-
-/*!
- * \brief Applies the given functor, concurrently, to the result of dereferencing every iterator in the range [first, last).
- *
- * All the jobs are submitted to the given thread pool.
- *
- * \param thread_pool The thread pool responsible for scheduling the jobs.
- * \param first The beginning of the range
- * \param last The end of the range
- * \param fun The functor to apply.
- */
-template <typename TP, typename Iterator, typename Functor,
-          cpp_disable_if(std::is_same_v<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>)>
-void parallel_foreach(TP& thread_pool, Iterator first, Iterator last, Functor fun) {
-    for (; first != last; ++first) {
-        thread_pool.do_task(fun, *first);
     }
 
     thread_pool.wait();
@@ -311,59 +295,42 @@ void parallel_foreach(TP& thread_pool, Container& container, Functor fun) {
  * \param last The end of the range
  * \param fun The functor to apply.
  */
-template <typename TP, typename Iterator, typename Functor,
-          cpp_enable_if(std::is_same_v<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>)>
+template <typename TP, typename Iterator, typename Functor>
 void parallel_foreach_i(TP& thread_pool, Iterator first, Iterator last, Functor fun) {
-    const auto n    = std::distance(first, last);
-    const auto part = n / thread_pool.size();
+    if constexpr (std::is_same_v<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>) {
+        const auto n    = std::distance(first, last);
+        const auto part = n / thread_pool.size();
 
-    if (part < 2) {
+        if (part < 2) {
+            for (std::size_t i = 0; first != last; ++first, ++i) {
+                thread_pool.do_task(fun, *first, i);
+            }
+        } else {
+            auto batch_functor = [fun](Iterator first, Iterator last, std::size_t i_start) {
+                std::size_t i = i_start;
+                for (Iterator it = first; it != last; ++it, ++i) {
+                    fun(*it, i);
+                }
+            };
+
+            // Distribute evenly the batches
+
+            for (std::size_t t = 0; t < thread_pool.size(); ++t) {
+                thread_pool.do_task(batch_functor, first + t * part, first + (t + 1) * part, t * part);
+            }
+
+            // Compute the remainders
+            if (auto rem = n % thread_pool.size(); rem > 0) {
+                std::size_t i = n - rem;
+                for (Iterator it = last - rem; it < last; ++it, ++i) {
+                    fun(*it, i);
+                }
+            }
+        }
+    } else {
         for (std::size_t i = 0; first != last; ++first, ++i) {
             thread_pool.do_task(fun, *first, i);
         }
-    } else {
-        auto batch_functor = [fun](Iterator first, Iterator last, std::size_t i_start) {
-            std::size_t i = i_start;
-            for (Iterator it = first; it != last; ++it, ++i) {
-                fun(*it, i);
-            }
-        };
-
-        // Distribute evenly the batches
-
-        for (std::size_t t = 0; t < thread_pool.size(); ++t) {
-            thread_pool.do_task(batch_functor, first + t * part, first + (t + 1) * part, t * part);
-        }
-
-        // Compute the remainders
-
-        auto rem = n % thread_pool.size();
-        if (rem > 0) {
-            std::size_t i = n - rem;
-            for (Iterator it = last - rem; it < last; ++it, ++i) {
-                fun(*it, i);
-            }
-        }
-    }
-
-    thread_pool.wait();
-}
-
-/*!
- * \brief Applies the given functor, concurrently, to the result of dereferencing every iterator in the range [first, last) and index.
- *
- * All the jobs are submitted to the given thread pool.
- *
- * \param thread_pool The thread pool responsible for scheduling the jobs.
- * \param first The beginning of the range
- * \param last The end of the range
- * \param fun The functor to apply.
- */
-template <typename TP, typename Iterator, typename Functor,
-          cpp_disable_if(std::is_same_v<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>)>
-void parallel_foreach_i(TP& thread_pool, Iterator first, Iterator last, Functor fun) {
-    for (std::size_t i = 0; first != last; ++first, ++i) {
-        thread_pool.do_task(fun, *first, i);
     }
 
     thread_pool.wait();
@@ -395,57 +362,40 @@ void parallel_foreach_i(TP& thread_pool, Container& container, Functor fun) {
  * \param last The end of the range
  * \param fun The functor to apply.
  */
-template <typename TP, typename Iterator, typename Functor,
-          cpp_enable_if(std::is_same_v<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>)>
+template <typename TP, typename Iterator, typename Functor>
 void parallel_foreach_it(TP& thread_pool, Iterator first, Iterator last, Functor fun) {
-    const auto n    = std::distance(first, last);
-    const auto part = n / thread_pool.size();
+    if constexpr (std::is_same_v<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>) {
+        const auto n    = std::distance(first, last);
+        const auto part = n / thread_pool.size();
 
-    if (part < 2) {
+        if (part < 2) {
+            for (; first != last; ++first) {
+                thread_pool.do_task(fun, first);
+            }
+        } else {
+            auto batch_functor = [fun](Iterator first, Iterator last) {
+                for (Iterator it = first; it != last; ++it) {
+                    fun(it);
+                }
+            };
+
+            // Distribute evenly the batches
+
+            for (std::size_t t = 0; t < thread_pool.size(); ++t) {
+                thread_pool.do_task(batch_functor, first + t * part, first + (t + 1) * part);
+            }
+
+            // Compute the remainders
+            if (auto rem = n % thread_pool.size(); rem > 0) {
+                for (Iterator it = last - rem; it < last; ++it) {
+                    fun(it);
+                }
+            }
+        }
+    } else {
         for (; first != last; ++first) {
             thread_pool.do_task(fun, first);
         }
-    } else {
-        auto batch_functor = [fun](Iterator first, Iterator last) {
-            for (Iterator it = first; it != last; ++it) {
-                fun(it);
-            }
-        };
-
-        // Distribute evenly the batches
-
-        for (std::size_t t = 0; t < thread_pool.size(); ++t) {
-            thread_pool.do_task(batch_functor, first + t * part, first + (t + 1) * part);
-        }
-
-        // Compute the remainders
-
-        auto rem = n % thread_pool.size();
-        if (rem > 0) {
-            for (Iterator it = last - rem; it < last; ++it) {
-                fun(it);
-            }
-        }
-    }
-
-    thread_pool.wait();
-}
-
-/*!
- * \brief Applies the given functor, concurrently, to each iterator in the range [first, last).
- *
- * All the jobs are submitted to the given thread pool.
- *
- * \param thread_pool The thread pool responsible for scheduling the jobs.
- * \param first The beginning of the range
- * \param last The end of the range
- * \param fun The functor to apply.
- */
-template <typename TP, typename Iterator, typename Functor,
-          cpp_disable_if(std::is_same_v<typename std::iterator_traits<Iterator>::iterator_category, std::random_access_iterator_tag>)>
-void parallel_foreach_it(TP& thread_pool, Iterator first, Iterator last, Functor fun) {
-    for (; first != last; ++first) {
-        thread_pool.do_task(fun, first);
     }
 
     thread_pool.wait();
@@ -538,9 +488,7 @@ void parallel_foreach_n(TP& thread_pool, std::size_t first, std::size_t last, Fu
         }
 
         // Compute the remainders
-
-        auto rem = n % thread_pool.size();
-        if (rem > 0) {
+        if (auto rem = n % thread_pool.size(); rem > 0) {
             for (std::size_t i = last - rem; i < last; ++i) {
                 fun(i);
             }
@@ -585,9 +533,7 @@ void parallel_foreach_pair_i(TP& thread_pool, Iterator f_first, Iterator f_last,
         }
 
         // Compute the remainders
-
-        auto rem = n % t;
-        if (rem > 0) {
+        if (auto rem = n % t; rem > 0) {
             for (std::size_t i = n - rem; i < n; ++i) {
                 fun(*(std::next(f_first, i)), *(std::next(s_first, i)), i);
             }

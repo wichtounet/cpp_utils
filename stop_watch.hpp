@@ -31,8 +31,7 @@ using clock_type = std::chrono::high_resolution_clock;
  * The watch automatically starts when the constructor is called
  */
 template <typename P = std::chrono::milliseconds>
-class stop_watch {
-public:
+struct stop_watch {
     /*!
      * \brief The std::chrono precision used by the watch.
      */
@@ -67,8 +66,7 @@ private:
  * The watch automatically starts when the constructor is called and display the duration when destructed.
  */
 template <typename P = std::chrono::milliseconds>
-class auto_stop_watch {
-public:
+struct auto_stop_watch {
     /*!
      * \brief The std::chrono precision used by the watch.
      */
