@@ -18,6 +18,8 @@
 #ifndef CPP_SOFT_ALIGNED_ARRAY_HPP
 #define CPP_SOFT_ALIGNED_ARRAY_HPP
 
+#include <array>
+
 namespace cpp {
 
 /*!

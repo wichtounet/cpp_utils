@@ -13,6 +13,8 @@
 #ifndef CPP_ALIGNED_ALLOCATOR_HPP
 #define CPP_ALIGNED_ALLOCATOR_HPP
 
+#include <stdexcept>
+
 namespace cpp {
 
 /**
