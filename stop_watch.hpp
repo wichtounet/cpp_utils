@@ -1,5 +1,5 @@
 //=======================================================================
-// Copyright Baptiste Wicht 2013-2014.
+// Copyright (c) 2013-2020 Baptiste Wicht.
 // Distributed under the MIT License.
 // (See accompanying file LICENSE or copy at
 //  http://opensource.org/licenses/MIT)
