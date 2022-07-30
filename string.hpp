@@ -28,7 +28,7 @@ namespace cpp {
 template <typename CharT, typename Traits, typename Allocator>
 std::basic_string<CharT, Traits, Allocator>& ltrim(std::basic_string<CharT, Traits, Allocator>& s) {
     s.erase(s.begin(), std::find_if(s.begin(), s.end(),
-									[](unsigned char c) {
+									[](CharT c) {
 										return !std::isspace(c);
 									}));
     return s;
@@ -44,7 +44,7 @@ std::basic_string<CharT, Traits, Allocator>& ltrim(std::basic_string<CharT, Trai
 template <typename CharT, typename Traits, typename Allocator>
 std::basic_string<CharT, Traits, Allocator>& rtrim(std::basic_string<CharT, Traits, Allocator>& s) {
     s.erase(std::find_if(s.rbegin(), s.rend(),
-						 [](unsigned char c) {
+						 [](CharT c) {
 							 return !std::isspace(c);
 						 }).base(), s.end());
     return s;
