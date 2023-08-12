@@ -14,6 +14,7 @@
 #define CPP_ALIGNED_ALLOCATOR_HPP
 
 #include <stdexcept>
+#include <cstdint>
 
 namespace cpp {
 
