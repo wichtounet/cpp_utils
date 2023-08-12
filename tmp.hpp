@@ -116,7 +116,6 @@ struct is_specialization_of<TT, TT<Args...>> : std::true_type {};
 /*!
  * \brief Traits to test if all the given types are convertible to V
  * \tparam V The target type
- * \tparam F The first type to test
  * \tparam S The types to test
  */
 template <typename V, typename... S>
@@ -124,7 +123,6 @@ using all_convertible_to = std::bool_constant<(... && std::is_convertible_v<V, S
 
 /*!
  * \brief Test is a list of types homogeneous
- * \tparam F The first type
  * \tparam T The types
  */
 template <typename F, typename... T>
