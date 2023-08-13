@@ -19,7 +19,7 @@ namespace cpp {
  * \brief An array view on top of existing memory
  */
 template <typename T>
-struct array_wrapper {
+struct [[deprecated]] array_wrapper {
 private:
     T* _memory;        ///< The array memory
     std::size_t _size; ///< The size of the array

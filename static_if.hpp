@@ -97,6 +97,7 @@ struct statement<false> {
  * \return a statement object to execute else_ if necessary
  */
 template <bool Cond, typename F>
+[[deprecated]] 
 static_if_detail::statement<Cond> static_if(F const& f) {
     static_if_detail::statement<Cond> if_;
     if_.then(f);
