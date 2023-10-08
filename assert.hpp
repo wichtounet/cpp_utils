@@ -30,14 +30,14 @@
 #if defined __clang__
 
 #if __has_builtin(__builtin_unreachable)
-#define cpp_unreachable(message) __builtin_unreachable();
+#define cpp_unreachable(message) __builtin_unreachable()
 #else
 #define cpp_unreachable(message) ((void)0)
 #endif //__has_builtin(__builtin_unreachable)
 
 #elif defined __GNUC__
 
-#define cpp_unreachable(message) __builtin_unreachable();
+#define cpp_unreachable(message) __builtin_unreachable()
 
 #endif //__clang__
 
@@ -65,7 +65,7 @@
 #if __has_builtin(__builtin_unreachable)
 #define cpp_unreachable(message) \
     cpp_assert(false, message);  \
-    __builtin_unreachable();
+    __builtin_unreachable()
 #else
 #define cpp_unreachable(message) cpp_assert(false, message);
 #endif //__has_builtin(__builtin_unreachable)
@@ -74,7 +74,7 @@
 
 #define cpp_unreachable(message) \
     cpp_assert(false, message);  \
-    __builtin_unreachable();
+    __builtin_unreachable()
 
 #endif //__clang__
 
