@@ -238,7 +238,10 @@ struct type_list {
  * \tparam T The type to test
  */
 template <template <typename...> class TT, typename T>
-constexpr bool is_specialization_of_v = is_specialization_of<TT, T>::value;
+constexpr bool is_specialization_of_v = is_specialization_of<TT, std::decay_t<T>>::value;
+
+template <template <typename...> class TT, typename T>
+concept specialization_of = is_specialization_of_v<TT, std::decay_t<T>>;
 
 /*!
  * \brief Value traits to test if all the given types are convertible to V
